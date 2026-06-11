@@ -41,6 +41,8 @@ export default function ReelDownloader() {
       } else {
         setMetadata(data.data);
         toast.success("Reel metadata extracted!");
+        // Notify DownloadHistory to refresh
+        window.dispatchEvent(new CustomEvent("refresh-history"));
       }
     } catch (error) {
       toast.error("Something went wrong");

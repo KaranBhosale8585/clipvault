@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import Link from "next/link";
 import ReelDownloader from "@/components/ReelDownloader";
+import DownloadHistory from "@/components/DownloadHistory";
 
 type User = {
   id: string;
@@ -103,16 +104,7 @@ export default function Home() {
             {/* Main Section: Downloader */}
             <div className="lg:col-span-2 space-y-8">
               <ReelDownloader />
-              
-              {/* History Placeholder */}
-              <div className="bg-card border border-border rounded-3xl p-8 opacity-60">
-                <h3 className="text-lg font-bold text-foreground mb-4">
-                  Download History
-                </h3>
-                <div className="py-12 text-center border-2 border-dashed border-border rounded-2xl">
-                  <p className="text-muted-foreground font-medium">Your recent downloads will appear here.</p>
-                </div>
-              </div>
+              <DownloadHistory />
             </div>
 
             {/* Sidebar: Profile & Settings */}

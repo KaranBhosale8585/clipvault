@@ -17,3 +17,7 @@
 ### feat: implement reel url validation and metadata extraction
 - **Description**: Added `downloads` table to database schema. Implemented `utils/instagram.ts` for URL validation. Created `/api/reel/metadata` for extraction. Integrated `ReelDownloader` UI component into the dashboard.
 - **Files Changed**: `db/schema.ts`, `docs/architecture.md`, `utils/instagram.ts`, `app/api/reel/metadata/route.ts`, `components/ReelDownloader.tsx`, `app/page.tsx`.
+
+### feat: implement download history api and ui
+- **Description**: Created `/api/reel/history` to fetch user's download records. Implemented `DownloadHistory.tsx` component to display past reels. Integrated refresh logic using CustomEvents between downloader and history components.
+- **Files Changed**: `app/api/reel/history/route.ts`, `components/DownloadHistory.tsx`, `components/ReelDownloader.tsx`, `app/page.tsx`.

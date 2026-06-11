@@ -8,9 +8,9 @@
 - [x] Environment Setup (.env.example)
 - [x] Reel URL validation
 - [x] Reel metadata extraction
+- [x] Download history (API & UI)
 
 ## In Progress
-- [ ] Download history (API & UI)
 
 ## Pending
 - [ ] Download management (API & UI)
