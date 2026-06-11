@@ -1,0 +1,41 @@
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: downloader-app
+    ports:
+      - "3000:3000"
+    environment:
+      - DATABASE_URL=postgresql://user:password@db:5432/downloader
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - downloader-network
+
+  db:
+    image: postgres:15-alpine
+    container_name: downloader-db
+    environment:
+      - POSTGRES_USER=user
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_DB=downloader
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U user -d downloader"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    networks:
+      - downloader-network
+
+networks:
+  downloader-network:
+    driver: bridge
+
+volumes:
+  postgres_data:
