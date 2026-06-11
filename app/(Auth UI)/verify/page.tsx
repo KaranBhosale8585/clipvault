@@ -83,57 +83,59 @@ export default function VerifyOTP() {
   };
 
   return (
-    <div className="min-h-[calc(100vh-4rem)] flex items-center justify-center bg-gray-50 dark:bg-gray-950 transition-colors duration-300 px-4 py-12">
-      <div className="w-full max-w-md bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-2xl shadow-xl dark:shadow-2xl overflow-hidden transition-all">
-        <div className="p-8 sm:p-10 text-center">
-          <div className="mb-10">
-            <div className="inline-flex items-center justify-center w-16 h-16 bg-gray-100 dark:bg-gray-800 rounded-2xl text-black dark:text-white mb-6">
-              <ShieldCheck size={32} />
-            </div>
-            <h2 className="text-3xl font-extrabold text-gray-900 dark:text-white mb-2 tracking-tight">
-              Verify OTP
-            </h2>
-            <p className="text-gray-500 dark:text-gray-400">
-              Enter the 6-digit code sent to your email
-            </p>
-          </div>
-
-          <div className="flex justify-between gap-2 mb-10">
-            {otp.map((digit, index) => (
-              <input
-                key={index}
-                id={`otp-${index}`}
-                value={digit}
-                maxLength={1}
-                onChange={(e) => handleChange(e.target.value, index)}
-                onKeyDown={(e) => handleBackspace(e, index)}
-                className="w-12 h-14 text-center text-xl font-bold bg-gray-50 dark:bg-gray-800/50 border border-gray-200 dark:border-gray-800 rounded-xl focus:outline-none focus:ring-2 focus:ring-black dark:focus:ring-white transition-all text-gray-900 dark:text-white"
-              />
-            ))}
-          </div>
-
-          <button
-            onClick={handleSubmit}
-            disabled={loading}
-            className="w-full py-3.5 px-4 bg-black dark:bg-white text-white dark:text-black font-bold rounded-xl hover:opacity-90 active:scale-[0.98] transition-all disabled:opacity-50"
-          >
-            {loading ? "Verifying..." : "Verify OTP"}
-          </button>
-
-          <div className="mt-8">
-            {timer > 0 ? (
-              <p className="text-sm text-gray-500 dark:text-gray-400">
-                Resend code in <span className="font-bold text-gray-900 dark:text-white">{timer}s</span>
+    <div className="min-h-[calc(100vh-4rem)] flex items-center justify-center bg-slate-50 dark:bg-[#020617] transition-colors duration-300 px-4 py-12">
+      <div className="w-full max-w-[440px]">
+        <div className="bg-white dark:bg-slate-900/50 border border-slate-200 dark:border-slate-800 rounded-[32px] shadow-2xl shadow-slate-200/50 dark:shadow-none overflow-hidden transition-all">
+          <div className="p-10 sm:p-12 text-center">
+            <div className="mb-10">
+              <div className="inline-flex items-center justify-center w-16 h-16 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-[22px] text-indigo-500 mb-8 shadow-inner">
+                <ShieldCheck size={32} />
+              </div>
+              <h2 className="text-3xl font-extrabold text-slate-900 dark:text-white mb-3 tracking-tight">
+                Verify Identity
+              </h2>
+              <p className="text-slate-500 dark:text-slate-400 font-medium">
+                We've sent a 6-digit secure code to your email address
               </p>
-            ) : (
-              <button
-                onClick={handleSendOtp}
-                disabled={sendingOtp}
-                className="text-sm font-bold text-black dark:text-white hover:underline underline-offset-4"
-              >
-                {sendingOtp ? "Sending..." : "Resend code"}
-              </button>
-            )}
+            </div>
+
+            <div className="flex justify-between gap-3 mb-10">
+              {otp.map((digit, index) => (
+                <input
+                  key={index}
+                  id={`otp-${index}`}
+                  value={digit}
+                  maxLength={1}
+                  onChange={(e) => handleChange(e.target.value, index)}
+                  onKeyDown={(e) => handleBackspace(e, index)}
+                  className="w-full h-14 text-center text-xl font-bold bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-800 rounded-2xl focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all text-slate-900 dark:text-white"
+                />
+              ))}
+            </div>
+
+            <button
+              onClick={handleSubmit}
+              disabled={loading}
+              className="w-full py-4 bg-slate-900 dark:bg-white text-white dark:text-slate-900 font-bold rounded-2xl shadow-lg shadow-slate-900/10 dark:shadow-none hover:opacity-90 active:scale-[0.98] transition-all disabled:opacity-50 text-sm"
+            >
+              {loading ? "Verifying..." : "Confirm Code"}
+            </button>
+
+            <div className="mt-10">
+              {timer > 0 ? (
+                <p className="text-xs font-bold text-slate-400 uppercase tracking-widest">
+                  Resend available in <span className="text-slate-900 dark:text-white">{timer}s</span>
+                </p>
+              ) : (
+                <button
+                  onClick={handleSendOtp}
+                  disabled={sendingOtp}
+                  className="text-xs font-bold text-indigo-500 dark:text-indigo-400 uppercase tracking-widest hover:text-indigo-600 transition-colors"
+                >
+                  {sendingOtp ? "Requesting..." : "Resend secure code"}
+                </button>
+              )}
+            </div>
           </div>
         </div>
       </div>
