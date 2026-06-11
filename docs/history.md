@@ -25,3 +25,7 @@
 ### feat: implement download proxy and enhance metadata extraction
 - **Description**: Created `/api/download-proxy` to bypass CORS and force file downloads. Updated `fetchReelMetadata` to attempt real HTML parsing for Open Graph tags. Standardized download experience across Downloader and History components.
 - **Files Changed**: `app/api/download-proxy/route.ts`, `utils/instagram.ts`, `components/ReelDownloader.tsx`, `components/DownloadHistory.tsx`.
+
+### fix: resolve database insert failure and add management scripts
+- **Description**: Fixed a "Failed query" error by synchronizing the `downloads` table with the database using `drizzle-kit push`. Added `db:push` and `db:studio` scripts to `package.json` for easier schema management.
+- **Files Changed**: `package.json`.
