@@ -107,18 +107,18 @@ export default function ForgotPassword() {
   };
 
   return (
-    <div className="min-h-[calc(100vh-4rem)] flex items-center justify-center bg-slate-50 dark:bg-[#020617] transition-colors duration-300 px-4 py-12">
+    <div className="min-h-[calc(100vh-4rem)] flex items-center justify-center bg-background transition-colors duration-300 px-4 py-12">
       <div className="w-full max-w-[440px]">
-        <div className="bg-white dark:bg-slate-900/50 border border-slate-200 dark:border-slate-800 rounded-[32px] shadow-2xl shadow-slate-200/50 dark:shadow-none overflow-hidden transition-all">
+        <div className="bg-card border border-border rounded-[32px] shadow-2xl shadow-lg shadow-black/5 dark:shadow-none overflow-hidden transition-all">
           <div className="p-10 sm:p-12 text-center">
             <div className="mb-10">
-              <div className="inline-flex items-center justify-center w-16 h-16 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-[22px] text-indigo-500 mb-8 shadow-inner">
+              <div className="inline-flex items-center justify-center w-16 h-16 bg-background dark:bg-slate-800 border border-border dark:border-slate-700 rounded-[22px] text-indigo-500 mb-8 shadow-inner">
                 <ShieldCheck size={32} />
               </div>
-              <h2 className="text-3xl font-extrabold text-slate-900 dark:text-white mb-3 tracking-tight">
+              <h2 className="text-3xl font-extrabold text-foreground mb-3 tracking-tight">
                 {step === "email" ? "Reset Access" : "Secure Reset"}
               </h2>
-              <p className="text-slate-500 dark:text-slate-400 font-medium">
+              <p className="text-muted-foreground font-medium">
                 {step === "email"
                   ? "Enter your email to receive a secure recovery code"
                   : "Enter the code and define your new password"}
@@ -128,18 +128,18 @@ export default function ForgotPassword() {
             {step === "email" && (
               <div className="space-y-6 text-left">
                 <div className="space-y-2">
-                  <label className="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest ml-1" htmlFor="email">
+                  <label className="text-xs font-bold text-muted-foreground uppercase tracking-widest ml-1" htmlFor="email">
                     Email Address
                   </label>
                   <div className="relative group">
-                    <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 group-focus-within:text-indigo-500 transition-colors" />
+                    <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground group-focus-within:text-indigo-500 transition-colors" />
                     <input
                       id="email"
                       type="email"
                       placeholder="name@company.com"
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
-                      className="w-full pl-11 pr-4 py-3 bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-800 rounded-2xl text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all text-sm font-medium"
+                      className="w-full pl-11 pr-4 py-3 bg-background dark:bg-slate-800/50 border border-border rounded-2xl text-foreground focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all text-sm font-medium"
                     />
                   </div>
                 </div>
@@ -147,7 +147,7 @@ export default function ForgotPassword() {
                 <button
                   onClick={handleSendOtp}
                   disabled={sendingOtp}
-                  className="w-full py-4 bg-slate-900 dark:bg-white text-white dark:text-slate-900 font-bold rounded-2xl shadow-lg shadow-slate-900/10 dark:shadow-none hover:opacity-90 active:scale-[0.98] transition-all disabled:opacity-50 text-sm"
+                  className="w-full py-4 bg-foreground text-background font-bold rounded-2xl shadow-lg shadow-slate-900/10 dark:shadow-none hover:opacity-90 active:scale-[0.98] transition-all disabled:opacity-50 text-sm"
                 >
                   {sendingOtp ? "Requesting..." : "Send Reset Code"}
                 </button>
@@ -165,24 +165,24 @@ export default function ForgotPassword() {
                       maxLength={1}
                       onChange={(e) => handleChange(e.target.value, index)}
                       onKeyDown={(e) => handleBackspace(e, index)}
-                      className="w-full h-14 text-center text-xl font-bold bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-800 rounded-2xl focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all text-slate-900 dark:text-white"
+                      className="w-full h-14 text-center text-xl font-bold bg-background dark:bg-slate-800/50 border border-border rounded-2xl focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all text-foreground"
                     />
                   ))}
                 </div>
 
                 <div className="space-y-2 text-left">
-                  <label className="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest ml-1" htmlFor="password">
+                  <label className="text-xs font-bold text-muted-foreground uppercase tracking-widest ml-1" htmlFor="password">
                     New Secure Password
                   </label>
                   <div className="relative group">
-                    <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 group-focus-within:text-indigo-500 transition-colors" />
+                    <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground group-focus-within:text-indigo-500 transition-colors" />
                     <input
                       id="password"
                       type="password"
                       placeholder="••••••••"
                       value={newPassword}
                       onChange={(e) => setNewPassword(e.target.value)}
-                      className="w-full pl-11 pr-4 py-3 bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-800 rounded-2xl text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all text-sm font-medium"
+                      className="w-full pl-11 pr-4 py-3 bg-background dark:bg-slate-800/50 border border-border rounded-2xl text-foreground focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all text-sm font-medium"
                     />
                   </div>
                 </div>
@@ -190,15 +190,15 @@ export default function ForgotPassword() {
                 <button
                   onClick={handleSubmit}
                   disabled={loading}
-                  className="w-full py-4 bg-slate-900 dark:bg-white text-white dark:text-slate-900 font-bold rounded-2xl shadow-lg shadow-slate-900/10 dark:shadow-none hover:opacity-90 active:scale-[0.98] transition-all disabled:opacity-50 text-sm"
+                  className="w-full py-4 bg-foreground text-background font-bold rounded-2xl shadow-lg shadow-slate-900/10 dark:shadow-none hover:opacity-90 active:scale-[0.98] transition-all disabled:opacity-50 text-sm"
                 >
                   {loading ? "Processing..." : "Update Password"}
                 </button>
 
                 <div className="mt-8">
                   {timer > 0 ? (
-                    <p className="text-xs font-bold text-slate-400 uppercase tracking-widest">
-                      Resend code in <span className="text-slate-900 dark:text-white">{timer}s</span>
+                    <p className="text-xs font-bold text-muted-foreground uppercase tracking-widest">
+                      Resend code in <span className="text-foreground">{timer}s</span>
                     </p>
                   ) : (
                     <button
@@ -212,12 +212,12 @@ export default function ForgotPassword() {
               </div>
             )}
 
-            <div className="mt-12 pt-10 border-t border-slate-100 dark:border-slate-800">
-              <p className="text-xs font-medium text-slate-500 dark:text-slate-400">
+            <div className="mt-12 pt-10 border-t border-border">
+              <p className="text-xs font-medium text-muted-foreground">
                 Back to security?{" "}
                 <Link
                   href="/login"
-                  className="font-bold text-slate-900 dark:text-white hover:text-indigo-500 dark:hover:text-indigo-400 transition"
+                  className="font-bold text-foreground hover:text-indigo-500 dark:hover:text-indigo-400 transition"
                 >
                   Sign in
                 </Link>

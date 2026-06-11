@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { Moon, Sun } from "lucide-react";
+import { Moon, Sun, Zap } from "lucide-react";
 import { useTheme } from "next-themes";
 
 export function ThemeToggle() {
@@ -14,29 +14,46 @@ export function ThemeToggle() {
 
   if (!mounted) return <div className="w-10 h-10" />;
 
-  const isDark = resolvedTheme === "dark";
+  const cycleTheme = () => {
+    const themes = ["light", "dark", "pitch-dark"];
+    // Fallback to light if the current theme isn't in our list (e.g., 'system')
+    const currentTheme = themes.includes(theme as string) ? theme : resolvedTheme;
+    const currentIndex = themes.indexOf(currentTheme as string);
+    const nextIndex = (currentIndex + 1) % themes.length;
+    setTheme(themes[nextIndex]);
+  };
+
+  const currentActive = themes.includes(theme as string) ? theme : resolvedTheme;
 
   return (
     <button
-      onClick={() => setTheme(isDark ? "light" : "dark")}
-      className="group relative inline-flex items-center justify-center w-10 h-10 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 transition-all hover:border-slate-300 dark:hover:border-slate-700 hover:shadow-lg hover:shadow-slate-500/5 active:scale-95"
-      aria-label="Toggle theme"
+      onClick={cycleTheme}
+      className="group relative inline-flex items-center justify-center w-10 h-10 rounded-xl bg-card border border-border transition-all hover:border-indigo-500/50 hover:shadow-lg hover:shadow-indigo-500/5 active:scale-95"
+      aria-label={`Toggle theme (Current: ${theme})`}
     >
       <div className="relative w-5 h-5">
         <Sun 
           size={20} 
           className={`absolute inset-0 transform transition-all duration-500 ease-spring ${
-            isDark ? "rotate-90 scale-0 opacity-0" : "rotate-0 scale-100 opacity-100 text-amber-500"
+            currentActive === "light" ? "rotate-0 scale-100 opacity-100 text-amber-500" : "rotate-90 scale-0 opacity-0"
           }`} 
         />
         <Moon 
           size={20} 
           className={`absolute inset-0 transform transition-all duration-500 ease-spring ${
-            isDark ? "rotate-0 scale-100 opacity-100 text-indigo-400" : "-rotate-90 scale-0 opacity-0"
+            currentActive === "dark" ? "rotate-0 scale-100 opacity-100 text-indigo-400" : "rotate-90 scale-0 opacity-0"
           }`} 
+        />
+        <Zap
+          size={20}
+          className={`absolute inset-0 transform transition-all duration-500 ease-spring ${
+            currentActive === "pitch-dark" ? "rotate-0 scale-100 opacity-100 text-emerald-400" : "rotate-90 scale-0 opacity-0"
+          }`}
         />
       </div>
       <span className="sr-only">Toggle theme</span>
     </button>
   );
 }
+
+const themes = ["light", "dark", "pitch-dark"];

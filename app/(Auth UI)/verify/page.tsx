@@ -83,18 +83,18 @@ export default function VerifyOTP() {
   };
 
   return (
-    <div className="min-h-[calc(100vh-4rem)] flex items-center justify-center bg-slate-50 dark:bg-[#020617] transition-colors duration-300 px-4 py-12">
+    <div className="min-h-[calc(100vh-4rem)] flex items-center justify-center bg-background transition-colors duration-300 px-4 py-12">
       <div className="w-full max-w-[440px]">
-        <div className="bg-white dark:bg-slate-900/50 border border-slate-200 dark:border-slate-800 rounded-[32px] shadow-2xl shadow-slate-200/50 dark:shadow-none overflow-hidden transition-all">
+        <div className="bg-card border border-border rounded-[32px] shadow-2xl shadow-lg shadow-black/5 dark:shadow-none overflow-hidden transition-all">
           <div className="p-10 sm:p-12 text-center">
             <div className="mb-10">
-              <div className="inline-flex items-center justify-center w-16 h-16 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-[22px] text-indigo-500 mb-8 shadow-inner">
+              <div className="inline-flex items-center justify-center w-16 h-16 bg-background dark:bg-slate-800 border border-border dark:border-slate-700 rounded-[22px] text-indigo-500 mb-8 shadow-inner">
                 <ShieldCheck size={32} />
               </div>
-              <h2 className="text-3xl font-extrabold text-slate-900 dark:text-white mb-3 tracking-tight">
+              <h2 className="text-3xl font-extrabold text-foreground mb-3 tracking-tight">
                 Verify Identity
               </h2>
-              <p className="text-slate-500 dark:text-slate-400 font-medium">
+              <p className="text-muted-foreground font-medium">
                 We've sent a 6-digit secure code to your email address
               </p>
             </div>
@@ -108,7 +108,7 @@ export default function VerifyOTP() {
                   maxLength={1}
                   onChange={(e) => handleChange(e.target.value, index)}
                   onKeyDown={(e) => handleBackspace(e, index)}
-                  className="w-full h-14 text-center text-xl font-bold bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-800 rounded-2xl focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all text-slate-900 dark:text-white"
+                  className="w-full h-14 text-center text-xl font-bold bg-background dark:bg-slate-800/50 border border-border rounded-2xl focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all text-foreground"
                 />
               ))}
             </div>
@@ -116,15 +116,15 @@ export default function VerifyOTP() {
             <button
               onClick={handleSubmit}
               disabled={loading}
-              className="w-full py-4 bg-slate-900 dark:bg-white text-white dark:text-slate-900 font-bold rounded-2xl shadow-lg shadow-slate-900/10 dark:shadow-none hover:opacity-90 active:scale-[0.98] transition-all disabled:opacity-50 text-sm"
+              className="w-full py-4 bg-foreground text-background font-bold rounded-2xl shadow-lg shadow-slate-900/10 dark:shadow-none hover:opacity-90 active:scale-[0.98] transition-all disabled:opacity-50 text-sm"
             >
               {loading ? "Verifying..." : "Confirm Code"}
             </button>
 
             <div className="mt-10">
               {timer > 0 ? (
-                <p className="text-xs font-bold text-slate-400 uppercase tracking-widest">
-                  Resend available in <span className="text-slate-900 dark:text-white">{timer}s</span>
+                <p className="text-xs font-bold text-muted-foreground uppercase tracking-widest">
+                  Resend available in <span className="text-foreground">{timer}s</span>
                 </p>
               ) : (
                 <button

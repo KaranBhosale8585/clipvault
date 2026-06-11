@@ -45,10 +45,10 @@ export default function Header() {
           href="/"
           className="flex items-center gap-2.5 group"
         >
-          <div className="bg-slate-900 dark:bg-white p-1.5 rounded-xl text-white dark:text-slate-900 shadow-lg shadow-indigo-500/10 group-hover:scale-105 transition-transform duration-500 ease-spring">
+          <div className="bg-foreground p-1.5 rounded-xl text-background shadow-lg shadow-indigo-500/10 group-hover:scale-105 transition-transform duration-500 ease-spring">
             <Sparkles size={18} fill="currentColor" />
           </div>
-          <span className="text-xl font-black tracking-tighter text-slate-900 dark:text-white group-hover:opacity-80 transition-opacity">
+          <span className="text-xl font-black tracking-tighter text-foreground group-hover:opacity-80 transition-opacity">
             Vault
           </span>
         </Link>
@@ -60,12 +60,12 @@ export default function Header() {
           <button
             onClick={handleLogout}
             disabled={loading}
-            className="hidden sm:inline-flex items-center px-4 py-2 text-xs font-bold uppercase tracking-widest text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors disabled:opacity-50"
+            className="hidden sm:inline-flex items-center px-4 py-2 text-xs font-bold uppercase tracking-widest text-muted-foreground hover:text-foreground transition-colors disabled:opacity-50"
           >
             {loading ? "..." : "Sign Out"}
           </button>
           <button 
-            className="p-2 text-slate-600 dark:text-slate-400 md:hidden" 
+            className="p-2 text-muted-foreground md:hidden" 
             onClick={() => setOpen(!open)}
           >
             {open ? <X size={20} /> : <Menu size={20} />}
@@ -79,7 +79,7 @@ export default function Header() {
           <div className="px-6 py-8 space-y-6">
             <button
               onClick={handleLogout}
-              className="flex items-center justify-center w-full px-4 py-4 bg-slate-50 dark:bg-slate-900 border border-border rounded-2xl text-sm font-bold text-slate-900 dark:text-white transition"
+              className="flex items-center justify-center w-full px-4 py-4 bg-background border border-border rounded-2xl text-sm font-bold text-foreground transition"
             >
               <LogOut size={16} className="mr-2" />
               Sign Out
