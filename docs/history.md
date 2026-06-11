@@ -43,6 +43,10 @@
 - **Description**: Added `logsTable` to database. Created centralized `logger` utility for `info`, `warn`, and `error` events. Instrumentated Instagram scraper to log extraction lifecycle and failure metadata. Integrated "System Audit" viewer into the Admin Dashboard.
 - **Files Changed**: `db/schema.ts`, `utils/logger.ts`, `utils/instagram.ts`, `app/api/admin/stats/route.ts`, `app/admin/page.tsx`.
 
+### feat: secure admin authentication and middleware
+- **Description**: Updated `utils/jwt.ts` to include user roles in tokens. Refined `proxy.ts` to protect `/admin` routes. Created `middleware.ts` to enforce these checks globally.
+- **Files Changed**: `utils/jwt.ts`, `proxy.ts`, `middleware.ts`.
+
 ### fix: resolve database insert failure and add management scripts
 - **Description**: Fixed a "Failed query" error by synchronizing the `downloads` table with the database using `drizzle-kit push`. Added `db:push` and `db:studio` scripts to `package.json` for easier schema management.
 - **Files Changed**: `package.json`.
