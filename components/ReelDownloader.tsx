@@ -38,8 +38,12 @@ export default function ReelDownloader() {
       const data = await res.json();
 
       if (!res.ok) {
-        console.error(`[UI] Extraction failed: ${data.error} - ${data.message}`);
-        toast.error(data.message || "Failed to extract Reel");
+        if (res.status === 429) {
+          toast.error(data.message || "Too many requests. Please wait.");
+        } else {
+          console.error(`[UI] Extraction failed: ${data.error} - ${data.message}`);
+          toast.error(data.message || "Failed to extract Reel");
+        }
       } else {
         console.log(`[UI] Extraction successful. Final Video URL: ${data.data.videoUrl}`);
         setMetadata(data.data);

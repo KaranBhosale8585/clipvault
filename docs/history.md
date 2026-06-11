@@ -31,6 +31,10 @@
 - **Description**: Deleted all mock/demo logic. Implemented detailed server-side logging for incoming URLs, shortcodes, request headers, and response HTML snippets. Added UI logging for extraction lifecycle. Updated API to only persist successful extractions.
 - **Files Changed**: `utils/instagram.ts`, `app/api/reel/metadata/route.ts`, `components/ReelDownloader.tsx`.
 
+### feat: implement download rate limiting
+- **Description**: Added `checkDownloadRateLimit` to `utils/rateLimit.ts`. Applied 5 requests per 15 minutes limit to the metadata API. Updated UI to handle 429 status codes with user-friendly messages.
+- **Files Changed**: `utils/rateLimit.ts`, `app/api/reel/metadata/route.ts`, `components/ReelDownloader.tsx`.
+
 ### fix: resolve database insert failure and add management scripts
 - **Description**: Fixed a "Failed query" error by synchronizing the `downloads` table with the database using `drizzle-kit push`. Added `db:push` and `db:studio` scripts to `package.json` for easier schema management.
 - **Files Changed**: `package.json`.

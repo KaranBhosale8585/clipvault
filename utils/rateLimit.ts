@@ -1,5 +1,5 @@
 import { db } from "@/db";
-import { otpRequestsTable } from "@/db/schema";
+import { otpRequestsTable, downloadsTable } from "@/db/schema";
 import { and, eq, gt, count } from "drizzle-orm";
 
 export async function checkRateLimit(userId: string) {
@@ -34,4 +34,29 @@ export async function checkRateLimit(userId: string) {
   });
 
   return true;
+}
+
+/**
+ * Rate limits Reel extraction/download attempts.
+ * Limit: 5 requests per 15 minutes.
+ */
+export async function checkDownloadRateLimit(userId: string) {
+  const MAX_DOWNLOADS = 5;
+  const WINDOW_MS = 15 * 60 * 1000; // 15 minutes
+
+  const windowStart = new Date(Date.now() - WINDOW_MS);
+
+  const result = await db
+    .select({ total: count() })
+    .from(downloadsTable)
+    .where(
+      and(
+        eq(downloadsTable.userId, userId),
+        gt(downloadsTable.createdAt, windowStart),
+      ),
+    );
+
+  const usageCount = result[0]?.total || 0;
+
+  return usageCount < MAX_DOWNLOADS;
 }

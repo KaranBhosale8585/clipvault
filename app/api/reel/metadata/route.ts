@@ -3,6 +3,7 @@ import { getUser } from "@/utils/getUser";
 import { fetchReelMetadata, validateReelUrl } from "@/utils/instagram";
 import { db } from "@/db";
 import { downloadsTable } from "@/db/schema";
+import { checkDownloadRateLimit } from "@/utils/rateLimit";
 
 export async function POST(req: NextRequest) {
   try {
@@ -11,6 +12,14 @@ export async function POST(req: NextRequest) {
       return NextResponse.json(
         { error: "Unauthorized", message: "You must be logged in to extract Reel metadata." },
         { status: 401 }
+      );
+    }
+
+    const isAllowed = await checkDownloadRateLimit(user.id);
+    if (!isAllowed) {
+      return NextResponse.json(
+        { error: "Too Many Requests", message: "Download limit exceeded. Please wait 15 minutes." },
+        { status: 429 }
       );
     }
 
