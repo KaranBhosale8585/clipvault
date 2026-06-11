@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import Link from "next/link";
+import { ShieldCheck, ExternalLink } from "lucide-react";
 import ReelDownloader from "@/components/ReelDownloader";
 import DownloadHistory from "@/components/DownloadHistory";
 
@@ -10,6 +11,7 @@ type User = {
   id: string;
   name: string;
   email: string;
+  role: string;
   isVerified: boolean;
 };
 
@@ -131,8 +133,22 @@ export default function Home() {
                     <p className="text-[10px] font-black text-muted-foreground uppercase tracking-[0.2em] mb-1">Account ID</p>
                     <p className="text-xs font-mono font-medium text-foreground">{user.id}</p>
                   </div>
-                </div>
 
+                  {user.role === "admin" && (
+                    <Link
+                      href="/admin"
+                      className="flex items-center justify-between p-4 bg-indigo-500/5 hover:bg-indigo-500/10 border border-indigo-500/20 rounded-2xl transition-all group/admin"
+                    >
+                      <div className="flex items-center gap-3">
+                        <div className="p-2 bg-indigo-500 rounded-lg text-white group-hover/admin:scale-110 transition-transform">
+                          <ShieldCheck size={16} />
+                        </div>
+                        <span className="text-sm font-bold text-indigo-500">Admin Control</span>
+                      </div>
+                      <ExternalLink size={14} className="text-indigo-500" />
+                    </Link>
+                  )}
+                </div>
                 {/* Background Decor */}
                 <div className="absolute top-0 right-0 -mr-16 -mt-16 w-48 h-48 bg-indigo-500/5 rounded-full blur-3xl group-hover:bg-indigo-500/10 transition-colors"></div>
               </div>

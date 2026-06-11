@@ -35,6 +35,10 @@
 - **Description**: Added `checkDownloadRateLimit` to `utils/rateLimit.ts`. Applied 5 requests per 15 minutes limit to the metadata API. Updated UI to handle 429 status codes with user-friendly messages.
 - **Files Changed**: `utils/rateLimit.ts`, `app/api/reel/metadata/route.ts`, `components/ReelDownloader.tsx`.
 
+### feat: implement admin dashboard and role-based access
+- **Description**: Added `role` field to `usersTable`. Created `/api/admin/stats` for platform analytics. Implemented `app/admin/page.tsx` for authorized administrators. Integrated Admin Control link into the Workspace profile card.
+- **Files Changed**: `db/schema.ts`, `utils/getUser.ts`, `app/api/admin/stats/route.ts`, `app/admin/page.tsx`, `app/page.tsx`.
+
 ### fix: resolve database insert failure and add management scripts
 - **Description**: Fixed a "Failed query" error by synchronizing the `downloads` table with the database using `drizzle-kit push`. Added `db:push` and `db:studio` scripts to `package.json` for easier schema management.
 - **Files Changed**: `package.json`.

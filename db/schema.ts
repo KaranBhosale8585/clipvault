@@ -16,6 +16,8 @@ export const usersTable = pgTable("users", {
 
   password: varchar("password", { length: 255 }).notNull(),
 
+  role: varchar("role", { length: 20 }).default("user").notNull(), // user, admin
+
   isVerified: boolean("is_verified").default(false).notNull(),
 
   createdAt: timestamp("created_at").defaultNow().notNull(),
