@@ -84,3 +84,23 @@ export const downloadsTable = pgTable(
     userIdx: index("download_user_idx").on(table.userId),
   }),
 );
+
+export const logsTable = pgTable(
+  "logs",
+  {
+    id: uuid("id").defaultRandom().primaryKey(),
+
+    level: varchar("level", { length: 20 }).default("info").notNull(), // info, warn, error
+
+    message: varchar("message", { length: 2048 }).notNull(),
+    
+    metadata: varchar("metadata", { length: 4096 }), // JSON or stringified data
+    
+    source: varchar("source", { length: 100 }), // e.g., "instagram-scraper", "auth-api"
+
+    createdAt: timestamp("created_at").defaultNow().notNull(),
+  },
+  (table) => ({
+    levelIdx: index("log_level_idx").on(table.level),
+  }),
+);

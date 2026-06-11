@@ -1,21 +1,14 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getUser } from "@/utils/getUser";
 import { db } from "@/db";
-import { usersTable, downloadsTable } from "@/db/schema";
-import { count, desc } from "drizzle-orm";
+import { usersTable, downloadsTable, logsTable } from "@/db/schema";
+import { count, desc, eq } from "drizzle-orm";
 
 export async function GET(req: NextRequest) {
   try {
     const user = await getUser();
     
-    // Strict Admin Check
-    // Note: We need to ensure the user object from getUser() includes the role.
-    // Let's check getUser.ts first.
-    
-    // For now, I'll fetch the user again to be safe.
-    const [dbUser] = await db.select().from(usersTable).where(eq(usersTable.id, user?.id || ""));
-    
-    if (!dbUser || dbUser.role !== "admin") {
+    if (!user || user.role !== "admin") {
       return NextResponse.json(
         { error: "Forbidden", message: "Administrative access required." },
         { status: 403 }
@@ -38,6 +31,12 @@ export async function GET(req: NextRequest) {
       .orderBy(desc(downloadsTable.createdAt))
       .limit(10);
 
+    const latestLogs = await db
+      .select()
+      .from(logsTable)
+      .orderBy(desc(logsTable.createdAt))
+      .limit(20);
+
     return NextResponse.json({
       data: {
         stats: {
@@ -45,6 +44,7 @@ export async function GET(req: NextRequest) {
           totalDownloads: downloadCount.total,
         },
         recentDownloads,
+        latestLogs,
       },
       message: "Admin stats fetched successfully.",
     });
@@ -56,5 +56,3 @@ export async function GET(req: NextRequest) {
     );
   }
 }
-
-import { eq } from "drizzle-orm";

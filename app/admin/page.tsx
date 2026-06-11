@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
-import { Users, Download, ShieldCheck, Activity, ArrowLeft, ExternalLink, Loader2 } from "lucide-react";
+import { Users, Download, ShieldCheck, Activity, ArrowLeft, ExternalLink, Loader2, ListTree, AlertCircle, AlertTriangle, Info } from "lucide-react";
 import Link from "next/link";
 
 interface AdminData {
@@ -17,12 +17,21 @@ interface AdminData {
     createdAt: string;
     userName: string;
   }[];
+  latestLogs: {
+    id: string;
+    level: string;
+    message: string;
+    metadata: string | null;
+    source: string | null;
+    createdAt: string;
+  }[];
 }
 
 export default function AdminDashboard() {
   const [data, setData] = useState<AdminData | null>(null);
   const [loading, setLoading] = useState(true);
   const [forbidden, setForbidden] = useState(false);
+  const [activeTab, setActiveTab] = useState<"activity" | "logs">("activity");
 
   useEffect(() => {
     const fetchAdminData = async () => {
@@ -117,58 +126,129 @@ export default function AdminDashboard() {
           </div>
         </div>
 
-        {/* Recent Activity Table */}
-        <div className="bg-card border border-border rounded-3xl overflow-hidden shadow-xl shadow-black/5">
-          <div className="p-8 border-b border-border flex items-center justify-between bg-muted/30">
-            <h3 className="text-xl font-black text-foreground flex items-center gap-3">
-              <Activity className="text-indigo-500" />
-              Live Feed
-            </h3>
-            <span className="px-3 py-1 bg-indigo-500 text-white text-[10px] font-black uppercase tracking-widest rounded-full">
-              Real-time
-            </span>
-          </div>
-          <div className="overflow-x-auto">
-            <table className="w-full text-left border-collapse">
-              <thead>
-                <tr className="bg-muted/10">
-                  <th className="p-6 text-[10px] font-black text-muted-foreground uppercase tracking-widest border-b border-border">User</th>
-                  <th className="p-6 text-[10px] font-black text-muted-foreground uppercase tracking-widest border-b border-border">Reel Title</th>
-                  <th className="p-6 text-[10px] font-black text-muted-foreground uppercase tracking-widest border-b border-border text-center">Action</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-border">
-                {data?.recentDownloads.map((item) => (
-                  <tr key={item.id} className="hover:bg-muted/10 transition-colors group">
-                    <td className="p-6">
-                      <p className="text-sm font-bold text-foreground">{item.userName}</p>
-                      <p className="text-[10px] text-muted-foreground font-medium">{new Date(item.createdAt).toLocaleString()}</p>
-                    </td>
-                    <td className="p-6">
-                      <p className="text-sm font-medium text-foreground line-clamp-1 max-w-md">
-                        {item.title || "Unknown Reel"}
-                      </p>
-                    </td>
-                    <td className="p-6 text-center">
-                      <a 
-                        href={item.reelUrl} 
-                        target="_blank" 
-                        className="inline-flex p-2 text-muted-foreground hover:text-indigo-500 hover:bg-indigo-500/5 rounded-lg transition-all"
-                      >
-                        <ExternalLink size={18} />
-                      </a>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-          {data?.recentDownloads.length === 0 && (
-            <div className="p-12 text-center text-muted-foreground font-medium">
-              No recent activity recorded.
-            </div>
-          )}
+        {/* Tabs */}
+        <div className="flex gap-4 mb-6">
+          <button 
+            onClick={() => setActiveTab("activity")}
+            className={`px-6 py-3 rounded-2xl text-xs font-black uppercase tracking-widest transition-all ${
+              activeTab === "activity" 
+              ? "bg-foreground text-background shadow-lg shadow-black/5" 
+              : "bg-card border border-border text-muted-foreground hover:border-indigo-500/30"
+            }`}
+          >
+            User Activity
+          </button>
+          <button 
+            onClick={() => setActiveTab("logs")}
+            className={`px-6 py-3 rounded-2xl text-xs font-black uppercase tracking-widest transition-all ${
+              activeTab === "logs" 
+              ? "bg-foreground text-background shadow-lg shadow-black/5" 
+              : "bg-card border border-border text-muted-foreground hover:border-indigo-500/30"
+            }`}
+          >
+            System Logs
+          </button>
         </div>
+
+        {activeTab === "activity" ? (
+          <div className="bg-card border border-border rounded-3xl overflow-hidden shadow-xl shadow-black/5 animate-in fade-in duration-300">
+            <div className="p-8 border-b border-border flex items-center justify-between bg-muted/30">
+              <h3 className="text-xl font-black text-foreground flex items-center gap-3">
+                <Activity className="text-indigo-500" />
+                Live Feed
+              </h3>
+            </div>
+            <div className="overflow-x-auto">
+              <table className="w-full text-left border-collapse">
+                <thead>
+                  <tr className="bg-muted/10">
+                    <th className="p-6 text-[10px] font-black text-muted-foreground uppercase tracking-widest border-b border-border">User</th>
+                    <th className="p-6 text-[10px] font-black text-muted-foreground uppercase tracking-widest border-b border-border">Reel Title</th>
+                    <th className="p-6 text-[10px] font-black text-muted-foreground uppercase tracking-widest border-b border-border text-center">Action</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-border">
+                  {data?.recentDownloads.map((item) => (
+                    <tr key={item.id} className="hover:bg-muted/10 transition-colors group">
+                      <td className="p-6">
+                        <p className="text-sm font-bold text-foreground">{item.userName}</p>
+                        <p className="text-[10px] text-muted-foreground font-medium">{new Date(item.createdAt).toLocaleString()}</p>
+                      </td>
+                      <td className="p-6">
+                        <p className="text-sm font-medium text-foreground line-clamp-1 max-w-md">
+                          {item.title || "Unknown Reel"}
+                        </p>
+                      </td>
+                      <td className="p-6 text-center">
+                        <a 
+                          href={item.reelUrl} 
+                          target="_blank" 
+                          className="inline-flex p-2 text-muted-foreground hover:text-indigo-500 hover:bg-indigo-500/5 rounded-lg transition-all"
+                        >
+                          <ExternalLink size={18} />
+                        </a>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+            {data?.recentDownloads.length === 0 && (
+              <div className="p-12 text-center text-muted-foreground font-medium">
+                No recent activity recorded.
+              </div>
+            )}
+          </div>
+        ) : (
+          <div className="bg-card border border-border rounded-3xl overflow-hidden shadow-xl shadow-black/5 animate-in fade-in duration-300">
+             <div className="p-8 border-b border-border flex items-center justify-between bg-muted/30">
+              <h3 className="text-xl font-black text-foreground flex items-center gap-3">
+                <ListTree className="text-indigo-500" />
+                System Audit
+              </h3>
+            </div>
+            <div className="divide-y divide-border">
+              {data?.latestLogs.map((log) => (
+                <div key={log.id} className="p-6 hover:bg-muted/5 transition-colors">
+                  <div className="flex items-start gap-4">
+                    <div className={`mt-1 p-2 rounded-lg ${
+                      log.level === "error" ? "bg-red-500/10 text-red-500" :
+                      log.level === "warn" ? "bg-amber-500/10 text-amber-500" :
+                      "bg-blue-500/10 text-blue-500"
+                    }`}>
+                      {log.level === "error" && <AlertCircle size={16} />}
+                      {log.level === "warn" && <AlertTriangle size={16} />}
+                      {log.level === "info" && <Info size={16} />}
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center justify-between gap-4 mb-1">
+                        <p className="text-xs font-black uppercase tracking-wider text-foreground">
+                          {log.source || "System"}
+                        </p>
+                        <p className="text-[10px] text-muted-foreground font-medium">
+                          {new Date(log.createdAt).toLocaleString()}
+                        </p>
+                      </div>
+                      <p className="text-sm font-bold text-foreground mb-2">{log.message}</p>
+                      {log.metadata && (
+                        <div className="bg-background/50 border border-border p-3 rounded-xl">
+                          <pre className="text-[10px] text-muted-foreground overflow-x-auto whitespace-pre-wrap font-mono">
+                            {JSON.stringify(JSON.parse(log.metadata), null, 2)}
+                          </pre>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              ))}
+              {data?.latestLogs.length === 0 && (
+                <div className="p-12 text-center text-muted-foreground font-medium">
+                  No logs available.
+                </div>
+              )}
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );

@@ -30,24 +30,25 @@ export function extractShortcode(url: string): string | null {
   return match ? match[1] : null;
 }
 
+import { logger } from "./logger";
+
 /**
  * Fetches Reel metadata by parsing Open Graph tags from the public page.
  * NOTE: Instagram often blocks simple server-side fetches. 
  */
 export async function fetchReelMetadata(url: string): Promise<ReelMetadata | null> {
-  console.log("--- START METADATA EXTRACTION ---");
-  console.log(`[Input URL]: ${url}`);
+  const source = "instagram-scraper";
+  await logger.info(`Extraction started for URL: ${url}`, source);
 
   if (!validateReelUrl(url)) {
-    console.error("[Error]: Invalid Instagram Reel URL format.");
+    await logger.error(`Invalid URL format provided: ${url}`, source);
     throw new Error("Invalid Instagram Reel URL");
   }
 
   const shortcode = extractShortcode(url);
-  console.log(`[Extracted Shortcode]: ${shortcode}`);
 
   if (!shortcode) {
-    console.error("[Error]: Failed to extract shortcode from URL.");
+    await logger.error(`Failed to extract shortcode from URL: ${url}`, source);
     return null;
   }
 
@@ -63,33 +64,29 @@ export async function fetchReelMetadata(url: string): Promise<ReelMetadata | nul
       "Upgrade-Insecure-Requests": "1",
     };
 
-    console.log(`[Request URL]: ${url}`);
-    console.log("[Request Headers]:", JSON.stringify(requestHeaders, null, 2));
-
     const response = await fetch(url, {
       headers: requestHeaders,
       cache: "no-store",
     });
 
-    console.log(`[Response Status]: ${response.status} ${response.statusText}`);
-    
     if (!response.ok) {
       const errorBody = await response.text();
-      console.error(`[Error Body Snippet]: ${errorBody.substring(0, 500)}`);
+      await logger.error(`Instagram returned ${response.status}`, source, {
+        status: response.status,
+        statusText: response.statusText,
+        url,
+        shortcode,
+        bodySnippet: errorBody.substring(0, 500),
+      });
       throw new Error(`Instagram returned status ${response.status}`);
     }
 
     const html = await response.text();
-    console.log(`[HTML Length]: ${html.length} bytes`);
     
     // Detailed Regex Search
     const videoUrlMatch = html.match(/<meta[^>]*property="og:video"[^>]*content="([^"]*)"/);
     const thumbnailUrlMatch = html.match(/<meta[^>]*property="og:image"[^>]*content="([^"]*)"/);
     const titleMatch = html.match(/<meta[^>]*property="og:title"[^>]*content="([^"]*)"/);
-
-    console.log(`[Regex - Video URL Found]: ${!!videoUrlMatch}`);
-    console.log(`[Regex - Thumbnail URL Found]: ${!!thumbnailUrlMatch}`);
-    console.log(`[Regex - Title Found]: ${!!titleMatch}`);
 
     if (videoUrlMatch && videoUrlMatch[1] && thumbnailUrlMatch && thumbnailUrlMatch[1]) {
       const metadata = {
@@ -100,20 +97,25 @@ export async function fetchReelMetadata(url: string): Promise<ReelMetadata | nul
         title: titleMatch?.[1] || `Instagram Reel ${shortcode}`,
       };
       
-      console.log("[Final Metadata]:", JSON.stringify(metadata, null, 2));
-      console.log("--- EXTRACTION SUCCESS ---");
+      await logger.info(`Extraction successful for shortcode: ${shortcode}`, source, { shortcode });
       return metadata;
     }
 
-    console.warn("[Warning]: Open Graph tags missing in response HTML.");
-    // Log a bit of the head section to see what meta tags ARE present
     const headSnippet = html.match(/<head>([\s\S]*?)<\/head>/)?.[1] || "Head section not found";
-    console.log(`[Head Metadata Snippet]: ${headSnippet.substring(0, 1000)}`);
+    await logger.warn("Open Graph tags missing in response HTML", source, {
+      url,
+      shortcode,
+      htmlLength: html.length,
+      headSnippet: headSnippet.substring(0, 1000),
+    });
     
     throw new Error("Could not find video metadata in the page. Instagram might be requiring a login or blocking the request.");
   } catch (error: any) {
-    console.error(`[Extraction Exception]: ${error.message}`);
-    console.log("--- EXTRACTION FAILED ---");
+    await logger.error(`Extraction Exception: ${error.message}`, source, { 
+      url, 
+      shortcode,
+      stack: error.stack 
+    });
     throw error;
   }
 }
