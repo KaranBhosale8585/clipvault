@@ -91,14 +91,18 @@ export default function DownloadHistory() {
                   </div>
                 )}
                 <div className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-                   <a 
-                    href={item.videoUrl || "#"} 
-                    target="_blank" 
+                   <button 
+                    onClick={() => {
+                      if (!item.videoUrl) return;
+                      const proxyUrl = `/api/download-proxy?url=${encodeURIComponent(item.videoUrl)}&filename=${encodeURIComponent(`reel-${item.id}.mp4`)}`;
+                      window.location.href = proxyUrl;
+                      toast.success("Starting download...");
+                    }}
                     className="p-3 bg-white rounded-full text-black hover:scale-110 transition-transform"
                     title="Download Again"
                    >
                      <Download size={20} />
-                   </a>
+                   </button>
                 </div>
               </div>
               <div className="p-4">

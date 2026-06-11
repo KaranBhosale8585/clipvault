@@ -21,3 +21,7 @@
 ### feat: implement download history api and ui
 - **Description**: Created `/api/reel/history` to fetch user's download records. Implemented `DownloadHistory.tsx` component to display past reels. Integrated refresh logic using CustomEvents between downloader and history components.
 - **Files Changed**: `app/api/reel/history/route.ts`, `components/DownloadHistory.tsx`, `components/ReelDownloader.tsx`, `app/page.tsx`.
+
+### feat: implement download proxy and enhance metadata extraction
+- **Description**: Created `/api/download-proxy` to bypass CORS and force file downloads. Updated `fetchReelMetadata` to attempt real HTML parsing for Open Graph tags. Standardized download experience across Downloader and History components.
+- **Files Changed**: `app/api/download-proxy/route.ts`, `utils/instagram.ts`, `components/ReelDownloader.tsx`, `components/DownloadHistory.tsx`.

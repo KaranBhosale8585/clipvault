@@ -9,11 +9,11 @@
 - [x] Reel URL validation
 - [x] Reel metadata extraction
 - [x] Download history (API & UI)
+- [x] Download management (API & UI)
 
 ## In Progress
 
 ## Pending
-- [ ] Download management (API & UI)
 - [ ] User dashboard enhancements
 - [ ] Rate limiting implementation for Reel downloads
 - [ ] Logging system

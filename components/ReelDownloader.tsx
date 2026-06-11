@@ -54,9 +54,9 @@ export default function ReelDownloader() {
   const handleDownload = () => {
     if (!metadata) return;
     
-    // In a real-world scenario, we'd trigger the actual file download
-    // or proxy the download to bypass CORS if necessary.
-    window.open(metadata.videoUrl, "_blank");
+    // Use the download proxy to bypass CORS and force download
+    const proxyUrl = `/api/download-proxy?url=${encodeURIComponent(metadata.videoUrl)}&filename=${encodeURIComponent(`reel-${metadata.id}.mp4`)}`;
+    window.location.href = proxyUrl;
     toast.success("Starting download...");
   };
 
