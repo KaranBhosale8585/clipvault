@@ -56,3 +56,29 @@ export const otpRequestsTable = pgTable(
     userIdx: index("otp_req_user_idx").on(table.userId),
   }),
 );
+
+export const downloadsTable = pgTable(
+  "downloads",
+  {
+    id: uuid("id").defaultRandom().primaryKey(),
+
+    userId: uuid("user_id")
+      .notNull()
+      .references(() => usersTable.id),
+
+    reelUrl: varchar("reel_url", { length: 1024 }).notNull(),
+    
+    videoUrl: varchar("video_url", { length: 2048 }),
+    
+    thumbnailUrl: varchar("thumbnail_url", { length: 2048 }),
+    
+    title: varchar("title", { length: 1024 }),
+
+    status: varchar("status", { length: 50 }).default("pending").notNull(), // pending, completed, failed
+
+    createdAt: timestamp("created_at").defaultNow().notNull(),
+  },
+  (table) => ({
+    userIdx: index("download_user_idx").on(table.userId),
+  }),
+);

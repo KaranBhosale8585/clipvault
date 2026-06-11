@@ -21,6 +21,7 @@ The project uses PostgreSQL with Drizzle ORM.
 - `users`: Stores user profile and authentication status.
 - `otp`: Stores one-time passwords for verification and password reset.
 - `otp_requests`: Tracks OTP requests for rate limiting/logging.
+- `downloads`: Tracks user download history including Reel metadata and status.
 
 ## API Flow
 1. Client makes a request to `/api/...`.

@@ -6,14 +6,14 @@
 - [x] Basic Project Documentation structure
 - [x] Docker configuration (Dockerfile, docker-compose.yml)
 - [x] Environment Setup (.env.example)
+- [x] Reel URL validation
+- [x] Reel metadata extraction
 
 ## In Progress
+- [ ] Download history (API & UI)
 
 ## Pending
-- [ ] Reel URL validation
-- [ ] Reel metadata extraction
 - [ ] Download management (API & UI)
-- [ ] Download history
 - [ ] User dashboard enhancements
 - [ ] Rate limiting implementation for Reel downloads
 - [ ] Logging system
