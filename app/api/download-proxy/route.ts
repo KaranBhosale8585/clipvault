@@ -15,14 +15,24 @@ export async function GET(req: NextRequest) {
       return new NextResponse("URL is required", { status: 400 });
     }
 
-    const response = await fetch(url);
+    console.log(`Proxying download for URL: ${url}`);
+
+    const response = await fetch(url, {
+      headers: {
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+        "Referer": "https://www.instagram.com/",
+      },
+    });
+
     if (!response.ok) {
-      throw new Error(`Failed to fetch video: ${response.statusText}`);
+      console.error(`External fetch failed: ${response.status} ${response.statusText}`);
+      return new NextResponse(`Failed to fetch video from source: ${response.statusText}`, { status: response.status });
     }
 
     const blob = await response.blob();
-    const headers = new Headers();
+    console.log(`Successfully fetched blob, size: ${blob.size} bytes`);
     
+    const headers = new Headers();
     headers.set("Content-Type", response.headers.get("Content-Type") || "video/mp4");
     headers.set("Content-Disposition", `attachment; filename="${filename}"`);
     

@@ -28,6 +28,7 @@ export default function ReelDownloader() {
     setMetadata(null);
 
     try {
+      console.log(`[UI] Initiating extraction for: ${url}`);
       const res = await fetch("/api/reel/metadata", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -37,14 +38,17 @@ export default function ReelDownloader() {
       const data = await res.json();
 
       if (!res.ok) {
+        console.error(`[UI] Extraction failed: ${data.error} - ${data.message}`);
         toast.error(data.message || "Failed to extract Reel");
       } else {
+        console.log(`[UI] Extraction successful. Final Video URL: ${data.data.videoUrl}`);
         setMetadata(data.data);
         toast.success("Reel metadata extracted!");
         // Notify DownloadHistory to refresh
         window.dispatchEvent(new CustomEvent("refresh-history"));
       }
     } catch (error) {
+      console.error(`[UI] Network or unexpected error:`, error);
       toast.error("Something went wrong");
     } finally {
       setLoading(false);

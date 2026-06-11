@@ -30,24 +30,24 @@ export async function POST(req: NextRequest) {
       );
     }
 
+    // This will now throw or return null if real extraction fails (no more mocks)
     const metadata = await fetchReelMetadata(url);
 
     if (!metadata) {
       return NextResponse.json(
-        { error: "Extraction Failed", message: "Could not extract metadata from the provided URL." },
+        { error: "Extraction Failed", message: "Could not find video data. The Reel might be private or Instagram is blocking the request." },
         { status: 500 }
       );
     }
 
-    // Optional: Log the extraction attempt in the downloads table as "pending"
-    // This allows us to track history even if the actual download doesn't finish.
+    // Only insert if extraction was truly successful
     await db.insert(downloadsTable).values({
       userId: user.id,
       reelUrl: url,
       videoUrl: metadata.videoUrl,
       thumbnailUrl: metadata.thumbnailUrl,
       title: metadata.title,
-      status: "pending",
+      status: "completed",
     });
 
     return NextResponse.json({

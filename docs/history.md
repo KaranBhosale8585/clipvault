@@ -26,6 +26,11 @@
 - **Description**: Created `/api/download-proxy` to bypass CORS and force file downloads. Updated `fetchReelMetadata` to attempt real HTML parsing for Open Graph tags. Standardized download experience across Downloader and History components.
 - **Files Changed**: `app/api/download-proxy/route.ts`, `utils/instagram.ts`, `components/ReelDownloader.tsx`, `components/DownloadHistory.tsx`.
 
+### fix: remove all fallback behavior and implement high-verbosity logging
+- **Root Cause Analysis**: Identified that metadata extraction was frequently being blocked by Instagram's anti-bot measures (redirects to login). The previous code returned a simulated "Big Buck Bunny" video as a fallback, masking these failures.
+- **Description**: Deleted all mock/demo logic. Implemented detailed server-side logging for incoming URLs, shortcodes, request headers, and response HTML snippets. Added UI logging for extraction lifecycle. Updated API to only persist successful extractions.
+- **Files Changed**: `utils/instagram.ts`, `app/api/reel/metadata/route.ts`, `components/ReelDownloader.tsx`.
+
 ### fix: resolve database insert failure and add management scripts
 - **Description**: Fixed a "Failed query" error by synchronizing the `downloads` table with the database using `drizzle-kit push`. Added `db:push` and `db:studio` scripts to `package.json` for easier schema management.
 - **Files Changed**: `package.json`.
