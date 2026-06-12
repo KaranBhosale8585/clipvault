@@ -7,7 +7,7 @@ interface LogParams {
   level: LogLevel;
   message: string;
   source?: string;
-  metadata?: any;
+  metadata?: unknown;
 }
 
 export const logger = {
@@ -35,17 +35,17 @@ export const logger = {
     }
   },
 
-  async info(message: string, source?: string, metadata?: any) {
+  async info(message: string, source?: string, metadata?: unknown) {
     console.log(`[INFO][${source || "system"}]: ${message}`);
     return this.log({ level: "info", message, source, metadata });
   },
 
-  async warn(message: string, source?: string, metadata?: any) {
+  async warn(message: string, source?: string, metadata?: unknown) {
     console.warn(`[WARN][${source || "system"}]: ${message}`);
     return this.log({ level: "warn", message, source, metadata });
   },
 
-  async error(message: string, source?: string, metadata?: any) {
+  async error(message: string, source?: string, metadata?: unknown) {
     console.error(`[ERROR][${source || "system"}]: ${message}`);
     return this.log({ level: "error", message, source, metadata });
   },

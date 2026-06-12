@@ -25,10 +25,11 @@ export async function GET(req: NextRequest) {
       data: history,
       message: "History fetched successfully.",
     });
-  } catch (error: any) {
+  } catch (error: unknown) {
+    const message = error instanceof Error ? error.message : "An unexpected error occurred.";
     console.error("History fetch error:", error);
     return NextResponse.json(
-      { error: "Internal Server Error", message: error.message || "An unexpected error occurred." },
+      { error: "Internal Server Error", message },
       { status: 500 }
     );
   }

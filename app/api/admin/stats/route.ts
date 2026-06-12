@@ -40,18 +40,19 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({
       data: {
         stats: {
-          totalUsers: userCount.total,
-          totalDownloads: downloadCount.total,
+          totalUsers: Number(userCount.total),
+          totalDownloads: Number(downloadCount.total),
         },
         recentDownloads,
         latestLogs,
       },
       message: "Admin stats fetched successfully.",
     });
-  } catch (error: any) {
+  } catch (error: unknown) {
+    const message = error instanceof Error ? error.message : "An unexpected error occurred.";
     console.error("Admin stats fetch error:", error);
     return NextResponse.json(
-      { error: "Internal Server Error", message: error.message || "An unexpected error occurred." },
+      { error: "Internal Server Error", message },
       { status: 500 }
     );
   }

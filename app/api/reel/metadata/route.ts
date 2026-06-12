@@ -63,10 +63,11 @@ export async function POST(req: NextRequest) {
       data: metadata,
       message: "Metadata extracted successfully.",
     });
-  } catch (error: any) {
+  } catch (error: unknown) {
+    const message = error instanceof Error ? error.message : "An unexpected error occurred.";
     console.error("Reel extraction error:", error);
     return NextResponse.json(
-      { error: "Internal Server Error", message: error.message || "An unexpected error occurred." },
+      { error: "Internal Server Error", message },
       { status: 500 }
     );
   }

@@ -2,14 +2,27 @@
 
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
-import { Users, Download, ShieldCheck, Activity, ArrowLeft, ExternalLink, Loader2, ListTree, AlertCircle, AlertTriangle, Info } from "lucide-react";
+import { Users, Download, ShieldCheck, Activity, ArrowLeft, ExternalLink, ListTree, AlertCircle, AlertTriangle, Info } from "lucide-react";
 import Link from "next/link";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+
+/**
+ * Safely parses and formats JSON strings.
+ * Returns the original string if parsing fails.
+ */
+function safeJsonFormat(jsonStr: string | null): string {
+  if (!jsonStr) return "";
+  try {
+    const parsed = JSON.parse(jsonStr);
+    return JSON.stringify(parsed, null, 2);
+  } catch {
+    return jsonStr;
+  }
+}
 
 interface AdminData {
   stats: {
@@ -241,7 +254,7 @@ export default function AdminDashboard() {
                         {log.metadata && (
                           <div className="bg-background/50 border border-border p-3 rounded-xl">
                             <pre className="text-[10px] text-muted-foreground overflow-x-auto whitespace-pre-wrap font-mono">
-                              {JSON.stringify(JSON.parse(log.metadata), null, 2)}
+                              {safeJsonFormat(log.metadata)}
                             </pre>
                           </div>
                         )}
