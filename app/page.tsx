@@ -23,6 +23,22 @@ export default function Home() {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
 
+  // Structured Data for SEO
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "Vault Downloader",
+    "url": "https://vault-downloader.com",
+    "description": "Download high-quality Instagram Reels instantly and securely.",
+    "applicationCategory": "MultimediaApplication",
+    "operatingSystem": "All",
+    "offers": {
+      "@type": "Offer",
+      "price": "0",
+      "priceCurrency": "USD"
+    }
+  };
+
   useEffect(() => {
     const fetchUser = async () => {
       try {
@@ -70,6 +86,10 @@ export default function Home() {
 
   return (
     <div className="min-h-[calc(100vh-4rem)] bg-background transition-colors duration-300 px-6 py-12 md:py-20">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
       <div className="max-w-6xl mx-auto">
         {/* Header Section */}
         <div className="mb-12 flex flex-col md:flex-row md:items-end justify-between gap-6">
@@ -182,17 +202,34 @@ export default function Home() {
             </div>
           </div>
         ) : (
-          <Card className="text-center py-20 border-border rounded-3xl">
-            <CardContent>
-              <p className="text-muted-foreground font-medium mb-6 text-lg">Session expired or not found.</p>
-              <Link
-                href="/login"
-                className="inline-flex h-14 items-center justify-center px-10 bg-foreground text-background rounded-2xl font-bold text-sm uppercase tracking-widest transition-all hover:opacity-90 active:scale-[0.98]"
-              >
-                Return to Login
-              </Link>
-            </CardContent>
-          </Card>
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
+            <div className="lg:col-span-2 space-y-8">
+              <ReelDownloader />
+            </div>
+            <div className="space-y-8">
+              <Card className="border-border rounded-3xl p-8 bg-indigo-50 dark:bg-indigo-500/5 text-center">
+                <CardHeader className="p-0 mb-4">
+                  <CardTitle className="text-xl font-black text-indigo-600 dark:text-indigo-400">Unlock Unlimited Downloads</CardTitle>
+                </CardHeader>
+                <CardContent className="p-0">
+                  <p className="text-muted-foreground font-medium mb-6">
+                    You have 1 free download available. Sign up now to get unlimited downloads, save your history, and manage all your Reels in one secure workspace.
+                  </p>
+                  <Link
+                    href="/signup"
+                    className="flex w-full h-14 items-center justify-center bg-indigo-600 text-white rounded-2xl font-bold text-sm shadow-lg shadow-indigo-500/20 hover:bg-indigo-700 active:scale-[0.98] transition-all"
+                  >
+                    Create Free Account
+                  </Link>
+                  <div className="mt-4">
+                    <Link href="/login" className="text-xs font-bold text-muted-foreground hover:text-foreground">
+                      Already have an account? Log in
+                    </Link>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+          </div>
         )}
       </div>
     </div>

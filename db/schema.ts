@@ -64,9 +64,9 @@ export const downloadsTable = pgTable(
   {
     id: uuid("id").defaultRandom().primaryKey(),
 
-    userId: uuid("user_id")
-      .notNull()
-      .references(() => usersTable.id),
+    userId: uuid("user_id").references(() => usersTable.id), // Nullable for anonymous users
+
+    ipAddress: varchar("ip_address", { length: 45 }), // To track anonymous usage limit
 
     reelUrl: varchar("reel_url", { length: 1024 }).notNull(),
     
@@ -82,6 +82,7 @@ export const downloadsTable = pgTable(
   },
   (table) => ({
     userIdx: index("download_user_idx").on(table.userId),
+    reelUrlIdx: index("download_reel_url_idx").on(table.reelUrl), // Added for fast caching lookups
   }),
 );
 

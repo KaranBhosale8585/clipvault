@@ -17,8 +17,46 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Vault • Secure Authentication",
-  description: "A professional-grade authentication system with a minimalist aesthetic.",
+  title: {
+    default: "Vault • Fast & Secure Instagram Reel Downloader",
+    template: "%s | Vault Downloader",
+  },
+  description: "Download high-quality Instagram Reels instantly. Vault is a secure, fast, and completely free tool with no hidden limits. Try it now without logging in.",
+  keywords: ["Instagram Downloader", "Reel Downloader", "Download Instagram Video", "Save Reels", "Vault Downloader"],
+  authors: [{ name: "Vault Team" }],
+  openGraph: {
+    type: "website",
+    locale: "en_US",
+    url: "https://vault-downloader.com",
+    title: "Vault • Fast & Secure Instagram Reel Downloader",
+    description: "Download high-quality Instagram Reels instantly. Vault is a secure, fast, and completely free tool.",
+    siteName: "Vault Downloader",
+    images: [
+      {
+        url: "https://vault-downloader.com/og-image.jpg", // Placeholder for actual OG image
+        width: 1200,
+        height: 630,
+        alt: "Vault Downloader Preview",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Vault • Fast & Secure Instagram Reel Downloader",
+    description: "Download high-quality Instagram Reels instantly. Secure and fast.",
+    images: ["https://vault-downloader.com/twitter-image.jpg"],
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-video-preview": -1,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+    },
+  },
 };
 
 export default function RootLayout({

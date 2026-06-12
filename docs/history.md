@@ -80,11 +80,10 @@
 - **Description**: Updated `utils/jwt.ts` to include user roles in tokens. Refined `proxy.ts` to protect `/admin` routes. Created `middleware.ts` to enforce these checks globally.
 - **Files Changed**: `utils/jwt.ts`, `proxy.ts`, `middleware.ts`.
 
-### fix: resolve missing preview thumbnails and videos
-- **Root Cause Analysis**: Identified that direct Instagram/Facebook CDN URLs for thumbnails and videos were being blocked by the browser due to cross-origin policies (CORS) and hotlinking protections. Additionally, the UI lacked a functional video player for previews.
-- **Description**: Enhanced the `download-proxy` to support an `inline` mode for media previews. Updated `ReelDownloader` and `DownloadHistory` to use this proxy for all thumbnails and video sources. Implemented a functional video player in `ReelDownloader` that toggles when the play icon is clicked. Configured Next.js `remotePatterns` to allow Instagram/FB domains.
-- **Files Changed**: `app/api/download-proxy/route.ts`, `components/ReelDownloader.tsx`, `components/DownloadHistory.tsx`, `next.config.ts`, `utils/instagram.ts`, `services/python/downloader.py`.
-
-### docs: update architecture and task tracking for preview fix
-- **Description**: Updated `architecture.md` to reflect the enhanced media proxy and `tasks.md` to mark preview rendering as complete.
-- **Files Changed**: `docs/architecture.md`, `docs/tasks.md`.
+### feat: implement production readiness strategy (SEO, Security, Scalability)
+- **Description**: Designed and implemented a comprehensive production strategy:
+  - **SEO**: Added dynamic metadata, OpenGraph tags, Twitter cards, JSON-LD structured data, and auto-generated `sitemap.xml` and `robots.txt`.
+  - **Security**: Implemented a "1 free download" limit for anonymous users tracked via IP address. Enhanced input validation for Reel URLs.
+  - **Scalability**: Implemented a 12-hour database-level caching layer for extracted metadata to prevent excessive `yt-dlp` child process execution. Added database indexes for faster lookups.
+  - **UX**: Updated the homepage to allow anonymous usage with a clear "Unlock Unlimited" call-to-action for non-logged-in users.
+- **Files Changed**: `db/schema.ts`, `app/api/reel/metadata/route.ts`, `app/layout.tsx`, `app/page.tsx`, `app/sitemap.ts`, `app/robots.ts`, `docs/architecture.md`, `docs/history.md`, `docs/tasks.md`.

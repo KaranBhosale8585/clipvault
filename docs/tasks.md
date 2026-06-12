@@ -26,6 +26,13 @@
   - [x] Implement video preview in UI
   - [x] Bypass CORS for all media types
   - [x] Configure Next.js remote patterns
+- [x] Implement production readiness strategy
+  - [x] Dynamic SEO metadata & OpenGraph
+  - [x] Sitemap.xml & robots.txt
+  - [x] JSON-LD Structured Data
+  - [x] 1 free anonymous download limit
+  - [x] Database-level metadata caching (12h)
+  - [x] Database indexing for performance
   - [x] Install core utilities (cva, clsx, tailwind-merge)
   - [x] Create `utils/cn.ts`
   - [x] Add standard ShadCN CSS variables to `globals.css`

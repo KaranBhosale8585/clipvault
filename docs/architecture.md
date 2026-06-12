@@ -25,13 +25,28 @@ The project uses PostgreSQL with Drizzle ORM.
 
 ## API Flow
 1. Client makes a request to `/api/reel/metadata`.
-2. Controller (`app/api/reel/metadata/route.ts`) validates the URL.
-3. Utility layer (`utils/instagram.ts`) invokes the Python bridge.
-4. Python bridge (`utils/pythonBridge.ts`) spawns a child process for `services/python/downloader.py`.
-5. Python script uses `yt-dlp` to extract reliable metadata and returns JSON.
-6. Node.js layer maps JSON to `ReelMetadata` and returns it to the client.
-7. Metadata is persisted in PostgreSQL via Drizzle.
-8. Client uses `/api/download-proxy` (Media Proxy) to fetch thumbnails and videos, bypassing CORS and hotlinking restrictions. Supports both `inline` and `attachment` modes.
+2. Controller (`app/api/reel/metadata/route.ts`) checks rate limits and authorization. Unauthenticated users are allowed 1 free download tracked via their IP Address in the `downloads` table.
+3. Controller checks the `downloads` table for a cached metadata record (within the last 12 hours) matching the requested URL.
+4. If cached, it returns the cached metadata instantly. If not, the Utility layer (`utils/instagram.ts`) invokes the Python bridge.
+5. Python bridge (`utils/pythonBridge.ts`) spawns a child process for `services/python/downloader.py`.
+6. Python script uses `yt-dlp` to extract reliable metadata and returns JSON.
+7. Node.js layer maps JSON to `ReelMetadata` and returns it to the client.
+8. Metadata is persisted in PostgreSQL via Drizzle.
+9. Client uses `/api/download-proxy` (Media Proxy) to fetch thumbnails and videos, bypassing CORS and hotlinking restrictions. Supports both `inline` and `attachment` modes.
+
+## Security & Abuse Protection
+- **Rate Limiting**: Authenticated users are limited to 5 downloads per 15 minutes. Anonymous users are restricted to 1 lifetime free download tracked by IP address.
+- **Bot Protection & DDoS**: Public endpoints (`/`, `/api/reel/metadata`) are designed to be deployed behind Cloudflare or Vercel Edge Network for DDoS mitigation and WAF rules.
+- **Input Validation**: URLs are validated using regex (`INSTAGRAM_REEL_REGEX`) before hitting the Python extraction service to prevent command injection.
+
+## SEO Strategy
+- **Dynamic Metadata**: `app/layout.tsx` includes comprehensive OpenGraph, Twitter Cards, and standard metadata.
+- **Structured Data**: JSON-LD (`WebApplication` schema) is injected into `app/page.tsx` for enhanced search engine visibility.
+- **Crawling**: `sitemap.xml` and `robots.txt` are dynamically generated to guide search engine bots.
+
+## Scalability
+- **Metadata Caching**: To prevent overwhelming the server with expensive `yt-dlp` Python child processes, the API caches extracted metadata in the database for 12 hours. Subsequent requests for the same Reel URL reuse the database record.
+- **Database Optimization**: Added indexes to frequently queried columns like `userId`, `reelUrl`, and `level` (logs) for rapid lookups.
 
 ## Sub-Services
 - **Python Downloader**: A standalone script using `yt-dlp` for robust Instagram extraction.
