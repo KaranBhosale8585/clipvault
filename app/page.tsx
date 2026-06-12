@@ -6,6 +6,10 @@ import Link from "next/link";
 import { ShieldCheck, ExternalLink } from "lucide-react";
 import ReelDownloader from "@/components/ReelDownloader";
 import DownloadHistory from "@/components/DownloadHistory";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { Skeleton } from "@/components/ui/skeleton";
 
 type User = {
   id: string;
@@ -79,7 +83,7 @@ export default function Home() {
           </div>
           
           {user && (
-            <div className="flex items-center gap-4 bg-card border border-border p-2 rounded-2xl pr-6">
+            <Card className="flex items-center gap-4 border-border p-2 rounded-2xl pr-6 bg-card shadow-sm">
               <div className="h-12 w-12 bg-indigo-600 rounded-xl flex items-center justify-center text-xl font-bold text-white shadow-lg shadow-indigo-500/20">
                 {user.name.charAt(0).toUpperCase()}
               </div>
@@ -87,18 +91,18 @@ export default function Home() {
                 <p className="text-sm font-bold text-foreground">{user.name}</p>
                 <p className="text-xs font-medium text-muted-foreground">{user.email}</p>
               </div>
-            </div>
+            </Card>
           )}
         </div>
 
         {loading ? (
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            <div className="lg:col-span-2 space-y-8 animate-pulse">
-              <div className="h-64 bg-card border border-border rounded-3xl"></div>
-              <div className="h-96 bg-card border border-border rounded-3xl"></div>
+            <div className="lg:col-span-2 space-y-8">
+              <Skeleton className="h-64 rounded-3xl" />
+              <Skeleton className="h-96 rounded-3xl" />
             </div>
-            <div className="space-y-8 animate-pulse">
-              <div className="h-64 bg-card border border-border rounded-3xl"></div>
+            <div className="space-y-8">
+              <Skeleton className="h-64 rounded-3xl" />
             </div>
           </div>
         ) : user ? (
@@ -111,21 +115,23 @@ export default function Home() {
 
             {/* Sidebar: Profile & Settings */}
             <div className="space-y-8">
-              <div className="group relative overflow-hidden bg-card border border-border rounded-3xl p-8 transition-all hover:shadow-2xl hover:shadow-indigo-500/10 hover:border-indigo-500/20">
-                <h3 className="text-lg font-bold text-foreground mb-6">Profile Security</h3>
+              <Card className="group relative overflow-hidden border-border rounded-3xl p-8 transition-all hover:shadow-2xl hover:shadow-indigo-500/10 hover:border-indigo-500/20">
+                <CardHeader className="p-0 mb-6">
+                  <CardTitle className="text-lg font-bold text-foreground">Profile Security</CardTitle>
+                </CardHeader>
                 
-                <div className="space-y-6">
+                <CardContent className="p-0 space-y-6">
                   <div className="flex items-center gap-4">
                     {user.isVerified ? (
-                      <div className="flex items-center gap-2 text-emerald-600 dark:text-emerald-400 font-bold text-xs uppercase tracking-widest">
-                        <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></div>
+                      <Badge variant="secondary" className="bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/20 px-3 py-1 font-bold text-xs uppercase tracking-widest">
+                        <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse mr-2 inline-block"></div>
                         Identity Verified
-                      </div>
+                      </Badge>
                     ) : (
-                      <div className="flex items-center gap-2 text-amber-600 dark:text-amber-400 font-bold text-xs uppercase tracking-widest">
-                        <div className="w-2 h-2 rounded-full bg-amber-500 animate-pulse"></div>
+                      <Badge variant="destructive" className="bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/20 px-3 py-1 font-bold text-xs uppercase tracking-widest">
+                        <div className="w-2 h-2 rounded-full bg-amber-500 animate-pulse mr-2 inline-block"></div>
                         Verification Required
-                      </div>
+                      </Badge>
                     )}
                   </div>
 
@@ -148,40 +154,45 @@ export default function Home() {
                       <ExternalLink size={14} className="text-indigo-500" />
                     </Link>
                   )}
-                </div>
+                </CardContent>
                 {/* Background Decor */}
                 <div className="absolute top-0 right-0 -mr-16 -mt-16 w-48 h-48 bg-indigo-500/5 rounded-full blur-3xl group-hover:bg-indigo-500/10 transition-colors"></div>
-              </div>
+              </Card>
 
-              <div className="bg-card border border-border rounded-3xl p-8 transition-all hover:shadow-2xl hover:shadow-indigo-500/5 hover:border-indigo-500/20">
-                <h3 className="text-lg font-bold text-foreground mb-4">Account Settings</h3>
-                <div className="space-y-3">
-                  <button
+              <Card className="border-border rounded-3xl p-8 transition-all hover:shadow-2xl hover:shadow-indigo-500/5 hover:border-indigo-500/20">
+                <CardHeader className="p-0 mb-4">
+                  <CardTitle className="text-lg font-bold text-foreground">Account Settings</CardTitle>
+                </CardHeader>
+                <CardContent className="p-0 space-y-3">
+                  <Button
+                    variant="outline"
                     disabled
-                    className="w-full py-3 px-4 bg-background text-muted-foreground rounded-xl font-bold text-xs uppercase tracking-widest text-left border border-border cursor-not-allowed"
+                    className="w-full h-12 rounded-xl font-bold text-xs uppercase tracking-widest justify-start border-border cursor-not-allowed opacity-50"
                   >
                     Edit Profile
-                  </button>
-                  <button
+                  </Button>
+                  <Button
                     onClick={handleLogout}
-                    className="w-full py-3 px-4 bg-foreground text-background rounded-xl font-bold text-xs uppercase tracking-widest transition-all hover:opacity-90 active:scale-[0.98]"
+                    className="w-full h-12 bg-foreground text-background rounded-xl font-bold text-xs uppercase tracking-widest transition-all hover:opacity-90 active:scale-[0.98]"
                   >
                     Sign Out
-                  </button>
-                </div>
-              </div>
+                  </Button>
+                </CardContent>
+              </Card>
             </div>
           </div>
         ) : (
-          <div className="text-center py-20 bg-card border border-border rounded-3xl">
-            <p className="text-muted-foreground font-medium mb-6 text-lg">Session expired or not found.</p>
-            <Link
-              href="/login"
-              className="inline-flex h-14 items-center justify-center px-10 bg-foreground text-background rounded-2xl font-bold text-sm uppercase tracking-widest transition-all hover:opacity-90 active:scale-[0.98]"
-            >
-              Return to Login
-            </Link>
-          </div>
+          <Card className="text-center py-20 border-border rounded-3xl">
+            <CardContent>
+              <p className="text-muted-foreground font-medium mb-6 text-lg">Session expired or not found.</p>
+              <Link
+                href="/login"
+                className="inline-flex h-14 items-center justify-center px-10 bg-foreground text-background rounded-2xl font-bold text-sm uppercase tracking-widest transition-all hover:opacity-90 active:scale-[0.98]"
+              >
+                Return to Login
+              </Link>
+            </CardContent>
+          </Card>
         )}
       </div>
     </div>

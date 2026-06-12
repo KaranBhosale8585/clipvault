@@ -9,6 +9,39 @@
 - **Description**: Resolved CSS specificity issues, implemented semantic theme variables, and added a three-way theme cycle (Light, Dark, Pitch Dark).
 - **Files Changed**: `app/globals.css`, `app/layout.tsx`, `app/page.tsx`, `components/ThemeToggle.tsx`, `components/Header.tsx`, `components/Footer.tsx`, and all Auth UI pages.
 
+### refactor: migrate middleware to proxy
+- **Description**: Migrated `middleware.ts` to `proxy.ts` to align with the new Next.js convention. Renamed the exported function from `middleware` to `proxy`.
+- **Files Changed**: `middleware.ts` (renamed to `proxy.ts`), `proxy.ts`.
+
+### feat: begin ShadCN UI integration
+- **Description**: Initialized ShadCN UI utilities and added the first component (`Button`). Installed `class-variance-authority`, `clsx`, `tailwind-merge`, and `@radix-ui/react-slot`. Created `utils/cn.ts` for class merging.
+- **Files Changed**: `utils/cn.ts`, `components/ui/button.tsx`, `package.json`.
+
+### feat: expand ShadCN UI components
+- **Description**: Added `Card`, `Input`, and `Badge` components to the UI library. These components are based on Radix UI primitives and are styled with Tailwind CSS.
+- **Files Changed**: `components/ui/card.tsx`, `components/ui/input.tsx`, `components/ui/badge.tsx`.
+
+### feat: refactor UI components with ShadCN
+- **Description**: Migrated `ReelDownloader.tsx` and `app/page.tsx` to use ShadCN components (`Card`, `Button`, `Badge`, `Input`, `Skeleton`). Improved consistency and removed redundant custom CSS.
+- **Files Changed**: `components/ReelDownloader.tsx`, `app/page.tsx`.
+
+### feat: refactor DownloadHistory with ShadCN
+- **Description**: Migrated `DownloadHistory.tsx` to use ShadCN components (`Card`, `Button`, `Skeleton`). Enhanced the loading state with skeletal previews.
+- **Files Changed**: `components/DownloadHistory.tsx`.
+
+### feat: refactor Admin Dashboard with ShadCN
+- **Description**: Migrated `app/admin/page.tsx` to use ShadCN components (`Card`, `Button`, `Badge`, `Skeleton`, `Tabs`, `Table`). Standardized the layout and improved the loading states.
+- **Files Changed**: `app/admin/page.tsx`, `components/ui/table.tsx`, `components/ui/tabs.tsx`.
+
+### feat: complete ShadCN UI refactor for Auth pages
+- **Description**: Migrated `Login`, `Signup`, `Verify`, and `Forgot Password` pages to use ShadCN components. Added `Label`, `Table`, and `Tabs` to the UI library. Standardized input fields and buttons across all authentication flows.
+- **Files Changed**: `app/(Auth UI)/**/*`, `components/ui/label.tsx`.
+
+### feat: migrate to yt-dlp for reliable Reel extraction
+- **Root Cause Analysis**: The previous HTML scraping method for Instagram Reels was frequently blocked by anti-bot measures, causing metadata extraction to fail.
+- **Description**: Integrated `yt-dlp` via a Python service and a Node.js bridge. This migration ensures robust metadata extraction (title, thumbnail, video URL) and eliminates the need for manual HTML parsing. Updated Docker configuration to support Python 3 and `yt-dlp`.
+- **Files Changed**: `utils/instagram.ts` (refactored), `utils/pythonBridge.ts` (new), `services/python/downloader.py` (new), `services/python/requirements.txt` (new), `Dockerfile`, `docs/architecture.md`.
+
 ## 2026-06-12 (Continued)
 ### docs: initialize project documentation and docker setup
 - **Description**: Created `docs/` directory with `rules.md`, `history.md`, `tasks.md`, and `architecture.md`. Added `Dockerfile`, `docker-compose.yml`, and `.env.example`.
@@ -47,6 +80,11 @@
 - **Description**: Updated `utils/jwt.ts` to include user roles in tokens. Refined `proxy.ts` to protect `/admin` routes. Created `middleware.ts` to enforce these checks globally.
 - **Files Changed**: `utils/jwt.ts`, `proxy.ts`, `middleware.ts`.
 
-### fix: resolve database insert failure and add management scripts
-- **Description**: Fixed a "Failed query" error by synchronizing the `downloads` table with the database using `drizzle-kit push`. Added `db:push` and `db:studio` scripts to `package.json` for easier schema management.
-- **Files Changed**: `package.json`.
+### fix: resolve missing preview thumbnails and videos
+- **Root Cause Analysis**: Identified that direct Instagram/Facebook CDN URLs for thumbnails and videos were being blocked by the browser due to cross-origin policies (CORS) and hotlinking protections. Additionally, the UI lacked a functional video player for previews.
+- **Description**: Enhanced the `download-proxy` to support an `inline` mode for media previews. Updated `ReelDownloader` and `DownloadHistory` to use this proxy for all thumbnails and video sources. Implemented a functional video player in `ReelDownloader` that toggles when the play icon is clicked. Configured Next.js `remotePatterns` to allow Instagram/FB domains.
+- **Files Changed**: `app/api/download-proxy/route.ts`, `components/ReelDownloader.tsx`, `components/DownloadHistory.tsx`, `next.config.ts`, `utils/instagram.ts`, `services/python/downloader.py`.
+
+### docs: update architecture and task tracking for preview fix
+- **Description**: Updated `architecture.md` to reflect the enhanced media proxy and `tasks.md` to mark preview rendering as complete.
+- **Files Changed**: `docs/architecture.md`, `docs/tasks.md`.

@@ -2,7 +2,7 @@ import { db } from "@/db";
 import { usersTable } from "@/db/schema";
 import { otpTable } from "@/db/schema";
 import { getUser } from "@/utils/getUser";
-import { getRefreshToken } from "@/utils/jwt";
+import { setAuthCookie } from "@/utils/auth";
 import { eq } from "drizzle-orm";
 import { NextRequest, NextResponse } from "next/server";
 
@@ -44,7 +44,11 @@ export async function POST(req: NextRequest) {
     }
 
     await db.delete(otpTable).where(eq(otpTable.email, user.email));
-    await getRefreshToken(updatedUser);
+    await setAuthCookie({
+      id: updatedUser.id,
+      isVerified: updatedUser.isVerified,
+      role: updatedUser.role,
+    });
 
     return NextResponse.json({ message: "OTP verified successfully" });
   } catch (error) {

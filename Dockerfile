@@ -16,9 +16,21 @@ FROM node:20-alpine AS runner
 WORKDIR /app
 ENV NODE_ENV production
 
+# Install Python and dependencies for yt-dlp
+RUN apk add --no-cache python3 py3-pip
+
+# Create a virtual environment and install yt-dlp
+RUN python3 -m venv /opt/venv
+ENV PATH="/opt/venv/bin:$PATH"
+COPY services/python/requirements.txt ./services/python/requirements.txt
+RUN pip install --no-cache-dir -r services/python/requirements.txt
+
 COPY --from=builder /app/public ./public
 COPY --from=builder /app/.next/standalone ./
 COPY --from=builder /app/.next/static ./.next/static
+
+# Ensure the Python service is available
+COPY services/python ./services/python
 
 EXPOSE 3000
 ENV PORT 3000

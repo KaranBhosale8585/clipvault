@@ -3,8 +3,12 @@
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import Link from "next/link";
-import { User, Mail, Lock } from "lucide-react";
+import { User, Mail, Lock, Loader2 } from "lucide-react";
 import { toast } from "sonner";
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 
 export default function Register() {
   const [loading, setLoading] = useState(false);
@@ -34,6 +38,7 @@ export default function Register() {
 
     if (Object.values(newErrors).some(Boolean)) {
       toast.error("Please fill in all required fields.");
+      setLoading(false);
       return;
     }
 
@@ -65,25 +70,24 @@ export default function Register() {
   return (
     <div className="min-h-[calc(100vh-4rem)] flex items-center justify-center bg-background transition-colors duration-300 px-4 py-12">
       <div className="w-full max-w-[440px]">
-        <div className="bg-card border border-border rounded-[32px] shadow-2xl shadow-lg shadow-black/5 dark:shadow-none overflow-hidden transition-all">
-          <div className="p-10 sm:p-12">
-            <div className="mb-10 text-center">
-              <h2 className="text-3xl font-extrabold text-foreground mb-3 tracking-tight">
-                Create Account
-              </h2>
-              <p className="text-muted-foreground font-medium">
-                Join Vault to secure your digital presence
-              </p>
-            </div>
-
+        <Card className="rounded-[32px] shadow-2xl border-border bg-card overflow-hidden transition-all shadow-black/5 dark:shadow-none">
+          <CardHeader className="p-10 sm:p-12 text-center pb-0">
+            <CardTitle className="text-3xl font-extrabold text-foreground mb-3 tracking-tight">
+              Create Account
+            </CardTitle>
+            <CardDescription className="text-muted-foreground font-medium">
+              Join Vault to secure your digital presence
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="p-10 sm:p-12 pt-10">
             <form onSubmit={handleSubmit} className="space-y-5">
               <div className="space-y-2">
-                <label className="text-xs font-bold text-muted-foreground uppercase tracking-widest ml-1" htmlFor="name">
+                <Label className="text-xs font-bold text-muted-foreground uppercase tracking-widest ml-1" htmlFor="name">
                   Full Name
-                </label>
+                </Label>
                 <div className="relative group">
-                  <User className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground group-focus-within:text-indigo-500 transition-colors" />
-                  <input
+                  <User className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground group-focus-within:text-indigo-500 transition-colors z-10" />
+                  <Input
                     id="name"
                     type="text"
                     placeholder="John Doe"
@@ -92,9 +96,9 @@ export default function Register() {
                       setForm({ ...form, name: e.target.value });
                       setErrors({ ...errors, name: false });
                     }}
-                    className={`w-full pl-11 pr-4 py-3 bg-background dark:bg-slate-800/50 border ${
+                    className={`pl-11 h-12 rounded-2xl ${
                       errors.name ? "border-red-500" : "border-border"
-                    } rounded-2xl text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all text-sm font-medium`}
+                    } focus-visible:ring-indigo-500/20 focus-visible:border-indigo-500 transition-all font-medium`}
                   />
                 </div>
                 {errors.name && (
@@ -103,12 +107,12 @@ export default function Register() {
               </div>
 
               <div className="space-y-2">
-                <label className="text-xs font-bold text-muted-foreground uppercase tracking-widest ml-1" htmlFor="email">
+                <Label className="text-xs font-bold text-muted-foreground uppercase tracking-widest ml-1" htmlFor="email">
                   Email Address
-                </label>
+                </Label>
                 <div className="relative group">
-                  <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground group-focus-within:text-indigo-500 transition-colors" />
-                  <input
+                  <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground group-focus-within:text-indigo-500 transition-colors z-10" />
+                  <Input
                     id="email"
                     type="email"
                     placeholder="name@company.com"
@@ -117,9 +121,9 @@ export default function Register() {
                       setForm({ ...form, email: e.target.value });
                       setErrors({ ...errors, email: false });
                     }}
-                    className={`w-full pl-11 pr-4 py-3 bg-background dark:bg-slate-800/50 border ${
+                    className={`pl-11 h-12 rounded-2xl ${
                       errors.email ? "border-red-500" : "border-border"
-                    } rounded-2xl text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all text-sm font-medium`}
+                    } focus-visible:ring-indigo-500/20 focus-visible:border-indigo-500 transition-all font-medium`}
                   />
                 </div>
                 {errors.email && (
@@ -128,12 +132,12 @@ export default function Register() {
               </div>
 
               <div className="space-y-2">
-                <label className="text-xs font-bold text-muted-foreground uppercase tracking-widest ml-1" htmlFor="password">
+                <Label className="text-xs font-bold text-muted-foreground uppercase tracking-widest ml-1" htmlFor="password">
                   Password
-                </label>
+                </Label>
                 <div className="relative group">
-                  <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground group-focus-within:text-indigo-500 transition-colors" />
-                  <input
+                  <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground group-focus-within:text-indigo-500 transition-colors z-10" />
+                  <Input
                     id="password"
                     type="password"
                     placeholder="••••••••"
@@ -142,9 +146,9 @@ export default function Register() {
                       setForm({ ...form, password: e.target.value });
                       setErrors({ ...errors, password: false });
                     }}
-                    className={`w-full pl-11 pr-4 py-3 bg-background dark:bg-slate-800/50 border ${
+                    className={`pl-11 h-12 rounded-2xl ${
                       errors.password ? "border-red-500" : "border-border"
-                    } rounded-2xl text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all text-sm font-medium`}
+                    } focus-visible:ring-indigo-500/20 focus-visible:border-indigo-500 transition-all font-medium`}
                   />
                 </div>
                 {errors.password && (
@@ -152,13 +156,20 @@ export default function Register() {
                 )}
               </div>
 
-              <button
+              <Button
                 type="submit"
-                className="w-full py-4 bg-foreground text-background font-bold rounded-2xl shadow-lg shadow-slate-900/10 dark:shadow-none hover:opacity-90 active:scale-[0.98] transition-all disabled:opacity-50 disabled:active:scale-100 text-sm mt-2"
                 disabled={loading}
+                className="w-full h-14 bg-foreground text-background font-bold rounded-2xl shadow-lg shadow-slate-900/10 dark:shadow-none hover:opacity-90 active:scale-[0.98] transition-all disabled:opacity-50 text-sm mt-2"
               >
-                {loading ? "Creating Account..." : "Create Account"}
-              </button>
+                {loading ? (
+                  <>
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    Creating Account...
+                  </>
+                ) : (
+                  "Create Account"
+                )}
+              </Button>
             </form>
 
             <div className="text-center mt-10">
@@ -172,8 +183,8 @@ export default function Register() {
                 </Link>
               </p>
             </div>
-          </div>
-        </div>
+          </CardContent>
+        </Card>
       </div>
     </div>
   );

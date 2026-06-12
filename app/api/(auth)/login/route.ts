@@ -1,6 +1,6 @@
 import { db } from "@/db";
 import { usersTable } from "@/db/schema";
-import { getRefreshToken } from "@/utils/jwt";
+import { setAuthCookie } from "@/utils/auth";
 import bcrypt from "bcryptjs";
 import { eq } from "drizzle-orm";
 import { NextRequest, NextResponse } from "next/server";
@@ -35,7 +35,11 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    await getRefreshToken(user);
+    await setAuthCookie({
+      id: user.id,
+      isVerified: user.isVerified,
+      role: user.role,
+    });
 
     return NextResponse.json(
       { message: "User Logged In Successfully!" },

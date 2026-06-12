@@ -1,9 +1,9 @@
-import { logoutUser } from "@/utils/jwt";
+import { clearAuthCookie } from "@/utils/auth";
 import { NextResponse } from "next/server";
 
 export async function POST() {
   try {
-    const res = await logoutUser();
+    const res = await clearAuthCookie();
 
     return NextResponse.json(res);
   } catch (error) {

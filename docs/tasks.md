@@ -1,6 +1,11 @@
 # Project Tasks - Instagram Reel Downloader
 
 ## Completed
+- [x] Integrate yt-dlp for reliable Instagram Reel extraction
+  - [x] Create Python extraction service
+  - [x] Create Node-Python bridge
+  - [x] Refactor Next.js utility layer
+  - [x] Update Docker environment for Python 3
 - [x] Authentication System (Login, Signup, OTP, Reset)
 - [x] Theme System (Light, Dark, Pitch Dark)
 - [x] Basic Project Documentation structure
@@ -13,7 +18,25 @@
 - [x] Rate limiting implementation for Reel downloads
 - [x] Admin tools (Dashboard & Stats)
 - [x] Logging system (DB persistent & Admin UI)
-- [x] Secure Admin authentication (JWT & Middleware)
+- [x] Secure Admin authentication (JWT & Proxy)
+- [x] Migrate middleware.ts to proxy.ts (Next.js 16+ convention)
 
-## In Progress
-- [ ] ShadCN UI component integration (remaining)
+- [x] Fix preview thumbnails and videos
+  - [x] Enhance download proxy with inline mode
+  - [x] Implement video preview in UI
+  - [x] Bypass CORS for all media types
+  - [x] Configure Next.js remote patterns
+  - [x] Install core utilities (cva, clsx, tailwind-merge)
+  - [x] Create `utils/cn.ts`
+  - [x] Add standard ShadCN CSS variables to `globals.css`
+  - [x] Implement ShadCN `Button` component
+  - [x] Implement ShadCN `Card` component
+  - [x] Implement ShadCN `Input` component
+  - [x] Implement ShadCN `Badge` component
+  - [x] Implement ShadCN `Skeleton` component
+  - [x] Migrate existing custom buttons and UI elements to ShadCN components
+    - [x] Refactor `ReelDownloader.tsx`
+    - [x] Refactor `app/page.tsx`
+    - [x] Refactor `DownloadHistory.tsx`
+    - [x] Refactor `app/admin/page.tsx`
+    - [x] Refactor Auth UI pages (Login, Signup, Verify, Forgot Password)

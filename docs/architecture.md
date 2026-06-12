@@ -24,10 +24,18 @@ The project uses PostgreSQL with Drizzle ORM.
 - `downloads`: Tracks user download history including Reel metadata and status.
 
 ## API Flow
-1. Client makes a request to `/api/...`.
-2. Middleware/Utils handle authentication (JWT) and rate limiting.
-3. Route handlers interact with the database via Drizzle.
-4. Responses are returned in a consistent JSON format.
+1. Client makes a request to `/api/reel/metadata`.
+2. Controller (`app/api/reel/metadata/route.ts`) validates the URL.
+3. Utility layer (`utils/instagram.ts`) invokes the Python bridge.
+4. Python bridge (`utils/pythonBridge.ts`) spawns a child process for `services/python/downloader.py`.
+5. Python script uses `yt-dlp` to extract reliable metadata and returns JSON.
+6. Node.js layer maps JSON to `ReelMetadata` and returns it to the client.
+7. Metadata is persisted in PostgreSQL via Drizzle.
+8. Client uses `/api/download-proxy` (Media Proxy) to fetch thumbnails and videos, bypassing CORS and hotlinking restrictions. Supports both `inline` and `attachment` modes.
+
+## Sub-Services
+- **Python Downloader**: A standalone script using `yt-dlp` for robust Instagram extraction.
+- **Node-Python Bridge**: Facilitates communication between Next.js and the Python script.
 
 ## Auth Flow
 1. **Signup**: User provides name, email, password. OTP is sent to email.

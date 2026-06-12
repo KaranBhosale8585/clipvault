@@ -1,9 +1,11 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { ShieldCheck } from "lucide-react";
+import { ShieldCheck, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 
 export default function VerifyOTP() {
   const [otp, setOtp] = useState(Array(6).fill(""));
@@ -85,20 +87,21 @@ export default function VerifyOTP() {
   return (
     <div className="min-h-[calc(100vh-4rem)] flex items-center justify-center bg-background transition-colors duration-300 px-4 py-12">
       <div className="w-full max-w-[440px]">
-        <div className="bg-card border border-border rounded-[32px] shadow-2xl shadow-lg shadow-black/5 dark:shadow-none overflow-hidden transition-all">
-          <div className="p-10 sm:p-12 text-center">
-            <div className="mb-10">
+        <Card className="rounded-[32px] shadow-2xl border-border bg-card overflow-hidden transition-all shadow-black/5 dark:shadow-none">
+          <CardHeader className="p-10 sm:p-12 text-center pb-0">
+            <div className="mb-10 flex flex-col items-center">
               <div className="inline-flex items-center justify-center w-16 h-16 bg-background dark:bg-slate-800 border border-border dark:border-slate-700 rounded-[22px] text-indigo-500 mb-8 shadow-inner">
                 <ShieldCheck size={32} />
               </div>
-              <h2 className="text-3xl font-extrabold text-foreground mb-3 tracking-tight">
+              <CardTitle className="text-3xl font-extrabold text-foreground mb-3 tracking-tight">
                 Verify Identity
-              </h2>
-              <p className="text-muted-foreground font-medium">
+              </CardTitle>
+              <CardDescription className="text-muted-foreground font-medium">
                 We've sent a 6-digit secure code to your email address
-              </p>
+              </CardDescription>
             </div>
-
+          </CardHeader>
+          <CardContent className="p-10 sm:p-12 pt-0 text-center">
             <div className="flex justify-between gap-3 mb-10">
               {otp.map((digit, index) => (
                 <input
@@ -113,13 +116,20 @@ export default function VerifyOTP() {
               ))}
             </div>
 
-            <button
+            <Button
               onClick={handleSubmit}
               disabled={loading}
-              className="w-full py-4 bg-foreground text-background font-bold rounded-2xl shadow-lg shadow-slate-900/10 dark:shadow-none hover:opacity-90 active:scale-[0.98] transition-all disabled:opacity-50 text-sm"
+              className="w-full h-14 bg-foreground text-background font-bold rounded-2xl shadow-lg shadow-slate-900/10 dark:shadow-none hover:opacity-90 active:scale-[0.98] transition-all disabled:opacity-50 text-sm"
             >
-              {loading ? "Verifying..." : "Confirm Code"}
-            </button>
+              {loading ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  Verifying...
+                </>
+              ) : (
+                "Confirm Code"
+              )}
+            </Button>
 
             <div className="mt-10">
               {timer > 0 ? (
@@ -127,17 +137,25 @@ export default function VerifyOTP() {
                   Resend available in <span className="text-foreground">{timer}s</span>
                 </p>
               ) : (
-                <button
+                <Button
+                  variant="link"
                   onClick={handleSendOtp}
                   disabled={sendingOtp}
-                  className="text-xs font-bold text-indigo-500 dark:text-indigo-400 uppercase tracking-widest hover:text-indigo-600 transition-colors"
+                  className="h-auto p-0 text-xs font-bold text-indigo-500 dark:text-indigo-400 uppercase tracking-widest hover:text-indigo-600 transition-colors"
                 >
-                  {sendingOtp ? "Requesting..." : "Resend secure code"}
-                </button>
+                  {sendingOtp ? (
+                    <>
+                      <Loader2 className="mr-2 h-3 w-3 animate-spin" />
+                      Requesting...
+                    </>
+                  ) : (
+                    "Resend secure code"
+                  )}
+                </Button>
               )}
             </div>
-          </div>
-        </div>
+          </CardContent>
+        </Card>
       </div>
     </div>
   );

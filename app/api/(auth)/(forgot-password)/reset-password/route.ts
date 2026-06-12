@@ -1,7 +1,7 @@
 import { db } from "@/db";
 import { usersTable } from "@/db/schema";
 import { otpTable } from "@/db/schema";
-import { getRefreshToken } from "@/utils/jwt";
+import { setAuthCookie } from "@/utils/auth";
 import bcrypt from "bcryptjs";
 import { eq } from "drizzle-orm";
 import { NextRequest, NextResponse } from "next/server";
@@ -57,7 +57,11 @@ export async function POST(req: NextRequest) {
     }
 
     await db.delete(otpTable).where(eq(otpTable.email, user.email));
-    await getRefreshToken(updatedUser);
+    await setAuthCookie({
+      id: updatedUser.id,
+      isVerified: updatedUser.isVerified,
+      role: updatedUser.role,
+    });
 
     return NextResponse.json({ message: "Password updated successfully" });
   } catch (error) {

@@ -10,12 +10,13 @@ export async function GET(req: NextRequest) {
 
     const url = req.nextUrl.searchParams.get("url");
     const filename = req.nextUrl.searchParams.get("filename") || "instagram-reel.mp4";
+    const download = req.nextUrl.searchParams.get("download") !== "false"; // Default to true for backward compatibility
 
     if (!url) {
       return new NextResponse("URL is required", { status: 400 });
     }
 
-    console.log(`Proxying download for URL: ${url}`);
+    console.log(`Proxying ${download ? "download" : "preview"} for URL: ${url}`);
 
     const response = await fetch(url, {
       headers: {
@@ -26,22 +27,31 @@ export async function GET(req: NextRequest) {
 
     if (!response.ok) {
       console.error(`External fetch failed: ${response.status} ${response.statusText}`);
-      return new NextResponse(`Failed to fetch video from source: ${response.statusText}`, { status: response.status });
+      return new NextResponse(`Failed to fetch media from source: ${response.statusText}`, { status: response.status });
     }
 
     const blob = await response.blob();
     console.log(`Successfully fetched blob, size: ${blob.size} bytes`);
     
     const headers = new Headers();
-    headers.set("Content-Type", response.headers.get("Content-Type") || "video/mp4");
-    headers.set("Content-Disposition", `attachment; filename="${filename}"`);
+    const contentType = response.headers.get("Content-Type") || (url.includes(".mp4") ? "video/mp4" : "image/jpeg");
+    headers.set("Content-Type", contentType);
+    
+    if (download) {
+      headers.set("Content-Disposition", `attachment; filename="${filename}"`);
+    } else {
+      headers.set("Content-Disposition", "inline");
+      // Add Cache-Control for previews to improve performance
+      headers.set("Cache-Control", "public, max-age=3600");
+    }
     
     return new NextResponse(blob, {
       status: 200,
       headers,
     });
-  } catch (error: any) {
+  } catch (error: unknown) {
+    const message = error instanceof Error ? error.message : "Internal Server Error";
     console.error("Download proxy error:", error);
-    return new NextResponse(error.message || "Internal Server Error", { status: 500 });
+    return new NextResponse(message, { status: 500 });
   }
 }

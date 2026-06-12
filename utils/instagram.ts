@@ -31,90 +31,63 @@ export function extractShortcode(url: string): string | null {
 }
 
 import { logger } from "./logger";
+import { runPythonScript } from "./pythonBridge";
+
+interface PythonDownloaderData {
+  id: string;
+  title: string;
+  uploader: string;
+  thumbnail: string;
+  thumbnails: unknown[]; // yt-dlp thumbnails can be complex
+  duration: number;
+  videoUrl: string;
+  formats: unknown[];
+}
 
 /**
- * Fetches Reel metadata by parsing Open Graph tags from the public page.
- * NOTE: Instagram often blocks simple server-side fetches. 
+ * Fetches Reel metadata using the Python yt-dlp service.
  */
 export async function fetchReelMetadata(url: string): Promise<ReelMetadata | null> {
-  const source = "instagram-scraper";
-  await logger.info(`Extraction started for URL: ${url}`, source);
+  const source = "instagram-downloader";
+  await logger.info(`Extraction started using yt-dlp for URL: ${url}`, source);
 
   if (!validateReelUrl(url)) {
     await logger.error(`Invalid URL format provided: ${url}`, source);
     throw new Error("Invalid Instagram Reel URL");
   }
 
-  const shortcode = extractShortcode(url);
-
-  if (!shortcode) {
-    await logger.error(`Failed to extract shortcode from URL: ${url}`, source);
-    return null;
-  }
-
   try {
-    const requestHeaders = {
-      "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36",
-      "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8",
-      "Accept-Language": "en-US,en;q=0.9",
-      "Sec-Fetch-Dest": "document",
-      "Sec-Fetch-Mode": "navigate",
-      "Sec-Fetch-Site": "none",
-      "Sec-Fetch-User": "?1",
-      "Upgrade-Insecure-Requests": "1",
+    const result = await runPythonScript<PythonDownloaderData>("services/python/downloader.py", [url]);
+
+    if (!result.success || !result.data) {
+      await logger.error(`yt-dlp extraction failed: ${result.error}`, source, {
+        url,
+        traceback: result.traceback,
+      });
+      throw new Error(result.error || "Failed to extract metadata from Instagram");
+    }
+
+    const { data, debug } = result;
+
+    await logger.info(`yt-dlp raw output received for ${url}`, source, { data, debug });
+
+    const metadata: ReelMetadata = {
+      id: data.id || extractShortcode(url) || "unknown",
+      reelUrl: url,
+      videoUrl: data.videoUrl,
+      thumbnailUrl: data.thumbnail,
+      title: data.title || `Instagram Reel by ${data.uploader || "unknown"}`,
     };
 
-    const response = await fetch(url, {
-      headers: requestHeaders,
-      cache: "no-store",
-    });
-
-    if (!response.ok) {
-      const errorBody = await response.text();
-      await logger.error(`Instagram returned ${response.status}`, source, {
-        status: response.status,
-        statusText: response.statusText,
-        url,
-        shortcode,
-        bodySnippet: errorBody.substring(0, 500),
-      });
-      throw new Error(`Instagram returned status ${response.status}`);
-    }
-
-    const html = await response.text();
+    await logger.info(`Extraction successful for Reel: ${metadata.id}`, source, { id: metadata.id });
+    return metadata;
+  } catch (error: unknown) {
+    const message = error instanceof Error ? error.message : "Unknown error";
+    const stack = error instanceof Error ? error.stack : undefined;
     
-    // Detailed Regex Search
-    const videoUrlMatch = html.match(/<meta[^>]*property="og:video"[^>]*content="([^"]*)"/);
-    const thumbnailUrlMatch = html.match(/<meta[^>]*property="og:image"[^>]*content="([^"]*)"/);
-    const titleMatch = html.match(/<meta[^>]*property="og:title"[^>]*content="([^"]*)"/);
-
-    if (videoUrlMatch && videoUrlMatch[1] && thumbnailUrlMatch && thumbnailUrlMatch[1]) {
-      const metadata = {
-        id: shortcode,
-        reelUrl: url,
-        videoUrl: videoUrlMatch[1].replace(/&amp;/g, "&"),
-        thumbnailUrl: thumbnailUrlMatch[1].replace(/&amp;/g, "&"),
-        title: titleMatch?.[1] || `Instagram Reel ${shortcode}`,
-      };
-      
-      await logger.info(`Extraction successful for shortcode: ${shortcode}`, source, { shortcode });
-      return metadata;
-    }
-
-    const headSnippet = html.match(/<head>([\s\S]*?)<\/head>/)?.[1] || "Head section not found";
-    await logger.warn("Open Graph tags missing in response HTML", source, {
-      url,
-      shortcode,
-      htmlLength: html.length,
-      headSnippet: headSnippet.substring(0, 1000),
-    });
-    
-    throw new Error("Could not find video metadata in the page. Instagram might be requiring a login or blocking the request.");
-  } catch (error: any) {
-    await logger.error(`Extraction Exception: ${error.message}`, source, { 
+    await logger.error(`Extraction Exception: ${message}`, source, { 
       url, 
-      shortcode,
-      stack: error.stack 
+      stack 
     });
     throw error;
   }

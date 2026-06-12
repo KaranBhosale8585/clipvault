@@ -13,11 +13,21 @@ interface LogParams {
 export const logger = {
   async log({ level, message, source, metadata }: LogParams) {
     try {
+      // Truncate message to 2048 characters
+      const truncatedMessage = message.length > 2048 ? message.substring(0, 2045) + "..." : message;
+      
+      // Truncate stringified metadata to 4096 characters
+      let truncatedMetadata = null;
+      if (metadata) {
+        const stringified = JSON.stringify(metadata);
+        truncatedMetadata = stringified.length > 4096 ? stringified.substring(0, 4093) + "..." : stringified;
+      }
+
       await db.insert(logsTable).values({
         level,
-        message,
+        message: truncatedMessage,
         source,
-        metadata: metadata ? JSON.stringify(metadata) : null,
+        metadata: truncatedMetadata,
       });
     } catch (err) {
       // Fallback to console if DB insert fails to prevent recursion or lost errors
