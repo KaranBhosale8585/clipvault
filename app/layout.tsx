@@ -16,7 +16,10 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
+const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "https://vault-downloader.com";
+
 export const metadata: Metadata = {
+  metadataBase: new URL(baseUrl),
   title: {
     default: "Vault • Fast & Secure Instagram Reel Downloader",
     template: "%s | Vault Downloader",
@@ -24,16 +27,19 @@ export const metadata: Metadata = {
   description: "Download high-quality Instagram Reels instantly. Vault is a secure, fast, and completely free tool with no hidden limits. Try it now without logging in.",
   keywords: ["Instagram Downloader", "Reel Downloader", "Download Instagram Video", "Save Reels", "Vault Downloader"],
   authors: [{ name: "Vault Team" }],
+  alternates: {
+    canonical: "/",
+  },
   openGraph: {
     type: "website",
     locale: "en_US",
-    url: "https://vault-downloader.com",
+    url: baseUrl,
     title: "Vault • Fast & Secure Instagram Reel Downloader",
     description: "Download high-quality Instagram Reels instantly. Vault is a secure, fast, and completely free tool.",
     siteName: "Vault Downloader",
     images: [
       {
-        url: "https://vault-downloader.com/og-image.jpg", // Placeholder for actual OG image
+        url: "/og-image.jpg",
         width: 1200,
         height: 630,
         alt: "Vault Downloader Preview",
@@ -44,7 +50,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "Vault • Fast & Secure Instagram Reel Downloader",
     description: "Download high-quality Instagram Reels instantly. Secure and fast.",
-    images: ["https://vault-downloader.com/twitter-image.jpg"],
+    images: ["/twitter-image.jpg"],
   },
   robots: {
     index: true,

@@ -66,6 +66,8 @@ export const downloadsTable = pgTable(
 
     userId: uuid("user_id").references(() => usersTable.id), // Nullable for anonymous users
 
+    visitorId: uuid("visitor_id"), // Robust tracking for anonymous users via signed cookie
+
     ipAddress: varchar("ip_address", { length: 45 }), // To track anonymous usage limit
 
     reelUrl: varchar("reel_url", { length: 1024 }).notNull(),

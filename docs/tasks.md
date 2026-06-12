@@ -33,6 +33,11 @@
   - [x] 1 free anonymous download limit
   - [x] Database-level metadata caching (12h)
   - [x] Database indexing for performance
+- [x] Final production audit and security hardening
+  - [x] Robust anonymous tracking (Cookie + IP)
+  - [x] Global IP rate limiting
+  - [x] Database auto-cleanup strategy (30 days)
+  - [x] Canonical URLs and SEO finalization
   - [x] Install core utilities (cva, clsx, tailwind-merge)
   - [x] Create `utils/cn.ts`
   - [x] Add standard ShadCN CSS variables to `globals.css`

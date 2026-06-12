@@ -80,10 +80,10 @@
 - **Description**: Updated `utils/jwt.ts` to include user roles in tokens. Refined `proxy.ts` to protect `/admin` routes. Created `middleware.ts` to enforce these checks globally.
 - **Files Changed**: `utils/jwt.ts`, `proxy.ts`, `middleware.ts`.
 
-### feat: implement production readiness strategy (SEO, Security, Scalability)
-- **Description**: Designed and implemented a comprehensive production strategy:
-  - **SEO**: Added dynamic metadata, OpenGraph tags, Twitter cards, JSON-LD structured data, and auto-generated `sitemap.xml` and `robots.txt`.
-  - **Security**: Implemented a "1 free download" limit for anonymous users tracked via IP address. Enhanced input validation for Reel URLs.
-  - **Scalability**: Implemented a 12-hour database-level caching layer for extracted metadata to prevent excessive `yt-dlp` child process execution. Added database indexes for faster lookups.
-  - **UX**: Updated the homepage to allow anonymous usage with a clear "Unlock Unlimited" call-to-action for non-logged-in users.
-- **Files Changed**: `db/schema.ts`, `app/api/reel/metadata/route.ts`, `app/layout.tsx`, `app/page.tsx`, `app/sitemap.ts`, `app/robots.ts`, `docs/architecture.md`, `docs/history.md`, `docs/tasks.md`.
+### feat: perform final production audit and implement security hardening
+- **Description**: Conducted a final production audit and implemented several critical hardening measures:
+  - **Robust Tracking**: Replaced simple IP tracking for anonymous users with a hybrid approach using signed "Visitor ID" cookies and IP correlation.
+  - **Abuse Protection**: Implemented a global IP-based rate limit (100 req / 15 mins) to protect against bot spam.
+  - **Data Retention**: Added an automatic 30-day purge for logs and download history to ensure database scalability.
+  - **SEO Finalization**: Added canonical URLs, refined OpenGraph site configuration, and verified crawler instructions.
+- **Files Changed**: `utils/auth.ts`, `db/schema.ts`, `app/api/reel/metadata/route.ts`, `app/api/admin/stats/route.ts`, `app/layout.tsx`, `utils/rateLimit.ts`, `docs/architecture.md`.

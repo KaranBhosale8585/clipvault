@@ -10,12 +10,12 @@ export async function getUser() {
   if (!token) return null;
   try {
     const payload = await verifyToken(token);
-    if (!payload) return null;
+    if (!payload || !payload.id) return null;
 
     const [user] = await db
       .select()
       .from(usersTable)
-      .where(eq(usersTable.id, payload.id));
+      .where(eq(usersTable.id, payload.id as string));
 
     if (!user) return null;
 

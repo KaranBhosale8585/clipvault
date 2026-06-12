@@ -14,7 +14,10 @@ export async function proxy(req: NextRequest) {
   }
 
   const token = req.cookies.get("refresh_token")?.value;
-  const user = token ? await verifyToken(token) : null;
+  const decoded = token ? await verifyToken(token) : null;
+  
+  // Only consider it a "user" if it has an ID (authenticated)
+  const user = decoded?.id ? decoded : null;
   const isVerified = user?.isVerified;
   const role = user?.role;
 

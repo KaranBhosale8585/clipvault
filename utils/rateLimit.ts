@@ -1,5 +1,5 @@
 import { db } from "@/db";
-import { otpRequestsTable, downloadsTable } from "@/db/schema";
+import { otpRequestsTable, downloadsTable, logsTable } from "@/db/schema";
 import { and, eq, gt, count } from "drizzle-orm";
 
 export async function checkRateLimit(userId: string) {
@@ -59,4 +59,42 @@ export async function checkDownloadRateLimit(userId: string) {
   const usageCount = result[0]?.total || 0;
 
   return usageCount < MAX_DOWNLOADS;
+}
+
+/**
+ * Global IP-based rate limit for public API endpoints.
+ * Limit: 100 requests per 15 minutes per IP.
+ */
+export async function checkIPRateLimit(ip: string, action: string) {
+  const MAX = 100;
+  const WINDOW_MS = 15 * 60 * 1000;
+
+  const windowStart = new Date(Date.now() - WINDOW_MS);
+
+  // We reuse logsTable to track these hits without needing a new table
+  const result = await db
+    .select({ total: count() })
+    .from(logsTable)
+    .where(
+      and(
+        eq(logsTable.source, `ratelimit:${action}`),
+        eq(logsTable.message, ip),
+        gt(logsTable.createdAt, windowStart)
+      )
+    );
+
+  const countHits = result[0]?.total || 0;
+
+  if (countHits >= MAX) {
+    return false;
+  }
+
+  // Log the hit (don't wait for it to finish)
+  db.insert(logsTable).values({
+    level: "info",
+    source: `ratelimit:${action}`,
+    message: ip,
+  }).execute();
+
+  return true;
 }

@@ -47,6 +47,13 @@ The project uses PostgreSQL with Drizzle ORM.
 ## Scalability
 - **Metadata Caching**: To prevent overwhelming the server with expensive `yt-dlp` Python child processes, the API caches extracted metadata in the database for 12 hours. Subsequent requests for the same Reel URL reuse the database record.
 - **Database Optimization**: Added indexes to frequently queried columns like `userId`, `reelUrl`, and `level` (logs) for rapid lookups.
+- **Auto-Cleanup**: The Admin API triggers a background purge of log and download records older than 30 days to keep the database size manageable.
+
+## Monitoring & Deployment
+- **Error Tracking**: It is highly recommended to integrate **Sentry** for real-time error tracking and alerting.
+- **Analytics**: Use **Vercel Analytics** or **Google Analytics** to monitor user engagement and conversion rates.
+- **Resource Management**: The `yt-dlp` extraction service is CPU and RAM intensive. Ensure the production environment has at least 1GB of available RAM to handle concurrent extractions safely.
+- **Security Logging**: All security-critical actions (failed logins, rate limit hits, anonymous trial usage) are persisted in the `logs` table and viewable via the Admin Dashboard.
 
 ## Sub-Services
 - **Python Downloader**: A standalone script using `yt-dlp` for robust Instagram extraction.

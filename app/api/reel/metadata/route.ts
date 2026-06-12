@@ -1,25 +1,40 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getUser } from "@/utils/getUser";
+import { getVisitorId } from "@/utils/auth";
 import { fetchReelMetadata, validateReelUrl } from "@/utils/instagram";
 import { db } from "@/db";
 import { downloadsTable } from "@/db/schema";
-import { checkDownloadRateLimit } from "@/utils/rateLimit";
-import { eq, and, desc, gte, isNull, count } from "drizzle-orm";
+import { checkDownloadRateLimit, checkIPRateLimit } from "@/utils/rateLimit";
+import { eq, and, desc, gte, isNull, count, or } from "drizzle-orm";
 
 export async function POST(req: NextRequest) {
   try {
-    const user = await getUser();
     const ip = req.headers.get("x-forwarded-for")?.split(',')[0] || "127.0.0.1";
 
+    // 1. Global IP Rate Limit (First Layer)
+    const isIPAllowed = await checkIPRateLimit(ip, "extraction");
+    if (!isIPAllowed) {
+      return NextResponse.json(
+        { error: "Too Many Requests", message: "Global rate limit exceeded. Please try again later." },
+        { status: 429 }
+      );
+    }
+
+    const user = await getUser();
+    const visitorId = await getVisitorId();
+
     if (!user) {
-      // Free tier logic: 1 free download
+      // Free tier logic: 1 free download (Checked by IP OR Visitor ID)
       const [anonStats] = await db
         .select({ total: count() })
         .from(downloadsTable)
         .where(
           and(
             isNull(downloadsTable.userId),
-            eq(downloadsTable.ipAddress, ip)
+            or(
+              eq(downloadsTable.ipAddress, ip),
+              eq(downloadsTable.visitorId, visitorId)
+            )
           )
         );
 
@@ -96,6 +111,7 @@ export async function POST(req: NextRequest) {
     // Insert to track limits and build cache
     await db.insert(downloadsTable).values({
       userId: user ? user.id : null,
+      visitorId: visitorId,
       ipAddress: ip,
       reelUrl: url,
       videoUrl: metadata.videoUrl,
