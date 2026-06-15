@@ -14,10 +14,10 @@ export default function Footer() {
             <div className="bg-foreground p-1.5 rounded-xl text-background shadow-lg shadow-indigo-500/5">
               <Sparkles size={16} fill="currentColor" />
             </div>
-            Vault
+            ClipVault
           </div>
           <p className="text-sm leading-relaxed font-medium">
-            A premium authentication infrastructure designed for scale, security, and exceptional user experience.
+            Fast, secure, and reliable content extraction powered by premium technology.
           </p>
         </div>
 
@@ -27,7 +27,7 @@ export default function Footer() {
             <div className="flex flex-col gap-3 text-sm font-medium">
               <Link href="/" className="hover:text-indigo-500 transition-colors">Workspace</Link>
               <Link href="/login" className="hover:text-indigo-500 transition-colors">Sign In</Link>
-              <Link href="/signup" className="hover:text-indigo-500 transition-colors">Join Vault</Link>
+              <Link href="/signup" className="hover:text-indigo-500 transition-colors">Join ClipVault</Link>
             </div>
           </div>
 
@@ -43,7 +43,7 @@ export default function Footer() {
 
       <div className="max-w-7xl mx-auto px-6 md:px-10 pb-10 flex flex-col md:flex-row justify-between items-center gap-6 text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground border-t border-border pt-10">
         <p suppressHydrationWarning>
-          © {new Date().getFullYear()} Vault Infrastructure
+          © {new Date().getFullYear()} ClipVault Infrastructure
         </p>
         <p className="flex items-center gap-1">
           Designed by <span className="text-foreground">Karan Bhosale</span>

@@ -1,8 +1,8 @@
 import { cookies } from "next/headers";
-import { signToken, verifyToken, type VaultJWTPayload } from "./jwt";
+import { signToken, verifyToken, type ClipVaultJWTPayload } from "./jwt";
 import { v4 as uuidv4 } from "uuid";
 
-interface User extends VaultJWTPayload {
+interface User extends ClipVaultJWTPayload {
   id: string;
   isVerified: boolean;
   role: string;

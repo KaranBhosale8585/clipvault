@@ -2,7 +2,7 @@ import { jwtVerify, SignJWT, type JWTPayload } from "jose";
 
 const JWT_SECRET = new TextEncoder().encode(process.env.JWT_SECRET);
 
-export interface VaultJWTPayload extends JWTPayload {
+export interface ClipVaultJWTPayload extends JWTPayload {
   id?: string;
   isVerified?: boolean;
   role?: string;
@@ -12,7 +12,7 @@ export interface VaultJWTPayload extends JWTPayload {
 /**
  * Signs a new JWT token with the provided payload.
  */
-export async function signToken(payload: VaultJWTPayload) {
+export async function signToken(payload: ClipVaultJWTPayload) {
   if (!JWT_SECRET) {
     throw new Error("JWT_SECRET is not defined");
   }
@@ -27,11 +27,11 @@ export async function signToken(payload: VaultJWTPayload) {
 /**
  * Verifies a JWT token and returns the payload.
  */
-export async function verifyToken(token: string): Promise<VaultJWTPayload | null> {
+export async function verifyToken(token: string): Promise<ClipVaultJWTPayload | null> {
   try {
     if (!token) return null;
     const { payload } = await jwtVerify(token, JWT_SECRET);
-    return payload as VaultJWTPayload;
+    return payload as ClipVaultJWTPayload;
   } catch {
     return null;
   }

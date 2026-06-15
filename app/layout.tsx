@@ -16,17 +16,17 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
-const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "https://vault-downloader.com";
+const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "https://clipvault.com";
 
 export const metadata: Metadata = {
   metadataBase: new URL(baseUrl),
   title: {
-    default: "Vault • Fast & Secure Instagram Reel Downloader",
-    template: "%s | Vault Downloader",
+    default: "ClipVault • Premium Content Extraction",
+    template: "%s | ClipVault",
   },
-  description: "Download high-quality Instagram Reels instantly. Vault is a secure, fast, and completely free tool with no hidden limits. Try it now without logging in.",
-  keywords: ["Instagram Downloader", "Reel Downloader", "Download Instagram Video", "Save Reels", "Vault Downloader"],
-  authors: [{ name: "Vault Team" }],
+  description: "Download high-quality Instagram Reels instantly. ClipVault is a secure, fast, and professional tool with no hidden limits. Try it now without logging in.",
+  keywords: ["Instagram Downloader", "Reel Downloader", "Download Instagram Video", "Save Reels", "ClipVault"],
+  authors: [{ name: "ClipVault Team" }],
   alternates: {
     canonical: "/",
   },
@@ -34,21 +34,21 @@ export const metadata: Metadata = {
     type: "website",
     locale: "en_US",
     url: baseUrl,
-    title: "Vault • Fast & Secure Instagram Reel Downloader",
-    description: "Download high-quality Instagram Reels instantly. Vault is a secure, fast, and completely free tool.",
-    siteName: "Vault Downloader",
+    title: "ClipVault • Premium Content Extraction",
+    description: "Download high-quality Instagram Reels instantly. ClipVault is a secure, fast, and professional tool.",
+    siteName: "ClipVault",
     images: [
       {
         url: "/og-image.jpg",
         width: 1200,
         height: 630,
-        alt: "Vault Downloader Preview",
+        alt: "ClipVault Preview",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Vault • Fast & Secure Instagram Reel Downloader",
+    title: "ClipVault • Premium Content Extraction",
     description: "Download high-quality Instagram Reels instantly. Secure and fast.",
     images: ["/twitter-image.jpg"],
   },

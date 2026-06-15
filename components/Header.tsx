@@ -49,7 +49,7 @@ export default function Header() {
             <Sparkles size={18} fill="currentColor" />
           </div>
           <span className="text-xl font-black tracking-tighter text-foreground group-hover:opacity-80 transition-opacity">
-            Vault
+            ClipVault
           </span>
         </Link>
 

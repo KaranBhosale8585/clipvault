@@ -79,16 +79,16 @@ export default function ReelDownloader() {
         <CardHeader className="pb-4">
           <CardTitle className="text-xl font-bold text-foreground flex items-center gap-2">
             <Download className="w-5 h-5 text-indigo-500" />
-            Instagram Reel Downloader
+            ClipVault Extraction Engine
           </CardTitle>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleExtract} className="space-y-4">
             <div className="relative group">
-              <LinkIcon className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground group-focus-within:text-indigo-500 transition-colors" />
+              <LinkIcon className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground group-focus-within:text-indigo-500 transition-colors z-10" />
               <Input
                 type="text"
-                placeholder="Paste Instagram Reel URL here..."
+                placeholder="Paste Instagram Reel URL..."
                 value={url}
                 onChange={(e) => setUrl(e.target.value)}
                 className="pl-11 h-14 bg-background border-border rounded-2xl focus-visible:ring-indigo-500/20 focus-visible:border-indigo-500 transition-all text-sm font-medium"
