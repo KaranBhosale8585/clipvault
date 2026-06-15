@@ -25,6 +25,12 @@ export const usersTable = pgTable("users", {
 
   lastDownloadReset: timestamp("last_download_reset").defaultNow().notNull(),
 
+  isProAccess: boolean("is_pro_access").default(false).notNull(),
+
+  proAccessGrantedAt: timestamp("pro_access_granted_at"),
+
+  proAccessGrantedBy: uuid("pro_access_granted_by"),
+
   createdAt: timestamp("created_at").defaultNow().notNull(),
 
   updatedAt: timestamp("updated_at")
@@ -110,5 +116,42 @@ export const logsTable = pgTable(
   },
   (table) => ({
     levelIdx: index("log_level_idx").on(table.level),
+  }),
+);
+
+export const unlimitedAccessRequestsTable = pgTable(
+  "unlimited_access_requests",
+  {
+    id: uuid("id").defaultRandom().primaryKey(),
+
+    userId: uuid("user_id")
+      .notNull()
+      .references(() => usersTable.id),
+
+    name: varchar("name", { length: 255 }).notNull(),
+
+    email: varchar("email", { length: 255 }).notNull(),
+
+    useCase: varchar("use_case", { length: 2048 }).notNull(),
+
+    expectedUsage: varchar("expected_usage", { length: 255 }).notNull(), // Using varchar to allow ranges or descriptions
+
+    notes: varchar("notes", { length: 4096 }),
+
+    status: varchar("status", { length: 20 }).default("PENDING").notNull(), // PENDING, APPROVED, REJECTED
+
+    reviewedBy: uuid("reviewed_by"),
+
+    reviewedAt: timestamp("reviewed_at"),
+
+    createdAt: timestamp("created_at").defaultNow().notNull(),
+
+    updatedAt: timestamp("updated_at")
+      .defaultNow()
+      .$onUpdate(() => new Date()),
+  },
+  (table) => ({
+    userIdx: index("ua_req_user_idx").on(table.userId),
+    statusIdx: index("ua_req_status_idx").on(table.status),
   }),
 );

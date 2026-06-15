@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { verifyToken } from "./utils/jwt";
 
 const authPages = ["/login", "/signup"];
-const protectedRoutes = ["/dashboard", "/history", "/admin", "/verify"];
+const protectedRoutes = ["/dashboard", "/history", "/admin", "/verify", "/unlimited-access"];
 
 export async function proxy(req: NextRequest) {
   const { pathname } = req.nextUrl;

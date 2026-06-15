@@ -86,6 +86,12 @@
   - [x] Implement daily reset logic in API
   - [x] Create dedicated `DailyLimitReached` component
   - [x] Implement conditional rendering for daily limits in UI
+- [x] Create Unlimited Access Request System
+  - [x] Create `unlimited_access_requests` table
+  - [x] Prepare user model (`isProAccess`, etc.) for future approval flow
+  - [x] Build `UnlimitedAccessRequestForm` component with status views
+  - [x] Add secure API endpoints (`POST` and `GET`)
+  - [x] Protect `/unlimited-access` route in middleware
 - [x] Cleanup unused variables and fix critical lint warnings
 - [x] Fix TypeScript errors in components
 - [x] Add `typecheck` script to `package.json`

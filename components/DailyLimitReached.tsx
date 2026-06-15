@@ -29,7 +29,7 @@ export default function DailyLimitReached() {
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 md:gap-6">
-        <Link href="/contact" className="w-full">
+        <Link href="/unlimited-access" className="w-full">
           <Button size="lg" className="w-full h-14 md:h-20 bg-indigo-600 hover:bg-indigo-700 text-white rounded-2xl md:rounded-[2rem] font-black text-base md:text-xl shadow-2xl shadow-indigo-500/20 gap-3 group">
             Request Unlimited Access <Sparkles className="w-5 h-5 md:w-6 md:h-6 group-hover:scale-110 transition-transform" />
           </Button>

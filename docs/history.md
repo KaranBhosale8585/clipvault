@@ -88,11 +88,28 @@
   - Implemented `callbackUrl` support in authentication flow to preserve user destination after login.
 - **Files Changed**: `app/layout.tsx`, `app/page.tsx`, `app/download/page.tsx`, `proxy.ts`, `app/(Auth UI)/login/page.tsx`, `app/(Auth UI)/signup/page.tsx`, `components/Header.tsx`, `components/Footer.tsx`.
 
-### fix: enhance download history UX and security audit
-- **Description**: Investigated and hardened the download history deletion logic. Replaced native confirmation dialogs with modern UI components. Verified user-scoped filtering to prevent cross-user data leakage.
+### feat: implement MPA structure and route restructuring
+- **Description**: Migrated the core downloader to the homepage (`/`) and created dedicated public pages (About, Features, Pricing, Contact) to improve SEO and user acquisition. Added protected routes (`/dashboard`, `/history`).
+- **Files Changed**: `app/page.tsx`, `app/about/page.tsx`, `app/features/page.tsx`, `app/pricing/page.tsx`, `app/contact/page.tsx`, `proxy.ts`, `components/Header.tsx`, `components/Footer.tsx`.
+
+### feat: implement usage limits and conversion screens
+- **Description**: Implemented strict usage limits for both guest and authenticated users to prevent abuse and manage server resources.
 - **Key Changes**:
-  - Added "Confirm/Cancel" state to History deletion for better UX.
-  - Verified that `DELETE /api/reel/history` is strictly scoped to `user.id`.
-  - Added Suspense boundaries to Auth pages for Next.js production compatibility.
-- **Files Changed**: `components/DownloadHistory.tsx`, `app/api/reel/history/route.ts`, `app/(Auth UI)/login/page.tsx`, `app/(Auth UI)/signup/page.tsx`.
+  - **Guest Users**: Limited to 3 downloads total (tracked via IP and signed `visitor_id`). Redirected to a `LimitReached` conversion screen.
+  - **Authenticated Users**: Limited to 10 downloads per day (tracked via `daily_download_count` and `last_download_reset` in DB). Redirected to a `DailyLimitReached` screen.
+  - **Intent Persistence**: Preserved the user's intended Reel URL through the authentication flow via `callbackUrl`.
+- **Files Changed**: `app/api/reel/metadata/route.ts`, `db/schema.ts`, `components/LimitReached.tsx`, `components/DailyLimitReached.tsx`, `app/page.tsx`, `components/ReelDownloader.tsx`.
+
+### feat: comprehensive responsiveness overhaul
+- **Description**: Standardized responsive behavior across the entire application using a "mobile-first" approach. Fluidly scaled typography, padding, grid layouts, and interactive elements for optimal display on small devices (320px) up to large desktops.
+- **Files Changed**: `app/page.tsx`, `components/ReelDownloader.tsx`, `components/LimitReached.tsx`, `app/pricing/page.tsx`, `app/contact/page.tsx`, `components/DownloadHistory.tsx`, `app/features/page.tsx`, `app/about/page.tsx`, `components/Header.tsx`, `components/Footer.tsx`.
+
+### feat: implement unlimited access request system
+- **Description**: Developed a comprehensive request system allowing authenticated users to apply for unrestricted extraction capabilities.
+- **Key Changes**:
+  - Designed the `unlimited_access_requests` table to track applications.
+  - Prepared the `users` table (`is_pro_access`, `pro_access_granted_at`) for future automated administrative approval flows.
+  - Built secure API endpoints (`/api/unlimited-access/request`) preventing duplicate pending requests.
+  - Implemented the `UnlimitedAccessRequestForm` component, providing dynamic status interfaces (`PENDING`, `APPROVED`, `REJECTED`).
+- **Files Changed**: `db/schema.ts`, `app/api/unlimited-access/request/route.ts`, `components/UnlimitedAccessRequestForm.tsx`, `app/unlimited-access/page.tsx`, `proxy.ts`.
 
