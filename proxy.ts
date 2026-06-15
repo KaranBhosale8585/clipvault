@@ -2,14 +2,14 @@ import { NextRequest, NextResponse } from "next/server";
 import { verifyToken } from "./utils/jwt";
 
 const authPages = ["/login", "/signup"];
-const protectedRoutes = ["/", "/verify"];
+const protectedRoutes = ["/verify"]; // Removed "/" and "/download" from required auth
 const adminRoutes = ["/admin"];
 
 export async function proxy(req: NextRequest) {
   const { pathname } = req.nextUrl;
 
-  // Bypass API routes to avoid interfering with internal API logic
-  if (pathname.startsWith("/api")) {
+  // Bypass API routes and static files
+  if (pathname.startsWith("/api") || pathname.startsWith("/_next") || pathname.includes(".")) {
     return NextResponse.next();
   }
 
@@ -31,7 +31,9 @@ export async function proxy(req: NextRequest) {
   const isAdminRoute = adminRoutes.some(route => pathname.startsWith(route));
 
   if (!user && (isProtectedRoute || isAdminRoute)) {
-    return NextResponse.redirect(new URL("/login", req.url));
+    const loginUrl = new URL("/login", req.url);
+    loginUrl.searchParams.set("callbackUrl", pathname);
+    return NextResponse.redirect(loginUrl);
   }
 
   // 3. Protect Admin routes from non-admin users
