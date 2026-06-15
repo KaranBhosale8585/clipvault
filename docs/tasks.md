@@ -52,3 +52,11 @@
     - [x] Refactor `DownloadHistory.tsx`
     - [x] Refactor `app/admin/page.tsx`
     - [x] Refactor Auth UI pages (Login, Signup, Verify, Forgot Password)
+- [x] Rebrand application to "ClipVault"
+  - [x] Update global SEO & OpenGraph metadata
+  - [x] Update user-facing branding text
+  - [x] Separate Landing Page (/) from Downloader (/download)
+  - [x] Implement `callbackUrl` support for authentication
+  - [x] Fix Download History UX and confirm logic
+  - [x] Validate build and production readiness
+

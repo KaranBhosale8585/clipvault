@@ -79,11 +79,20 @@
 ### feat: secure admin authentication and middleware
 - **Description**: Updated `utils/jwt.ts` to include user roles in tokens. Refined `proxy.ts` to protect `/admin` routes. Created `middleware.ts` to enforce these checks globally.
 - **Files Changed**: `utils/jwt.ts`, `proxy.ts`, `middleware.ts`.
+## 2026-06-15
+### feat: rebrand to ClipVault and separate landing page
+- **Description**: Rebranded the entire application to "ClipVault", including metadata, SEO, and user-facing text. Separated the core downloader interface from the marketing landing page.
+- **Key Changes**:
+  - Root route (`/`) is now a marketing-focused landing page with "How It Works", "Stats", and "FAQ" sections.
+  - Core downloader moved to `/download`.
+  - Implemented `callbackUrl` support in authentication flow to preserve user destination after login.
+- **Files Changed**: `app/layout.tsx`, `app/page.tsx`, `app/download/page.tsx`, `proxy.ts`, `app/(Auth UI)/login/page.tsx`, `app/(Auth UI)/signup/page.tsx`, `components/Header.tsx`, `components/Footer.tsx`.
 
-### feat: perform final production audit and implement security hardening
-- **Description**: Conducted a final production audit and implemented several critical hardening measures:
-  - **Robust Tracking**: Replaced simple IP tracking for anonymous users with a hybrid approach using signed "Visitor ID" cookies and IP correlation.
-  - **Abuse Protection**: Implemented a global IP-based rate limit (100 req / 15 mins) to protect against bot spam.
-  - **Data Retention**: Added an automatic 30-day purge for logs and download history to ensure database scalability.
-  - **SEO Finalization**: Added canonical URLs, refined OpenGraph site configuration, and verified crawler instructions.
-- **Files Changed**: `utils/auth.ts`, `db/schema.ts`, `app/api/reel/metadata/route.ts`, `app/api/admin/stats/route.ts`, `app/layout.tsx`, `utils/rateLimit.ts`, `docs/architecture.md`.
+### fix: enhance download history UX and security audit
+- **Description**: Investigated and hardened the download history deletion logic. Replaced native confirmation dialogs with modern UI components. Verified user-scoped filtering to prevent cross-user data leakage.
+- **Key Changes**:
+  - Added "Confirm/Cancel" state to History deletion for better UX.
+  - Verified that `DELETE /api/reel/history` is strictly scoped to `user.id`.
+  - Added Suspense boundaries to Auth pages for Next.js production compatibility.
+- **Files Changed**: `components/DownloadHistory.tsx`, `app/api/reel/history/route.ts`, `app/(Auth UI)/login/page.tsx`, `app/(Auth UI)/signup/page.tsx`.
+
