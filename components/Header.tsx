@@ -2,11 +2,17 @@
 
 import Link from "next/link";
 import { useState, useEffect } from "react";
-import { Menu, X, LogOut, Sparkles, LayoutDashboard, History } from "lucide-react";
+import { Menu, X, LogOut, Sparkles, LayoutDashboard, History, ArrowRight } from "lucide-react";
 import { useRouter, usePathname } from "next/navigation";
 import { toast } from "sonner";
 import { ThemeToggle } from "./ThemeToggle";
 import { cn } from "@/utils/cn";
+
+type NavLink = {
+  name: string;
+  href: string;
+  icon?: React.ReactNode;
+};
 
 export default function Header() {
   const [open, setOpen] = useState(false);
@@ -51,14 +57,14 @@ export default function Header() {
     }
   };
 
-  const navLinks = [
+  const navLinks: NavLink[] = [
     { name: "Features", href: "/features" },
     { name: "Pricing", href: "/pricing" },
     { name: "About", href: "/about" },
     { name: "Contact", href: "/contact" },
   ];
 
-  const authLinks = user ? [
+  const authLinks: NavLink[] = user ? [
     { name: "Dashboard", href: "/dashboard", icon: <LayoutDashboard size={14} /> },
     { name: "History", href: "/history", icon: <History size={14} /> },
   ] : [
@@ -68,14 +74,14 @@ export default function Header() {
 
   return (
     <header className="sticky top-0 z-50 w-full bg-background/80 backdrop-blur-xl border-b border-border transition-all duration-300">
-      <div className="max-w-7xl mx-auto px-6 md:px-10 py-4 flex items-center justify-between">
+      <div className="max-w-7xl mx-auto px-4 md:px-10 py-4 flex items-center justify-between">
         {/* Logo */}
-        <div className="flex items-center gap-12">
+        <div className="flex items-center gap-6 lg:gap-10 shrink-0">
           <Link href="/" className="flex items-center gap-2.5 group">
             <div className="bg-foreground p-1.5 rounded-xl text-background shadow-lg shadow-indigo-500/10 group-hover:scale-105 transition-transform duration-500 ease-spring">
               <Sparkles size={18} fill="currentColor" />
             </div>
-            <span className="text-xl font-black tracking-tighter text-foreground group-hover:opacity-80 transition-opacity">
+            <span className="text-xl font-black tracking-tighter text-foreground group-hover:opacity-80 transition-opacity whitespace-nowrap">
               ClipVault
             </span>
           </Link>
@@ -98,7 +104,7 @@ export default function Header() {
         </div>
 
         {/* Actions */}
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2 md:gap-3">
           <div className="hidden lg:flex items-center gap-6 mr-4">
             {authLinks.map((link) => (
               <Link
@@ -131,8 +137,9 @@ export default function Header() {
           )}
 
           <button 
-            className="p-2 text-muted-foreground lg:hidden" 
+            className="p-3 -mr-2 text-muted-foreground lg:hidden rounded-xl hover:bg-muted transition-colors" 
             onClick={() => setOpen(!open)}
+            aria-label="Toggle Menu"
           >
             {open ? <X size={20} /> : <Menu size={20} />}
           </button>
@@ -141,20 +148,24 @@ export default function Header() {
 
       {/* Mobile Menu */}
       {open && (
-        <div className="lg:hidden absolute top-full left-0 w-full bg-background border-b border-border animate-in fade-in slide-in-from-top-2 duration-300">
-          <div className="px-6 py-8 space-y-6">
-            <div className="grid grid-cols-2 gap-4">
+        <div className="lg:hidden absolute top-full left-0 w-full bg-background border-b border-border animate-in fade-in slide-in-from-top-2 duration-300 shadow-2xl">
+          <div className="px-4 py-8 space-y-8">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               {navLinks.concat(authLinks).map((link) => (
                 <Link
                   key={link.name}
                   href={link.href}
                   onClick={() => setOpen(false)}
                   className={cn(
-                    "flex items-center justify-center p-4 rounded-2xl border border-border text-xs font-black uppercase tracking-widest transition-all",
-                    pathname === link.href ? "bg-indigo-600 text-white border-indigo-600" : "bg-muted/50 text-foreground"
+                    "flex items-center justify-between p-5 rounded-2xl border border-border text-xs font-black uppercase tracking-widest transition-all active:scale-[0.98]",
+                    pathname === link.href ? "bg-indigo-600 text-white border-indigo-600" : "bg-muted/30 text-foreground hover:bg-muted/50"
                   )}
                 >
-                  {link.name}
+                  <span className="flex items-center gap-3">
+                    {"icon" in link && link.icon}
+                    {link.name}
+                  </span>
+                  <ArrowRight size={14} className={cn("opacity-50", pathname === link.href && "opacity-100")} />
                 </Link>
               ))}
             </div>

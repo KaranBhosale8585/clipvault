@@ -3,7 +3,7 @@ import { getUser } from "@/utils/getUser";
 import { db } from "@/db";
 import { logsTable } from "@/db/schema";
 
-export async function POST(req: NextRequest) {
+export async function POST(_req: NextRequest) {
   try {
     const user = await getUser();
     if (!user || user.role !== "admin") {
@@ -13,7 +13,7 @@ export async function POST(req: NextRequest) {
     await db.delete(logsTable);
 
     return NextResponse.json({ message: "Logs cleared successfully" });
-  } catch (error: unknown) {
+  } catch (_error: unknown) {
     return NextResponse.json({ error: "Failed to clear logs" }, { status: 500 });
   }
 }

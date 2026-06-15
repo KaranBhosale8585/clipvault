@@ -9,16 +9,16 @@ export const metadata: Metadata = {
 
 export default function FeaturesPage() {
   return (
-    <div className="min-h-screen bg-background text-foreground py-24">
-      <div className="max-w-7xl mx-auto px-6">
-        <div className="text-center mb-20">
-          <h1 className="text-5xl md:text-8xl font-black tracking-tighter mb-6">Built for Creators.</h1>
-          <p className="text-xl text-muted-foreground font-medium max-w-2xl mx-auto">
+    <div className="min-h-screen bg-background text-foreground py-12 md:py-24">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6">
+        <div className="text-center mb-16 md:mb-20">
+          <h1 className="text-4xl md:text-6xl lg:text-7xl xl:text-8xl font-black tracking-tighter mb-6">Built for Creators.</h1>
+          <p className="text-lg md:text-xl text-muted-foreground font-medium max-w-2xl mx-auto">
             We&apos;ve packed ClipVault with industry-leading features to make content saving effortless.
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
           <FeatureItem 
             icon={<Zap className="w-8 h-8 text-amber-500" />}
             title="Instant Extraction"
@@ -57,12 +57,12 @@ export default function FeaturesPage() {
 
 function FeatureItem({ icon, title, desc }: { icon: React.ReactNode; title: string; desc: string }) {
   return (
-    <Card className="p-10 border-border rounded-[2.5rem] bg-card hover:shadow-xl transition-all">
-      <div className="mb-8 p-4 bg-muted rounded-3xl w-fit">
+    <Card className="p-5 md:p-10 border-border rounded-3xl md:rounded-[2.5rem] bg-card hover:shadow-xl transition-all">
+      <div className="mb-6 md:mb-8 p-3 md:p-4 bg-muted rounded-2xl md:rounded-3xl w-fit">
         {icon}
       </div>
-      <h3 className="text-2xl font-black mb-4">{title}</h3>
-      <p className="text-muted-foreground font-medium leading-relaxed">{desc}</p>
+      <h3 className="text-xl md:text-2xl font-black mb-4">{title}</h3>
+      <p className="text-sm md:text-base text-muted-foreground font-medium leading-relaxed">{desc}</p>
     </Card>
   );
 }

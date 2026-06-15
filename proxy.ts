@@ -2,7 +2,6 @@ import { NextRequest, NextResponse } from "next/server";
 import { verifyToken } from "./utils/jwt";
 
 const authPages = ["/login", "/signup"];
-const publicRoutes = ["/", "/about", "/features", "/pricing", "/contact", "/login", "/signup"];
 const protectedRoutes = ["/dashboard", "/history", "/admin", "/verify"];
 
 export async function proxy(req: NextRequest) {

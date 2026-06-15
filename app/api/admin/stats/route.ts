@@ -2,9 +2,9 @@ import { NextRequest, NextResponse } from "next/server";
 import { getUser } from "@/utils/getUser";
 import { db } from "@/db";
 import { usersTable, downloadsTable, logsTable } from "@/db/schema";
-import { count, desc, eq, lt, gte, sql, isNull, isNotNull } from "drizzle-orm";
+import { count, desc, eq, lt, gte, isNull, isNotNull } from "drizzle-orm";
 
-export async function GET(req: NextRequest) {
+export async function GET(_req: NextRequest) {
   try {
     const user = await getUser();
     

@@ -5,6 +5,7 @@ import {
   timestamp,
   boolean,
   index,
+  integer,
 } from "drizzle-orm/pg-core";
 
 export const usersTable = pgTable("users", {
@@ -19,6 +20,10 @@ export const usersTable = pgTable("users", {
   role: varchar("role", { length: 20 }).default("user").notNull(), // user, admin
 
   isVerified: boolean("is_verified").default(false).notNull(),
+
+  dailyDownloadCount: integer("daily_download_count").default(0).notNull(),
+
+  lastDownloadReset: timestamp("last_download_reset").defaultNow().notNull(),
 
   createdAt: timestamp("created_at").defaultNow().notNull(),
 

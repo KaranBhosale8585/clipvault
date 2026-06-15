@@ -53,10 +53,18 @@ D:\products\downloader\
 - **Input Validation**: URLs are validated using regex (`INSTAGRAM_REEL_REGEX`) before hitting the Python extraction service.
 
 ## SEO Strategy
-- **Marketing Landing Page**: The root route (`/`) is a dedicated, public marketing page designed for maximum conversion and search visibility.
+- **Core Application Hub**: The root route (`/`) serves as the central downloader application, optimized for both conversion and search visibility.
 - **Dynamic Metadata**: `app/layout.tsx` includes comprehensive OpenGraph, Twitter Cards, and canonical URLs.
 - **Structured Data**: JSON-LD (`WebApplication` schema) is injected into pages for enhanced search engine indexing.
-- **Crawling**: `sitemap.xml` and `robots.txt` are dynamically generated to guide search engine bots.
+
+## Limit Enforcement & Conversion
+- **Anonymous Tracking**: Guest users are allowed 3 downloads total. Tracking uses a combination of IP address and a signed `visitor_id` cookie.
+- **Authenticated Limits**: Logged-in users are allowed 10 downloads per day. This is tracked via `daily_download_count` and `last_download_reset` in the `users` table.
+- **Daily Reset**: The system automatically resets the authenticated user's count if the last reset was on a previous day.
+- **Dedicated Limit Screens**: 
+    - Guest users see a "Free Download Limit Reached" screen.
+    - Authenticated users see a "Daily Limit Reached" screen with upgrade options.
+- **UX Preservation**: The user's last entered URL is preserved through the authentication flow using query parameters (`?url=...`), allowing them to resume extraction immediately after sign-in.
 
 ## Scalability
 - **Metadata Caching**: Metadata is cached for 12 hours in the database to minimize expensive Python child process execution.

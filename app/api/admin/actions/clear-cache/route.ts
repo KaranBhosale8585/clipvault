@@ -4,7 +4,7 @@ import { db } from "@/db";
 import { downloadsTable } from "@/db/schema";
 import { isNull } from "drizzle-orm";
 
-export async function POST(req: NextRequest) {
+export async function POST(_req: NextRequest) {
   try {
     const user = await getUser();
     if (!user || user.role !== "admin") {
@@ -15,7 +15,7 @@ export async function POST(req: NextRequest) {
     await db.delete(downloadsTable).where(isNull(downloadsTable.userId));
 
     return NextResponse.json({ message: "Cache cleared successfully" });
-  } catch (error: unknown) {
+  } catch (_error: unknown) {
     return NextResponse.json({ error: "Failed to clear cache" }, { status: 500 });
   }
 }

@@ -92,9 +92,9 @@ export default function DownloadHistory() {
   }
 
   return (
-    <Card className="border-border rounded-3xl p-8 shadow-none bg-card">
+    <Card className="border-border rounded-3xl p-5 md:p-8 shadow-none bg-card">
       <CardHeader className="p-0 mb-6 flex flex-row items-center justify-between gap-4">
-        <CardTitle className="text-lg font-bold text-foreground flex items-center gap-2">
+        <CardTitle className="text-base md:text-lg font-bold text-foreground flex items-center gap-2">
           <History className="w-5 h-5 text-indigo-500" />
           Recent Downloads
         </CardTitle>

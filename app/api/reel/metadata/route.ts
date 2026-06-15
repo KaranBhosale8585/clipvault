@@ -3,9 +3,9 @@ import { getUser } from "@/utils/getUser";
 import { getVisitorId } from "@/utils/auth";
 import { fetchReelMetadata, validateReelUrl } from "@/utils/instagram";
 import { db } from "@/db";
-import { downloadsTable } from "@/db/schema";
+import { downloadsTable, usersTable } from "@/db/schema";
 import { checkDownloadRateLimit, checkIPRateLimit } from "@/utils/rateLimit";
-import { eq, and, desc, gte, isNull, count, or } from "drizzle-orm";
+import { eq, and, desc, gte, isNull, count, or, sql } from "drizzle-orm";
 
 export async function POST(req: NextRequest) {
   try {
@@ -45,11 +45,41 @@ export async function POST(req: NextRequest) {
         );
       }
     } else {
-      // Authenticated user rate limiting
+      // Authenticated user logic: 10 downloads / day
+      const [dbUser] = await db
+        .select()
+        .from(usersTable)
+        .where(eq(usersTable.id, user.id));
+
+      if (dbUser) {
+        const now = new Date();
+        const lastReset = new Date(dbUser.lastDownloadReset);
+        
+        // Reset count if it's a new day (UTC based for consistency)
+        if (now.toDateString() !== lastReset.toDateString()) {
+          await db
+            .update(usersTable)
+            .set({ 
+              dailyDownloadCount: 0, 
+              lastDownloadReset: now 
+            })
+            .where(eq(usersTable.id, user.id));
+          dbUser.dailyDownloadCount = 0;
+        }
+
+        if (dbUser.dailyDownloadCount >= 10 && dbUser.role !== 'admin') {
+          return NextResponse.json(
+            { error: "Daily Limit Reached", message: "You have reached your daily limit of 10 downloads. Please contact support to increase your limit." },
+            { status: 403 }
+          );
+        }
+      }
+
+      // Maintain legacy rate limit (15 min window) as additional protection
       const isAllowed = await checkDownloadRateLimit(user.id);
       if (!isAllowed) {
         return NextResponse.json(
-          { error: "Too Many Requests", message: "Download limit exceeded. Please wait 15 minutes." },
+          { error: "Too Many Requests", message: "Burst limit reached. Please wait a few minutes." },
           { status: 429 }
         );
       }
@@ -119,6 +149,14 @@ export async function POST(req: NextRequest) {
       title: metadata.title,
       status: "completed",
     });
+
+    // Increment authenticated user daily count
+    if (user) {
+      await db
+        .update(usersTable)
+        .set({ dailyDownloadCount: sql`${usersTable.dailyDownloadCount} + 1` })
+        .where(eq(usersTable.id, user.id));
+    }
 
     return NextResponse.json({
       data: metadata,

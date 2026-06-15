@@ -3,7 +3,7 @@ import { getUser } from "@/utils/getUser";
 
 export async function GET(req: NextRequest) {
   try {
-    const user = await getUser();
+    await getUser();
     // Allow anonymous users to use the proxy (consistent with metadata API policy)
     // Limits are already enforced at the extraction layer (metadata API)
 

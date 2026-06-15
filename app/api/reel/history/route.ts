@@ -4,7 +4,7 @@ import { db } from "@/db";
 import { downloadsTable } from "@/db/schema";
 import { desc, eq } from "drizzle-orm";
 
-export async function GET(req: NextRequest) {
+export async function GET(_req: NextRequest) {
   try {
     const user = await getUser();
     
@@ -36,7 +36,7 @@ export async function GET(req: NextRequest) {
   }
 }
 
-export async function DELETE(req: NextRequest) {
+export async function DELETE(_req: NextRequest) {
   try {
     const user = await getUser();
     

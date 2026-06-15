@@ -36,7 +36,7 @@ export async function runPythonScript<T>(
     try {
       const response: PythonBridgeResponse<T> = JSON.parse(stdout);
       return response;
-    } catch (parseError) {
+    } catch {
       await logger.error(`Failed to parse Python output: ${stdout}`, source);
       return {
         success: false,
