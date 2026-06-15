@@ -24,7 +24,7 @@ export async function POST(req: NextRequest) {
     const visitorId = await getVisitorId();
 
     if (!user) {
-      // Free tier logic: 1 free download (Checked by IP OR Visitor ID)
+      // Free tier logic: 3 free downloads (Checked by IP OR Visitor ID)
       const [anonStats] = await db
         .select({ total: count() })
         .from(downloadsTable)
@@ -38,9 +38,9 @@ export async function POST(req: NextRequest) {
           )
         );
 
-      if (anonStats.total >= 1) {
+      if (anonStats.total >= 3) {
         return NextResponse.json(
-          { error: "Limit Exceeded", message: "Free trial limit reached. Please log in or sign up to continue downloading." },
+          { error: "Limit Exceeded", message: "Free trial limit reached (3 downloads). Please log in or sign up to continue downloading." },
           { status: 401 }
         );
       }

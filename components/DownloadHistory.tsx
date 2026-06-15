@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
-import { Download, History, Play, ExternalLink, Loader2 } from "lucide-react";
+import { Download, History, Play, ExternalLink, Loader2, Trash2 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -20,6 +20,8 @@ interface DownloadRecord {
 export default function DownloadHistory() {
   const [history, setHistory] = useState<DownloadRecord[]>([]);
   const [loading, setLoading] = useState(true);
+  const [clearing, setClearing] = useState(false);
+  const [showConfirm, setShowConfirm] = useState(false);
 
   const fetchHistory = async () => {
     try {
@@ -35,13 +37,40 @@ export default function DownloadHistory() {
     }
   };
 
+  const handleClearHistory = async () => {
+    setClearing(true);
+    try {
+      const res = await fetch("/api/reel/history", {
+        method: "DELETE",
+      });
+
+      if (res.ok) {
+        toast.success("History cleared successfully");
+        setHistory([]);
+        setShowConfirm(false);
+      } else {
+        const data = await res.json();
+        toast.error(data.message || "Failed to clear history");
+      }
+    } catch {
+      toast.error("Network error clearing history");
+    } finally {
+      setClearing(false);
+    }
+  };
+
   useEffect(() => {
-    fetchHistory();
+    const timer = setTimeout(() => {
+      fetchHistory();
+    }, 0);
     
     // Refresh history when a new download is triggered (via custom event)
     const handleRefresh = () => fetchHistory();
     window.addEventListener("refresh-history", handleRefresh);
-    return () => window.removeEventListener("refresh-history", handleRefresh);
+    return () => {
+      clearTimeout(timer);
+      window.removeEventListener("refresh-history", handleRefresh);
+    };
   }, []);
 
   if (loading) {
@@ -64,14 +93,51 @@ export default function DownloadHistory() {
 
   return (
     <Card className="border-border rounded-3xl p-8 shadow-none bg-card">
-      <CardHeader className="p-0 mb-6 flex flex-row items-center justify-between">
+      <CardHeader className="p-0 mb-6 flex flex-row items-center justify-between gap-4">
         <CardTitle className="text-lg font-bold text-foreground flex items-center gap-2">
           <History className="w-5 h-5 text-indigo-500" />
           Recent Downloads
         </CardTitle>
-        <span className="text-xs font-bold text-muted-foreground uppercase tracking-widest">
-          Last 10 Items
-        </span>
+        <div className="flex items-center gap-4">
+           {history.length > 0 && !showConfirm && (
+             <Button 
+               variant="outline" 
+               size="sm" 
+               onClick={() => setShowConfirm(true)} 
+               disabled={clearing}
+               className="rounded-xl border-red-500/20 text-red-500 hover:bg-red-500 hover:text-white transition-all gap-2 h-9 px-4"
+             >
+               <Trash2 className="w-3 h-3" />
+               Clear
+             </Button>
+           )}
+           {showConfirm && (
+             <div className="flex items-center gap-2 animate-in fade-in zoom-in-95 duration-200">
+                <Button 
+                  variant="destructive" 
+                  size="sm" 
+                  onClick={handleClearHistory} 
+                  disabled={clearing}
+                  className="rounded-xl h-9 px-4 text-xs font-bold"
+                >
+                  {clearing ? <Loader2 className="w-3 h-3 animate-spin mr-2" /> : null}
+                  Confirm
+                </Button>
+                <Button 
+                  variant="ghost" 
+                  size="sm" 
+                  onClick={() => setShowConfirm(false)} 
+                  disabled={clearing}
+                  className="rounded-xl h-9 px-4 text-xs font-bold"
+                >
+                  Cancel
+                </Button>
+             </div>
+           )}
+           <span className="text-xs font-bold text-muted-foreground uppercase tracking-widest hidden sm:inline-block">
+             Last 10 Items
+           </span>
+        </div>
       </CardHeader>
 
       <CardContent className="p-0">

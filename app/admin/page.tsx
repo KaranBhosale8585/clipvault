@@ -81,7 +81,10 @@ export default function AdminDashboard() {
   };
 
   useEffect(() => {
-    fetchAdminData();
+    const timer = setTimeout(() => {
+      fetchAdminData();
+    }, 0);
+    return () => clearTimeout(timer);
   }, []);
 
   const handleAction = async (action: "clear-logs" | "clear-downloads" | "clear-cache") => {

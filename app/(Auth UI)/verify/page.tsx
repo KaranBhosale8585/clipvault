@@ -97,7 +97,7 @@ export default function VerifyOTP() {
                 Verify Identity
               </CardTitle>
               <CardDescription className="text-muted-foreground font-medium">
-                We've sent a 6-digit secure code to your email address
+                We&apos;ve sent a 6-digit secure code to your email address
               </CardDescription>
             </div>
           </CardHeader>
