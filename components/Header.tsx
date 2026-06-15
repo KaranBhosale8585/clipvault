@@ -1,35 +1,49 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
-import { Menu, X, LogOut, Sparkles } from "lucide-react";
-import { useRouter } from "next/navigation";
+import { useState, useEffect } from "react";
+import { Menu, X, LogOut, Sparkles, LayoutDashboard, History } from "lucide-react";
+import { useRouter, usePathname } from "next/navigation";
 import { toast } from "sonner";
 import { ThemeToggle } from "./ThemeToggle";
+import { cn } from "@/utils/cn";
 
 export default function Header() {
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [user, setUser] = useState<{ id: string } | null>(null);
   const router = useRouter();
+  const pathname = usePathname();
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      try {
+        const res = await fetch("/api/get-me");
+        if (res.ok) {
+          const data = await res.json();
+          setUser(data);
+        } else {
+          setUser(null);
+        }
+      } catch {
+        setUser(null);
+      }
+    };
+    fetchUser();
+  }, [pathname]);
 
   const handleLogout = async () => {
     try {
       setLoading(true);
-
       const res = await fetch("/api/logout", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
       });
-
-      const data = await res.json();
-
-      if (!res.ok) {
-        toast.error(data.message || "Logout failed");
-        return;
+      if (res.ok) {
+        toast.success("Logged out");
+        setUser(null);
+        router.push("/login");
       }
-
-      toast.success("Logged out");
-      router.push("/login");
     } catch {
       toast.error("Something went wrong");
     } finally {
@@ -37,35 +51,87 @@ export default function Header() {
     }
   };
 
+  const navLinks = [
+    { name: "Features", href: "/features" },
+    { name: "Pricing", href: "/pricing" },
+    { name: "About", href: "/about" },
+    { name: "Contact", href: "/contact" },
+  ];
+
+  const authLinks = user ? [
+    { name: "Dashboard", href: "/dashboard", icon: <LayoutDashboard size={14} /> },
+    { name: "History", href: "/history", icon: <History size={14} /> },
+  ] : [
+    { name: "Login", href: "/login" },
+    { name: "Sign Up", href: "/signup" },
+  ];
+
   return (
     <header className="sticky top-0 z-50 w-full bg-background/80 backdrop-blur-xl border-b border-border transition-all duration-300">
       <div className="max-w-7xl mx-auto px-6 md:px-10 py-4 flex items-center justify-between">
         {/* Logo */}
-        <Link
-          href="/"
-          className="flex items-center gap-2.5 group"
-        >
-          <div className="bg-foreground p-1.5 rounded-xl text-background shadow-lg shadow-indigo-500/10 group-hover:scale-105 transition-transform duration-500 ease-spring">
-            <Sparkles size={18} fill="currentColor" />
-          </div>
-          <span className="text-xl font-black tracking-tighter text-foreground group-hover:opacity-80 transition-opacity">
-            ClipVault
-          </span>
-        </Link>
+        <div className="flex items-center gap-12">
+          <Link href="/" className="flex items-center gap-2.5 group">
+            <div className="bg-foreground p-1.5 rounded-xl text-background shadow-lg shadow-indigo-500/10 group-hover:scale-105 transition-transform duration-500 ease-spring">
+              <Sparkles size={18} fill="currentColor" />
+            </div>
+            <span className="text-xl font-black tracking-tighter text-foreground group-hover:opacity-80 transition-opacity">
+              ClipVault
+            </span>
+          </Link>
+
+          {/* Desktop Nav */}
+          <nav className="hidden lg:flex items-center gap-8">
+            {navLinks.map((link) => (
+              <Link
+                key={link.name}
+                href={link.href}
+                className={cn(
+                  "text-xs font-black uppercase tracking-widest transition-all hover:text-indigo-500",
+                  pathname === link.href ? "text-indigo-600" : "text-muted-foreground"
+                )}
+              >
+                {link.name}
+              </Link>
+            ))}
+          </nav>
+        </div>
 
         {/* Actions */}
         <div className="flex items-center gap-3">
+          <div className="hidden lg:flex items-center gap-6 mr-4">
+            {authLinks.map((link) => (
+              <Link
+                key={link.name}
+                href={link.href}
+                className={cn(
+                  "flex items-center gap-2 text-xs font-black uppercase tracking-widest transition-all hover:text-indigo-500",
+                  pathname === link.href ? "text-indigo-600" : "text-muted-foreground"
+                )}
+              >
+                {"icon" in link && link.icon}
+                {link.name}
+              </Link>
+            ))}
+          </div>
+
           <ThemeToggle />
-          <div className="h-6 w-px bg-border mx-2 hidden sm:block"></div>
-          <button
-            onClick={handleLogout}
-            disabled={loading}
-            className="hidden sm:inline-flex items-center px-4 py-2 text-xs font-bold uppercase tracking-widest text-muted-foreground hover:text-foreground transition-colors disabled:opacity-50"
-          >
-            {loading ? "..." : "Sign Out"}
-          </button>
+          
+          {user && (
+            <>
+              <div className="h-6 w-px bg-border mx-2 hidden sm:block"></div>
+              <button
+                onClick={handleLogout}
+                disabled={loading}
+                className="hidden sm:inline-flex items-center px-4 py-2 text-xs font-bold uppercase tracking-widest text-muted-foreground hover:text-rose-500 transition-colors disabled:opacity-50"
+              >
+                {loading ? "..." : "Sign Out"}
+              </button>
+            </>
+          )}
+
           <button 
-            className="p-2 text-muted-foreground md:hidden" 
+            className="p-2 text-muted-foreground lg:hidden" 
             onClick={() => setOpen(!open)}
           >
             {open ? <X size={20} /> : <Menu size={20} />}
@@ -75,15 +141,33 @@ export default function Header() {
 
       {/* Mobile Menu */}
       {open && (
-        <div className="md:hidden absolute top-full left-0 w-full bg-background border-b border-border animate-in fade-in slide-in-from-top-2 duration-300">
+        <div className="lg:hidden absolute top-full left-0 w-full bg-background border-b border-border animate-in fade-in slide-in-from-top-2 duration-300">
           <div className="px-6 py-8 space-y-6">
-            <button
-              onClick={handleLogout}
-              className="flex items-center justify-center w-full px-4 py-4 bg-background border border-border rounded-2xl text-sm font-bold text-foreground transition"
-            >
-              <LogOut size={16} className="mr-2" />
-              Sign Out
-            </button>
+            <div className="grid grid-cols-2 gap-4">
+              {navLinks.concat(authLinks).map((link) => (
+                <Link
+                  key={link.name}
+                  href={link.href}
+                  onClick={() => setOpen(false)}
+                  className={cn(
+                    "flex items-center justify-center p-4 rounded-2xl border border-border text-xs font-black uppercase tracking-widest transition-all",
+                    pathname === link.href ? "bg-indigo-600 text-white border-indigo-600" : "bg-muted/50 text-foreground"
+                  )}
+                >
+                  {link.name}
+                </Link>
+              ))}
+            </div>
+            
+            {user && (
+              <button
+                onClick={handleLogout}
+                className="flex items-center justify-center w-full px-4 py-4 bg-rose-500/10 border border-rose-500/20 rounded-2xl text-xs font-black uppercase tracking-widest text-rose-500 transition"
+              >
+                <LogOut size={16} className="mr-2" />
+                Sign Out
+              </button>
+            )}
           </div>
         </div>
       )}

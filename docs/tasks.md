@@ -59,4 +59,18 @@
   - [x] Implement `callbackUrl` support for authentication
   - [x] Fix Download History UX and confirm logic
   - [x] Validate build and production readiness
+- [x] Implement MPA structure and route restructuring
+  - [x] Move downloader to homepage (/)
+  - [x] Create public routes: /about, /features, /pricing, /contact
+  - [x] Create protected routes: /dashboard, /history
+  - [x] Rename proxy.ts to middleware.ts for proper Next.js integration
+  - [x] Update navigation links in Header and Footer
+  - [x] Add SEO metadata and branding to all new pages
+
+## Pending Fixes (Audit Findings)
+- [x] Rename `proxy.ts` to `middleware.ts` to ensure route protection is active
+- [x] Update `app/api/download-proxy/route.ts` to allow anonymous users (consistent with metadata API)
+- [ ] Cleanup unused variables and fix lint warnings
+- [x] Add `typecheck` script to `package.json`
+
 

@@ -4,9 +4,8 @@ import { getUser } from "@/utils/getUser";
 export async function GET(req: NextRequest) {
   try {
     const user = await getUser();
-    if (!user) {
-      return new NextResponse("Unauthorized", { status: 401 });
-    }
+    // Allow anonymous users to use the proxy (consistent with metadata API policy)
+    // Limits are already enforced at the extraction layer (metadata API)
 
     const url = req.nextUrl.searchParams.get("url");
     const filename = req.nextUrl.searchParams.get("filename") || "instagram-reel.mp4";

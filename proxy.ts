@@ -2,8 +2,8 @@ import { NextRequest, NextResponse } from "next/server";
 import { verifyToken } from "./utils/jwt";
 
 const authPages = ["/login", "/signup"];
-const protectedRoutes = ["/verify"]; // Removed "/" and "/download" from required auth
-const adminRoutes = ["/admin"];
+const publicRoutes = ["/", "/about", "/features", "/pricing", "/contact", "/login", "/signup"];
+const protectedRoutes = ["/dashboard", "/history", "/admin", "/verify"];
 
 export async function proxy(req: NextRequest) {
   const { pathname } = req.nextUrl;
@@ -27,23 +27,23 @@ export async function proxy(req: NextRequest) {
   }
 
   // 2. Protect routes from unauthenticated users
-  const isProtectedRoute = protectedRoutes.includes(pathname);
-  const isAdminRoute = adminRoutes.some(route => pathname.startsWith(route));
+  const isProtectedRoute = protectedRoutes.some(route => pathname.startsWith(route));
 
-  if (!user && (isProtectedRoute || isAdminRoute)) {
+  if (!user && isProtectedRoute) {
     const loginUrl = new URL("/login", req.url);
     loginUrl.searchParams.set("callbackUrl", pathname);
     return NextResponse.redirect(loginUrl);
   }
 
   // 3. Protect Admin routes from non-admin users
+  const isAdminRoute = pathname.startsWith("/admin");
   if (isAdminRoute && role !== "admin") {
     return NextResponse.redirect(new URL("/", req.url));
   }
 
   // 4. Redirect logged-in users away from auth pages
   if (user && authPages.includes(pathname)) {
-    return NextResponse.redirect(new URL("/", req.url));
+    return NextResponse.redirect(new URL("/dashboard", req.url));
   }
 
   return NextResponse.next();

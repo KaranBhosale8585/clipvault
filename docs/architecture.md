@@ -9,10 +9,15 @@ D:\products\downloader\
 ├── docs/                # Project documentation
 ├── app/                 # Next.js App Router (Routes & API)
 │   ├── (Auth UI)/       # Login, Signup, Verify, etc.
+│   ├── about/           # About Page
 │   ├── admin/           # Admin Control Center
 │   ├── api/             # API Endpoints (Auth, Metadata, History, Proxy)
-│   ├── download/        # Core Downloader Application
-│   └── page.tsx         # Marketing Landing Page
+│   ├── contact/         # Contact Page
+│   ├── dashboard/       # User Dashboard
+│   ├── features/        # Features Page
+│   ├── history/         # History Page
+│   ├── pricing/         # Pricing Page
+│   └── page.tsx         # Core Downloader (Homepage)
 ├── components/          # Shared React UI components
 ├── db/                  # Drizzle ORM Schema and DB client
 ├── services/            # Python extraction scripts
@@ -20,8 +25,13 @@ D:\products\downloader\
 ```
 
 ## Route Structure
-- `/`: Public marketing landing page. SEO focused.
-- `/download`: Core downloader application. Public access for free trial (3 downloads), then requires authentication.
+- `/`: Core downloader application. Public access for free trial (3 downloads), then requires authentication.
+- `/about`: Company mission and values.
+- `/features`: Detailed technical capabilities of the extraction engine.
+- `/pricing`: Subscription tiers (Free/Pro).
+- `/contact`: Support and feedback channel.
+- `/dashboard`: Protected user overview and profile.
+- `/history`: Protected download history viewer.
 - `/admin`: Protected admin dashboard for platform monitoring.
 
 ## API Flow
