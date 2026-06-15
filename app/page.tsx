@@ -21,6 +21,7 @@ type User = {
   email: string;
   role: string;
   isVerified: boolean;
+  isProAccess: boolean;
 };
 
 export default function DownloadDashboard() {
@@ -208,7 +209,24 @@ export default function DownloadDashboard() {
                       </div>
                       <div className="min-w-0">
                         <p className="text-base md:text-lg font-black text-foreground truncate">{user.name}</p>
-                        <p className="text-xs md:text-sm font-medium text-muted-foreground truncate">{user.email}</p>
+                        <p className="text-xs md:text-sm font-medium text-muted-foreground truncate mb-2">{user.email}</p>
+                        <div className="flex flex-wrap gap-2">
+                          <span className="text-[8px] md:text-[9px] font-black uppercase tracking-widest bg-indigo-500/10 text-indigo-500 px-1.5 py-0.5 rounded-md border border-indigo-500/20">
+                            {user.role}
+                          </span>
+                          <span className="text-[8px] md:text-[9px] font-black uppercase tracking-widest bg-emerald-500/10 text-emerald-500 px-1.5 py-0.5 rounded-md border border-emerald-500/20">
+                            Verified
+                          </span>
+                          {user.isProAccess ? (
+                            <span className="text-[8px] md:text-[9px] font-black uppercase tracking-widest bg-amber-500/10 text-amber-500 px-1.5 py-0.5 rounded-md border border-amber-500/20">
+                              PRO ACCESS
+                            </span>
+                          ) : (
+                            <span className="text-[8px] md:text-[9px] font-black uppercase tracking-widest bg-slate-500/10 text-slate-500 px-1.5 py-0.5 rounded-md border border-slate-500/20">
+                              Free Tier
+                            </span>
+                          )}
+                        </div>
                       </div>
                     </div>
                     
@@ -230,17 +248,19 @@ export default function DownloadDashboard() {
                     </div>
                   </Card>
 
-                  <Card className="border-border rounded-[2rem] p-6 md:p-8 bg-indigo-50 dark:bg-indigo-500/5 border-dashed relative overflow-hidden">
-                    <div className="relative z-10">
-                      <h4 className="text-xs font-black uppercase tracking-widest text-indigo-600 dark:text-indigo-400 mb-2">Pro Status</h4>
-                      <p className="text-xl md:text-2xl font-black text-foreground mb-4">Unlimited Access</p>
-                      <div className="flex items-center gap-2 text-muted-foreground font-medium text-xs md:text-sm">
-                        <CheckCircle2 className="w-4 h-4 text-indigo-500" />
-                        <span>Lifetime active license</span>
+                  {user.isProAccess && (
+                    <Card className="border-border rounded-[2rem] p-6 md:p-8 bg-indigo-50 dark:bg-indigo-500/5 border-dashed relative overflow-hidden">
+                      <div className="relative z-10">
+                        <h4 className="text-xs font-black uppercase tracking-widest text-indigo-600 dark:text-indigo-400 mb-2">Pro Status</h4>
+                        <p className="text-xl md:text-2xl font-black text-foreground mb-4">Unlimited Access</p>
+                        <div className="flex items-center gap-2 text-muted-foreground font-medium text-xs md:text-sm">
+                          <CheckCircle2 className="w-4 h-4 text-indigo-500" />
+                          <span>Lifetime active license</span>
+                        </div>
                       </div>
-                    </div>
-                    <Sparkles className="absolute -top-4 -right-4 w-20 h-20 md:w-24 md:h-24 text-indigo-500/10 -rotate-12" />
-                  </Card>
+                      <Sparkles className="absolute -top-4 -right-4 w-20 h-20 md:w-24 md:h-24 text-indigo-500/10 -rotate-12" />
+                    </Card>
+                  )}
                 </motion.div>
               ) : (
                 <motion.div

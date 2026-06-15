@@ -12,6 +12,7 @@ interface UserData {
   name: string;
   email: string;
   role: string;
+  isProAccess: boolean;
 }
 
 export default function DashboardPage() {
@@ -77,10 +78,10 @@ export default function DashboardPage() {
             link="/history"
           />
           <DashboardCard 
-            icon={<ShieldCheck className="w-6 h-6 text-emerald-500" />}
+            icon={<ShieldCheck className={`w-6 h-6 ${user?.isProAccess ? "text-emerald-500" : "text-muted-foreground"}`} />}
             title="Account"
-            value="Verified Pro"
-            link="#"
+            value={user?.isProAccess ? "Verified Pro" : "Free Tier"}
+            link="/unlimited-access"
           />
           {user?.role === "admin" && (
             <DashboardCard 
@@ -107,6 +108,11 @@ export default function DashboardPage() {
                 <span className="text-[10px] font-black uppercase tracking-widest bg-emerald-500/10 text-emerald-500 px-2 py-1 rounded-md border border-emerald-500/20">
                   Verified
                 </span>
+                {user?.isProAccess && (
+                  <span className="text-[10px] font-black uppercase tracking-widest bg-amber-500/10 text-amber-500 px-2 py-1 rounded-md border border-amber-500/20">
+                    PRO ACCESS
+                  </span>
+                )}
               </div>
             </div>
           </div>

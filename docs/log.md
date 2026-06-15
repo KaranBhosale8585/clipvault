@@ -2,6 +2,77 @@
 
 ## 2026-06-15
 
+### Task: UX Improvement: Replace Native Confirm Dialog
+- **Timestamp**: 2026-06-15 11:45 PM
+- **Status**: Completed
+- **Files**: `app/admin/unlimited-access/page.tsx`, `app/admin/page.tsx`, `components/ui/alert-dialog.tsx`, `package.json`, `pnpm-lock.yaml`
+- **Root Cause Analysis**: 
+    - The admin approval and rejection flows for PRO access requests, as well as the destructive actions in the maintenance panel, were using the browser's native `window.confirm()` dialog. This provided a jarring, unstyled user experience that did not match the application's premium aesthetic and lacked support for proper loading states during asynchronous API calls.
+- **Implementation Details**: 
+    - **Component Addition**: Installed `@radix-ui/react-alert-dialog` and implemented the complete suite of Shadcn UI `AlertDialog` components (`AlertDialog`, `AlertDialogTrigger`, `AlertDialogContent`, etc.).
+    - **Integration**: Refactored `app/admin/unlimited-access/page.tsx` and `app/admin/page.tsx` to use the new `AlertDialog` for approval/rejection actions and maintenance actions (Clear Logs, Purge Downloads, Flush Cache) respectively.
+    - **UX Enhancements**:
+        - Replaced native alerts with a styled modal centered on the screen with a backdrop blur overlay.
+        - Implemented distinct visual styles for actions: Emerald green for "Approve" and Rose red for "Reject".
+        - Added clear, descriptive text explaining the consequences of each action before submission.
+        - Integrated loading spinners (`Loader2`) directly into the action buttons within the modal.
+        - Disabled action and cancel buttons while the API request is in flight to prevent double submissions.
+        - Preserved success/error toast notifications post-action.
+- **Verification**: 
+    - Verified that the modal appears correctly on click.
+    - Confirmed that actions execute successfully and close the modal automatically.
+    - Confirmed that loading states block duplicate clicks.
+    - Clean build, lint, and typecheck passed.
+
+### Task: Follow-up Audit & Fix: Pro Access Sync
+- **Timestamp**: 2026-06-15 10:30 PM
+- **Status**: Completed
+- **Files**: `app/page.tsx`, `app/admin/page.tsx`, `app/admin/unlimited-access/page.tsx`
+- **Root Cause Analysis**: 
+    - **Homepage**: The homepage (`app/page.tsx`) had a hardcoded "Pro Status" card and the `User` type was missing the `isProAccess` field, causing it to display PRO status for all authenticated users. It also lacked the granular account tier badges found on the dashboard.
+    - **Admin Navigation**: The "PRO Access Management" hero card was missing or incorrectly placed in the main Admin Dashboard.
+- **Implementation Details**: 
+    - **Homepage Fix**: Updated the `User` type and wrapped the PRO status card in a conditional check. Added dynamic "PRO ACCESS", "Free Tier", and "Verified" badges to the homepage profile card to match dashboard functionality.
+    - **Admin UX Finalization**: Re-implemented and prominently placed the "PRO Access Management" hero card in `app/admin/page.tsx`.
+    - **Route Verification**: Confirmed that `/admin/unlimited-access` is fully functional and secure.
+- **Verification**: 
+    - **Approval Test**: Setting `isProAccess = true` correctly shows badges on Homepage, Dashboard, and allows unlimited downloads.
+    - **Revocation Test**: Setting `isProAccess = false` immediately removes all PRO indicators, shows "Free Tier" badges, and re-enforces limits.
+- **Final Validation**: Clean build, lint, and typecheck passed.
+
+### Task: Bug Fix: Pro Access Status Sync
+- **Timestamp**: 2026-06-15 09:15 PM
+- **Status**: Completed
+- **Files**: `utils/getUser.ts`, `app/dashboard/page.tsx`, `components/UnlimitedAccessRequestForm.tsx`, `app/admin/page.tsx`
+- **Root Cause Analysis**: 
+    - The `getUser` utility was not returning PRO-specific fields (`isProAccess`, `proAccessGrantedAt`), causing components to either hardcode status or rely on stale request data.
+    - Dashboard UI was hardcoded to display "Verified Pro" regardless of actual account state.
+    - `UnlimitedAccessRequestForm` was determining UI state solely based on the `unlimited_access_requests` table, ignoring direct database modifications to the user record (e.g., revoking access).
+- **Implementation Details**: 
+    - **Single Source of Truth**: Updated `getUser` to fetch and return all PRO-related fields directly from the `users` table.
+    - **Dynamic Dashboard**: Refactored the dashboard to use the real-time `isProAccess` flag, displaying "Free Tier" or "Verified Pro" as appropriate and adding a visual PRO badge to the profile card.
+    - **Robust Request Form**: Updated the request form component to prioritize the user's actual PRO status over the request status. This ensures that if access is revoked in the DB, the UI immediately reverts to the application form.
+    - **Admin UX**: Moved the "PRO Access Management" link to a prominent hero card in the Admin Dashboard for better visibility.
+- **Verification**: 
+    - Verified that revoking PRO status in the database immediately updates the UI across all protected routes.
+    - Confirmed that PRO users bypass limits while standard users are restricted to 10/day.
+    - Full build, lint, and typecheck passed.
+
+### Task: Admin Management for Unlimited Access Requests
+- **Timestamp**: 2026-06-15 08:30 PM
+- **Status**: Completed
+- **Files**: `app/api/admin/unlimited-access/*`, `app/admin/unlimited-access/page.tsx`, `utils/email.ts`, `app/api/reel/metadata/route.ts`, `app/admin/page.tsx`, `docs/*`
+- **Implementation Details**: 
+    - **Administrative UI**: Created a dedicated management console at `/admin/unlimited-access` with filterable request tables and real-time status updates.
+    - **Approval Workflow**: Implemented secure API endpoints for approving and rejecting PRO access requests. Approval automatically grants the user `isProAccess` status.
+    - **Email Notifications**: Integrated Nodemailer to send professional approval and rejection emails to users.
+    - **Usage Entitlement**: Updated the extraction API to allow PRO users to bypass all daily and burst download limits.
+    - **Security & Audit**: Implemented strict admin-only role checks and comprehensive audit logging for all administrative actions.
+- **Verification**: 
+    - Full build, lint, and typecheck passed successfully.
+    - Verified bypass logic for PRO users in extraction route.
+    - Verified email utility robustness.
+
 ### Task: Unlimited Access Request System Architecture
 - **Timestamp**: 2026-06-15 06:15 PM
 - **Status**: Completed

@@ -52,36 +52,43 @@ export async function POST(req: NextRequest) {
         .where(eq(usersTable.id, user.id));
 
       if (dbUser) {
-        const now = new Date();
-        const lastReset = new Date(dbUser.lastDownloadReset);
-        
-        // Reset count if it's a new day (UTC based for consistency)
-        if (now.toDateString() !== lastReset.toDateString()) {
-          await db
-            .update(usersTable)
-            .set({ 
-              dailyDownloadCount: 0, 
-              lastDownloadReset: now 
-            })
-            .where(eq(usersTable.id, user.id));
-          dbUser.dailyDownloadCount = 0;
-        }
+        // PRO users bypass all daily limits
+        if (dbUser.isProAccess) {
+          console.log(`PRO access bypass for user: ${dbUser.id}`);
+        } else {
+          const now = new Date();
+          const lastReset = new Date(dbUser.lastDownloadReset);
+          
+          // Reset count if it's a new day (UTC based for consistency)
+          if (now.toDateString() !== lastReset.toDateString()) {
+            await db
+              .update(usersTable)
+              .set({ 
+                dailyDownloadCount: 0, 
+                lastDownloadReset: now 
+              })
+              .where(eq(usersTable.id, user.id));
+            dbUser.dailyDownloadCount = 0;
+          }
 
-        if (dbUser.dailyDownloadCount >= 10 && dbUser.role !== 'admin') {
-          return NextResponse.json(
-            { error: "Daily Limit Reached", message: "You have reached your daily limit of 10 downloads. Please contact support to increase your limit." },
-            { status: 403 }
-          );
+          if (dbUser.dailyDownloadCount >= 10 && dbUser.role !== 'admin') {
+            return NextResponse.json(
+              { error: "Daily Limit Reached", message: "You have reached your daily limit of 10 downloads. Please contact support to increase your limit." },
+              { status: 403 }
+            );
+          }
         }
       }
 
-      // Maintain legacy rate limit (15 min window) as additional protection
-      const isAllowed = await checkDownloadRateLimit(user.id);
-      if (!isAllowed) {
-        return NextResponse.json(
-          { error: "Too Many Requests", message: "Burst limit reached. Please wait a few minutes." },
-          { status: 429 }
-        );
+      // Maintain legacy rate limit (15 min window) as additional protection (PRO users also bypass this)
+      if (!dbUser?.isProAccess) {
+        const isAllowed = await checkDownloadRateLimit(user.id);
+        if (!isAllowed) {
+          return NextResponse.json(
+            { error: "Too Many Requests", message: "Burst limit reached. Please wait a few minutes." },
+            { status: 429 }
+          );
+        }
       }
     }
 

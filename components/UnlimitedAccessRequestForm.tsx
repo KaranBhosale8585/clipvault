@@ -21,7 +21,17 @@ interface RequestData {
   createdAt: string;
 }
 
+interface UserData {
+  id: string;
+  name: string;
+  email: string;
+  role: string;
+  isProAccess: boolean;
+  proAccessGrantedAt: string | null;
+}
+
 export default function UnlimitedAccessRequestForm() {
+  const [user, setUser] = useState<UserData | null>(null);
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
   const [request, setRequest] = useState<RequestData | null>(null);
@@ -34,16 +44,25 @@ export default function UnlimitedAccessRequestForm() {
     notes: ""
   });
 
-  const fetchRequestStatus = async () => {
+  const fetchData = async () => {
     try {
       setLoading(true);
-      const res = await fetch("/api/unlimited-access/request");
-      const data = await res.json();
-      if (res.ok) {
-        setRequest(data.data);
+      
+      // Fetch user data
+      const userRes = await fetch("/api/get-me");
+      if (userRes.ok) {
+        const userData = await userRes.json();
+        setUser(userData);
+      }
+
+      // Fetch request status
+      const requestRes = await fetch("/api/unlimited-access/request");
+      const requestData = await requestRes.json();
+      if (requestRes.ok) {
+        setRequest(requestData.data);
       }
     } catch {
-      toast.error("Failed to load request status");
+      toast.error("Failed to load data");
     } finally {
       setLoading(false);
     }
@@ -51,7 +70,7 @@ export default function UnlimitedAccessRequestForm() {
 
   useEffect(() => {
     // eslint-disable-next-line react-hooks/set-state-in-effect
-    fetchRequestStatus();
+    fetchData();
   }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -71,7 +90,7 @@ export default function UnlimitedAccessRequestForm() {
       const data = await res.json();
       if (res.ok) {
         toast.success("Request submitted successfully!");
-        fetchRequestStatus();
+        fetchData();
       } else {
         toast.error(data.message || "Failed to submit request");
       }
@@ -90,23 +109,29 @@ export default function UnlimitedAccessRequestForm() {
     );
   }
 
+  // Priority 1: Check actual user PRO status
+  if (user?.isProAccess) {
+    return (
+      <StatusCard 
+        icon={<CheckCircle2 className="w-12 h-12 text-emerald-500" />}
+        title="Access Granted"
+        description="Your professional access is active! You can now enjoy unrestricted extractions."
+        dateLabel="Access Granted At"
+        dateValue={user.proAccessGrantedAt ? new Date(user.proAccessGrantedAt).toLocaleDateString() : "N/A"}
+        request={request}
+      />
+    );
+  }
+
+  // Priority 2: Check request status if not PRO yet
   if (request && request.status === "PENDING") {
     return (
       <StatusCard 
         icon={<Clock className="w-12 h-12 text-amber-500" />}
         title="Request Pending"
         description="Our team is currently reviewing your application for unlimited access."
-        request={request}
-      />
-    );
-  }
-
-  if (request && request.status === "APPROVED") {
-    return (
-      <StatusCard 
-        icon={<CheckCircle2 className="w-12 h-12 text-emerald-500" />}
-        title="Access Granted"
-        description="Your request for unlimited access has been approved! You can now enjoy unrestricted extractions."
+        dateLabel="Submitted On"
+        dateValue={new Date(request.createdAt).toLocaleDateString()}
         request={request}
       />
     );
@@ -119,11 +144,13 @@ export default function UnlimitedAccessRequestForm() {
           icon={<XCircle className="w-12 h-12 text-rose-500" />}
           title="Request Declined"
           description="Unfortunately, your request for unlimited access was not approved at this time."
+          dateLabel="Reviewed On"
+          dateValue={new Date(request.createdAt).toLocaleDateString()} // Use createdAt as fallback for simplicity here
           request={request}
         />
         <Button 
           variant="outline" 
-          className="w-full"
+          className="w-full h-12 rounded-xl font-bold border-border"
           onClick={() => setRequest(null)}
         >
           Submit New Request
@@ -228,7 +255,7 @@ export default function UnlimitedAccessRequestForm() {
   );
 }
 
-function StatusCard({ icon, title, description, request }: { icon: React.ReactNode, title: string, description: string, request: RequestData }) {
+function StatusCard({ icon, title, description, dateLabel, dateValue, request }: { icon: React.ReactNode, title: string, description: string, dateLabel: string, dateValue: string, request: RequestData | null }) {
   return (
     <Card className="border-border rounded-3xl overflow-hidden shadow-2xl shadow-indigo-500/5 p-8 md:p-12 text-center space-y-6">
       <div className="flex justify-center">
@@ -243,17 +270,21 @@ function StatusCard({ icon, title, description, request }: { icon: React.ReactNo
         </p>
       </div>
       <div className="bg-muted/50 rounded-2xl p-6 text-left space-y-4 max-w-md mx-auto">
+        {request && (
+          <>
+            <div>
+              <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground mb-1">Use Case</p>
+              <p className="text-sm font-bold text-foreground">{request.useCase}</p>
+            </div>
+            <div>
+              <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground mb-1">Expected Usage</p>
+              <p className="text-sm font-bold text-foreground">{request.expectedUsage}</p>
+            </div>
+          </>
+        )}
         <div>
-          <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground mb-1">Use Case</p>
-          <p className="text-sm font-bold text-foreground">{request.useCase}</p>
-        </div>
-        <div>
-          <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground mb-1">Expected Usage</p>
-          <p className="text-sm font-bold text-foreground">{request.expectedUsage}</p>
-        </div>
-        <div>
-          <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground mb-1">Submitted On</p>
-          <p className="text-sm font-bold text-foreground">{new Date(request.createdAt).toLocaleDateString()}</p>
+          <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground mb-1">{dateLabel}</p>
+          <p className="text-sm font-bold text-foreground">{dateValue}</p>
         </div>
       </div>
       <Link href="/" className="inline-block">

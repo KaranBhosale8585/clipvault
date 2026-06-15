@@ -68,8 +68,12 @@ D:\products\downloader\
 
 ## Unlimited Access Request System
 - **Request Flow**: Authenticated users can request "Pro Access" through `/unlimited-access`. This stores their use case, expected usage, and contact info in `unlimited_access_requests`.
-- **Request Status**: A user can only have one active `PENDING` request. The UI dynamically displays `PENDING`, `APPROVED`, or `REJECTED` states.
-- **Future Approval Architecture**: The `users` table is prepared with `is_pro_access`, `pro_access_granted_at`, and `pro_access_granted_by`. In the future, administrators will be able to review requests, update the status to `APPROVED`, and toggle the `is_pro_access` flag to automatically bypass standard daily limits.
+- **Administrative Management**: Administrators review requests via a dedicated console at `/admin/unlimited-access`.
+- **Approval Workflow**:
+    - **Approval**: Updates request status to `APPROVED`, sets `reviewedAt`, and updates the user record with `isProAccess: true`. An automated approval email is sent.
+    - **Rejection**: Updates status to `REJECTED` and sends a rejection email.
+- **Entitlement Logic**: The extraction API (`/api/reel/metadata`) checks for `isProAccess` status. If active, all daily download limits and burst rate limits are bypassed, providing unrestricted access to the extraction engine.
+- **Audit Trails**: All administrative actions are recorded in the `logs` table for security auditing.
 
 ## Scalability
 - **Metadata Caching**: Metadata is cached for 12 hours in the database to minimize expensive Python child process execution.

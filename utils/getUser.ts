@@ -25,6 +25,9 @@ export async function getUser() {
       email: user.email,
       role: user.role,
       isVerified: user.isVerified,
+      isProAccess: user.isProAccess,
+      proAccessGrantedAt: user.proAccessGrantedAt,
+      proAccessGrantedBy: user.proAccessGrantedBy,
     };
   } catch (error) {
     console.error("Invalid token or DB error:", error);

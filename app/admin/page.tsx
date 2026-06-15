@@ -16,6 +16,16 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Input } from "@/components/ui/input";
 import { motion, AnimatePresence } from "framer-motion";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 
 interface AdminData {
   stats: {
@@ -63,6 +73,15 @@ export default function AdminDashboard() {
   const [actionLoading, setActionLoading] = useState<string | null>(null);
   const [searchQuery, setSearchSearchQuery] = useState("");
 
+  // Dialog State
+  const [confirmDialog, setConfirmDialog] = useState<{
+    isOpen: boolean;
+    action: "clear-logs" | "clear-downloads" | "clear-cache" | null;
+  }>({
+    isOpen: false,
+    action: null,
+  });
+
   const fetchAdminData = async () => {
     try {
       const res = await fetch("/api/admin/stats");
@@ -87,10 +106,13 @@ export default function AdminDashboard() {
     return () => clearTimeout(timer);
   }, []);
 
-  const handleAction = async (action: "clear-logs" | "clear-downloads" | "clear-cache") => {
-    if (!confirm(`Are you sure you want to proceed with this destructive action?`)) return;
+  const handleAction = async () => {
+    const { action } = confirmDialog;
+    if (!action) return;
     
     setActionLoading(action);
+    setConfirmDialog((prev) => ({ ...prev, isOpen: false }));
+
     try {
       const res = await fetch(`/api/admin/actions/${action}`, { method: "POST" });
       if (res.ok) {
@@ -185,6 +207,30 @@ export default function AdminDashboard() {
             subtitle="Free tier usage"
           />
         </div>
+
+        {/* PRO Management Shortcut */}
+        <Card className="border-border rounded-3xl p-8 bg-card shadow-sm border border-indigo-500/10 mb-12 overflow-hidden relative group">
+          <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
+            <div className="flex items-center gap-6">
+              <div className="p-4 bg-indigo-500/10 rounded-2xl text-indigo-600 group-hover:bg-indigo-600 group-hover:text-white transition-all duration-500">
+                <ShieldCheck size={32} />
+              </div>
+              <div>
+                <h2 className="text-2xl font-black tracking-tight text-foreground">PRO Access Management</h2>
+                <p className="text-muted-foreground font-medium">Review and moderate unlimited access requests from creators.</p>
+              </div>
+            </div>
+            <Link href="/admin/unlimited-access">
+              <Button
+                className="h-14 px-8 rounded-2xl font-black text-sm uppercase tracking-widest bg-indigo-600 hover:bg-indigo-700 text-white shadow-lg shadow-indigo-500/20 gap-3"
+              >
+                <Users size={18} />
+                Manage Requests
+              </Button>
+            </Link>
+          </div>
+          <div className="absolute top-0 right-0 w-64 h-64 bg-indigo-500/5 rounded-full -mr-32 -mt-32 blur-3xl group-hover:bg-indigo-500/10 transition-all duration-700"></div>
+        </Card>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Main Content */}
@@ -404,21 +450,21 @@ export default function AdminDashboard() {
                   label="Clear Logs" 
                   icon={<ShieldAlert size={16} />}
                   isLoading={actionLoading === "clear-logs"}
-                  onClick={() => handleAction("clear-logs")}
+                  onClick={() => setConfirmDialog({ isOpen: true, action: "clear-logs" })}
                   variant="destructive-soft"
                 />
                 <AdminActionButton 
                   label="Purge Downloads" 
                   icon={<Trash2 size={16} />}
                   isLoading={actionLoading === "clear-downloads"}
-                  onClick={() => handleAction("clear-downloads")}
+                  onClick={() => setConfirmDialog({ isOpen: true, action: "clear-downloads" })}
                   variant="destructive-soft"
                 />
                 <AdminActionButton 
                   label="Flush Cache" 
                   icon={<Zap size={16} />}
                   isLoading={actionLoading === "clear-cache"}
-                  onClick={() => handleAction("clear-cache")}
+                  onClick={() => setConfirmDialog({ isOpen: true, action: "clear-cache" })}
                   variant="outline"
                 />
               </CardContent>
@@ -439,6 +485,40 @@ export default function AdminDashboard() {
           </div>
         </div>
       </div>
+
+      {/* Maintenance Confirmation Dialog */}
+      <AlertDialog 
+        open={confirmDialog.isOpen} 
+        onOpenChange={(open: boolean) => setConfirmDialog(prev => ({ ...prev, isOpen: open }))}
+      >
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Confirm Destructive Action</AlertDialogTitle>
+            <AlertDialogDescription>
+              Are you sure you want to proceed? This action cannot be undone and will permanently remove 
+              {confirmDialog.action === "clear-logs" ? " all system logs." : 
+               confirmDialog.action === "clear-downloads" ? " all download history." : 
+               " the system cache."}
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel disabled={!!actionLoading}>Cancel</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={(e: React.MouseEvent<HTMLButtonElement>) => {
+                e.preventDefault();
+                handleAction();
+              }}
+              className="bg-red-600 hover:bg-red-700 text-white"
+              disabled={!!actionLoading}
+            >
+              {actionLoading ? (
+                <RefreshCcw size={16} className="animate-spin mr-2" />
+              ) : null}
+              Proceed
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 }

@@ -1,6 +1,36 @@
 # Project Tasks - Instagram Reel Downloader
 
 ## Completed
+- [x] UX Improvement: Replace Native Confirm Dialog
+  - [x] Remove `window.confirm()` usage in admin requests view
+  - [x] Remove `window.confirm()` usage in admin maintenance panel
+  - [x] Install `@radix-ui/react-alert-dialog`
+  - [x] Create generic Shadcn `AlertDialog` component
+  - [x] Implement distinct approval/rejection modal states
+  - [x] Add inline loading indicators to modal actions
+  - [x] Prevent duplicate submissions during API requests
+- [x] Follow-up Audit & Fix: Pro Access Sync
+  - [x] Verified admin route `/admin/unlimited-access` existence and protection
+  - [x] Fixed hardcoded "Pro Status" card on homepage (app/page.tsx)
+  - [x] Added dynamic account tier badges (PRO ACCESS/Free Tier) to Homepage profile card
+  - [x] Re-added PRO Management hero card to Admin Dashboard
+  - [x] Established `isProAccess` as single source of truth on Homepage
+  - [x] Verified full revocation/approval UI state transitions
+- [x] Bug Fix: Pro Access Status Sync
+  - [x] established `isProAccess` in database as single source of truth
+  - [x] Updated `getUser` utility to return PRO fields
+  - [x] Updated Dashboard to display PRO status dynamically
+  - [x] Refactored `UnlimitedAccessRequestForm` to use user PRO status
+  - [x] Repositioned PRO management in Admin Dashboard
+  - [x] Verified download limit bypass consistency
+- [x] Admin Management for Unlimited Access Requests
+  - [x] Create admin page: /admin/unlimited-access
+  - [x] Implement API for fetching requests with filters
+  - [x] Implement API for approving requests
+  - [x] Implement API for rejecting requests
+  - [x] Integrate email notifications for approval/rejection
+  - [x] Bypass download limits for PRO users
+  - [x] Add audit logs and permission checks
 - [x] Integrate yt-dlp for reliable Instagram Reel extraction
   - [x] Create Python extraction service
   - [x] Create Node-Python bridge
