@@ -82,3 +82,42 @@ export async function sendRejectionEmail(email: string, name: string) {
     // We don't throw here to avoid breaking the main flow
   }
 }
+
+export async function sendContactNotificationEmail(data: {
+  name: string;
+  email: string;
+  subject: string;
+  message: string;
+}) {
+  try {
+    await transporter.sendMail({
+      from: `"ClipVault Contact" <${process.env.EMAIL_FROM}>`,
+      to: process.env.ADMIN_EMAIL || process.env.EMAIL_FROM,
+      subject: `📩 New Contact Submission: ${data.subject}`,
+      html: `
+        <div style="font-family: Arial, sans-serif; padding: 20px; line-height: 1.6; color: #333;">
+          <h2 style="color: #4f46e5;">New Contact Submission</h2>
+          <p>You have received a new message from the ClipVault contact form.</p>
+          
+          <div style="background: #f9fafb; border: 1px solid #e5e7eb; padding: 20px; margin: 20px 0; border-radius: 12px;">
+            <p style="margin: 0 0 10px 0;"><b>Name:</b> ${data.name}</p>
+            <p style="margin: 0 0 10px 0;"><b>Email:</b> ${data.email}</p>
+            <p style="margin: 0 0 10px 0;"><b>Subject:</b> ${data.subject}</p>
+            <hr style="border: none; border-top: 1px solid #e5e7eb; margin: 15px 0;" />
+            <p style="margin: 0;"><b>Message:</b></p>
+            <p style="margin: 10px 0 0 0; white-space: pre-wrap;">${data.message}</p>
+          </div>
+          
+          <p>Please log in to the admin panel to manage this submission.</p>
+          
+          <br/>
+          <p>Best regards,</p>
+          <p><b>ClipVault System</b></p>
+        </div>
+      `,
+    });
+    logger.info(`Contact notification email sent for ${data.email}`);
+  } catch (error) {
+    logger.error(`Failed to send contact notification email for ${data.email}`, "email-service", { error });
+  }
+}

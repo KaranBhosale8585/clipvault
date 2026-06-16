@@ -6,7 +6,7 @@ import {
   Users, ShieldCheck, Activity, ArrowLeft, 
   ExternalLink, AlertCircle, AlertTriangle, 
   Info, Trash2, Zap, Globe, BarChart3, Search,
-  RefreshCcw, Database, ShieldAlert
+  RefreshCcw, Database, ShieldAlert, Mail
 } from "lucide-react";
 import Link from "next/link";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
@@ -208,29 +208,56 @@ export default function AdminDashboard() {
           />
         </div>
 
-        {/* PRO Management Shortcut */}
-        <Card className="border-border rounded-3xl p-8 bg-card shadow-sm border border-indigo-500/10 mb-12 overflow-hidden relative group">
-          <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
-            <div className="flex items-center gap-6">
-              <div className="p-4 bg-indigo-500/10 rounded-2xl text-indigo-600 group-hover:bg-indigo-600 group-hover:text-white transition-all duration-500">
-                <ShieldCheck size={32} />
+        {/* Management Shortcuts */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-12">
+          {/* PRO Management Shortcut */}
+          <Card className="border-border rounded-3xl p-8 bg-card shadow-sm border border-indigo-500/10 overflow-hidden relative group">
+            <div className="relative z-10 flex flex-col justify-between h-full gap-6">
+              <div className="flex items-center gap-6">
+                <div className="p-4 bg-indigo-500/10 rounded-2xl text-indigo-600 group-hover:bg-indigo-600 group-hover:text-white transition-all duration-500">
+                  <ShieldCheck size={32} />
+                </div>
+                <div>
+                  <h2 className="text-xl font-black tracking-tight text-foreground">PRO Access</h2>
+                  <p className="text-xs text-muted-foreground font-medium">Review unlimited access requests.</p>
+                </div>
               </div>
-              <div>
-                <h2 className="text-2xl font-black tracking-tight text-foreground">PRO Access Management</h2>
-                <p className="text-muted-foreground font-medium">Review and moderate unlimited access requests from creators.</p>
-              </div>
+              <Link href="/admin/unlimited-access">
+                <Button
+                  className="w-full h-12 rounded-xl font-black text-xs uppercase tracking-widest bg-indigo-600 hover:bg-indigo-700 text-white shadow-lg shadow-indigo-500/20 gap-3"
+                >
+                  <Users size={16} />
+                  Manage Requests
+                </Button>
+              </Link>
             </div>
-            <Link href="/admin/unlimited-access">
-              <Button
-                className="h-14 px-8 rounded-2xl font-black text-sm uppercase tracking-widest bg-indigo-600 hover:bg-indigo-700 text-white shadow-lg shadow-indigo-500/20 gap-3"
-              >
-                <Users size={18} />
-                Manage Requests
-              </Button>
-            </Link>
-          </div>
-          <div className="absolute top-0 right-0 w-64 h-64 bg-indigo-500/5 rounded-full -mr-32 -mt-32 blur-3xl group-hover:bg-indigo-500/10 transition-all duration-700"></div>
-        </Card>
+            <div className="absolute top-0 right-0 w-32 h-32 bg-indigo-500/5 rounded-full -mr-16 -mt-16 blur-3xl group-hover:bg-indigo-500/10 transition-all duration-700"></div>
+          </Card>
+
+          {/* Contact Submissions Shortcut */}
+          <Card className="border-border rounded-3xl p-8 bg-card shadow-sm border border-sky-500/10 overflow-hidden relative group">
+            <div className="relative z-10 flex flex-col justify-between h-full gap-6">
+              <div className="flex items-center gap-6">
+                <div className="p-4 bg-sky-500/10 rounded-2xl text-sky-600 group-hover:bg-sky-600 group-hover:text-white transition-all duration-500">
+                  <Mail size={32} />
+                </div>
+                <div>
+                  <h2 className="text-xl font-black tracking-tight text-foreground">Inquiries</h2>
+                  <p className="text-xs text-muted-foreground font-medium">Manage user contact submissions.</p>
+                </div>
+              </div>
+              <Link href="/admin/contact-submissions">
+                <Button
+                  className="w-full h-12 rounded-xl font-black text-xs uppercase tracking-widest bg-sky-600 hover:bg-sky-700 text-white shadow-lg shadow-sky-500/20 gap-3"
+                >
+                  <Mail size={16} />
+                  View Submissions
+                </Button>
+              </Link>
+            </div>
+            <div className="absolute top-0 right-0 w-32 h-32 bg-sky-500/5 rounded-full -mr-16 -mt-16 blur-3xl group-hover:bg-sky-500/10 transition-all duration-700"></div>
+          </Card>
+        </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Main Content */}

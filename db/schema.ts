@@ -155,3 +155,30 @@ export const unlimitedAccessRequestsTable = pgTable(
     statusIdx: index("ua_req_status_idx").on(table.status),
   }),
 );
+
+export const contactSubmissionsTable = pgTable(
+  "contact_submissions",
+  {
+    id: uuid("id").defaultRandom().primaryKey(),
+
+    name: varchar("name", { length: 255 }).notNull(),
+
+    email: varchar("email", { length: 255 }).notNull(),
+
+    subject: varchar("subject", { length: 255 }).notNull(),
+
+    message: varchar("message", { length: 4096 }).notNull(),
+
+    status: varchar("status", { length: 20 }).default("NEW").notNull(), // NEW, READ, REPLIED
+
+    createdAt: timestamp("created_at").defaultNow().notNull(),
+
+    updatedAt: timestamp("updated_at")
+      .defaultNow()
+      .$onUpdate(() => new Date()),
+  },
+  (table) => ({
+    emailIdx: index("contact_email_idx").on(table.email),
+    statusIdx: index("contact_status_idx").on(table.status),
+  }),
+);

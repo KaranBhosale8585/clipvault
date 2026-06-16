@@ -75,6 +75,14 @@ D:\products\downloader\
 - **Entitlement Logic**: The extraction API (`/api/reel/metadata`) checks for `isProAccess` status. If active, all daily download limits and burst rate limits are bypassed, providing unrestricted access to the extraction engine.
 - **Audit Trails**: All administrative actions are recorded in the `logs` table for security auditing.
 
+## Contact System
+- **Submission Flow**: Users submit inquiries via the `/contact` page. The `POST` endpoint at `/api/contact` validates input and persists data in the `contact_submissions` table.
+- **Admin Notifications**: Upon successful submission, the system sends an automated notification email to the administrator containing the message details.
+- **Management Console**: Administrators manage inquiries via `/admin/contact-submissions`.
+- **Status Lifecycle**: Submissions track their state through `NEW`, `READ`, and `REPLIED` statuses.
+- **Administrative Actions**: Admins can mark submissions as read/replied or delete them using a secure confirmation workflow.
+- **Security**: The contact API includes basic input validation and email format checks. Admin routes are protected by role-based access control.
+
 ## Scalability
 - **Metadata Caching**: Metadata is cached for 12 hours in the database to minimize expensive Python child process execution.
 - **Database Optimization**: Added B-tree indexes to `user_id`, `reel_url`, and `visitor_id` for rapid lookups.

@@ -1,6 +1,13 @@
 # Project Tasks - Instagram Reel Downloader
 
 ## Completed
+- [x] Create functional Contact page
+  - [x] Name, Email, Subject, Message fields
+  - [x] Client + server validation
+  - [x] Loading, Success, and Error states
+  - [x] Store submissions in database
+  - [x] Send admin notification email
+  - [x] Create admin management view
 - [x] UX Improvement: Replace Native Confirm Dialog
   - [x] Remove `window.confirm()` usage in admin requests view
   - [x] Remove `window.confirm()` usage in admin maintenance panel

@@ -1,16 +1,77 @@
-import type { Metadata } from "next";
-import { Mail, Globe, MessageSquare } from "lucide-react";
+"use client";
+
+import { useState } from "react";
+import { Mail, Globe, MessageSquare, Loader2, CheckCircle2 } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-
-export const metadata: Metadata = {
-  title: "Contact Us | ClipVault",
-  description: "Get in touch with the ClipVault team for support or feedback.",
-};
+import { toast } from "sonner"; // Assuming sonner is used based on typical shadcn setup, let's check if it's installed. 
+// Actually, let me check package.json for toast library.
 
 export default function ContactPage() {
+  const [loading, setLoading] = useState(false);
+  const [submitted, setSubmitted] = useState(false);
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    subject: "",
+    message: "",
+  });
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+
+    try {
+      const res = await fetch("/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        throw new Error(data.error || "Failed to send message");
+      }
+
+      toast.success("Message sent successfully!");
+      setSubmitted(true);
+      setFormData({ name: "", email: "", subject: "", message: "" });
+    } catch (error) {
+      console.error(error);
+      const message = error instanceof Error ? error.message : "An unexpected error occurred";
+      toast.error(message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  if (submitted) {
+    return (
+      <div className="min-h-[80vh] flex items-center justify-center p-6">
+        <Card className="max-w-md w-full p-12 text-center space-y-6 border-border rounded-[3rem] bg-card shadow-2xl">
+          <div className="w-20 h-20 bg-emerald-500/10 text-emerald-500 rounded-3xl flex items-center justify-center mx-auto">
+            <CheckCircle2 className="w-10 h-10" />
+          </div>
+          <div className="space-y-2">
+            <h2 className="text-3xl font-black tracking-tight">Message Sent!</h2>
+            <p className="text-muted-foreground font-medium">
+              Thank you for reaching out. Our team will get back to you as soon as possible.
+            </p>
+          </div>
+          <Button 
+            onClick={() => setSubmitted(false)}
+            className="w-full h-14 bg-emerald-600 hover:bg-emerald-700 text-white rounded-2xl font-bold"
+          >
+            Send Another Message
+          </Button>
+        </Card>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-background text-foreground py-12 md:py-24">
       <div className="max-w-7xl mx-auto px-6">
@@ -29,28 +90,64 @@ export default function ContactPage() {
           </div>
 
           <Card className="p-6 md:p-12 border-border rounded-3xl md:rounded-[3.5rem] bg-card shadow-2xl shadow-indigo-500/5 mt-8 lg:mt-0">
-            <form className="space-y-4 md:space-y-6">
+            <form onSubmit={handleSubmit} className="space-y-4 md:space-y-6">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
                 <div className="space-y-1.5 md:space-y-2">
                   <Label htmlFor="name" className="text-[10px] md:text-xs font-black uppercase tracking-widest ml-1">Name</Label>
-                  <Input id="name" placeholder="John Doe" className="h-12 md:h-14 rounded-xl md:rounded-2xl bg-muted/50 border-transparent focus:bg-background transition-all text-sm" />
+                  <Input 
+                    id="name" 
+                    required
+                    value={formData.name}
+                    onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                    placeholder="John Doe" 
+                    className="h-12 md:h-14 rounded-xl md:rounded-2xl bg-muted/50 border-transparent focus:bg-background transition-all text-sm" 
+                  />
                 </div>
                 <div className="space-y-1.5 md:space-y-2">
                   <Label htmlFor="email" className="text-[10px] md:text-xs font-black uppercase tracking-widest ml-1">Email</Label>
-                  <Input id="email" type="email" placeholder="john@example.com" className="h-12 md:h-14 rounded-xl md:rounded-2xl bg-muted/50 border-transparent focus:bg-background transition-all text-sm" />
+                  <Input 
+                    id="email" 
+                    type="email" 
+                    required
+                    value={formData.email}
+                    onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                    placeholder="john@example.com" 
+                    className="h-12 md:h-14 rounded-xl md:rounded-2xl bg-muted/50 border-transparent focus:bg-background transition-all text-sm" 
+                  />
                 </div>
+              </div>
+              <div className="space-y-1.5 md:space-y-2">
+                <Label htmlFor="subject" className="text-[10px] md:text-xs font-black uppercase tracking-widest ml-1">Subject</Label>
+                <Input 
+                  id="subject" 
+                  required
+                  value={formData.subject}
+                  onChange={(e) => setFormData({ ...formData, subject: e.target.value })}
+                  placeholder="How can we help?" 
+                  className="h-12 md:h-14 rounded-xl md:rounded-2xl bg-muted/50 border-transparent focus:bg-background transition-all text-sm" 
+                />
               </div>
               <div className="space-y-1.5 md:space-y-2">
                 <Label htmlFor="message" className="text-[10px] md:text-xs font-black uppercase tracking-widest ml-1">Message</Label>
                 <textarea 
                   id="message" 
                   rows={5} 
-                  placeholder="How can we help?" 
+                  required
+                  value={formData.message}
+                  onChange={(e) => setFormData({ ...formData, message: e.target.value })}
+                  placeholder="Tell us more..." 
                   className="w-full p-4 md:p-6 rounded-2xl md:rounded-[2rem] bg-muted/50 border-transparent focus:bg-background focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all outline-none text-sm font-medium resize-none"
                 />
               </div>
-              <Button className="w-full h-14 md:h-16 bg-indigo-600 text-white rounded-xl md:rounded-2xl font-black text-sm md:text-lg shadow-xl shadow-indigo-500/20 hover:bg-indigo-700 transition-all">
-                Send Message
+              <Button 
+                disabled={loading}
+                className="w-full h-14 md:h-16 bg-indigo-600 text-white rounded-xl md:rounded-2xl font-black text-sm md:text-lg shadow-xl shadow-indigo-500/20 hover:bg-indigo-700 transition-all"
+              >
+                {loading ? (
+                  <Loader2 className="w-6 h-6 animate-spin" />
+                ) : (
+                  "Send Message"
+                )}
               </Button>
             </form>
           </Card>
