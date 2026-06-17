@@ -2,8 +2,8 @@
 
 import { motion } from "framer-motion";
 import { 
-  Zap, ArrowRight, ShieldCheck, 
-  History, Mail, Sparkles, MessageSquare
+  Zap, ShieldCheck, 
+  History, Sparkles, MessageSquare
 } from "lucide-react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";

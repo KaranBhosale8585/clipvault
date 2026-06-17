@@ -25,7 +25,7 @@ export function validateReelUrl(url: string): boolean {
 /**
  * Extracts the Shortcode from an Instagram URL.
  */
-export function extractShortcode(url: string): string | null {
+function extractShortcode(url: string): string | null {
   const match = url.match(INSTAGRAM_REEL_REGEX);
   return match ? match[1] : null;
 }

@@ -1,36 +1,105 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# ClipVault
 
-## Getting Started
+ClipVault is a professional, high-performance Instagram Reel downloader designed for speed, reliability, and ease of use. It features a robust extraction engine powered by `yt-dlp`, a semantic theme system, and a comprehensive administrative dashboard.
 
-First, run the development server:
+## Features
+
+- **Video Downloader**: Fast and reliable Instagram Reel extraction with high-quality video previews.
+- **User Accounts**: Secure authentication system with OTP verification and password reset functionality.
+- **Download History**: Personal dashboard to track and manage previously downloaded Reels.
+- **Daily Limits**: Intelligent usage tracking for both guest and authenticated users.
+- **Pro Access Requests**: Integrated application system for users seeking unrestricted download capabilities.
+- **Admin Dashboard**: Centralized control center for platform analytics, user management, and system auditing.
+- **Contact System**: Professional inquiry management with automated admin notifications.
+
+## Tech Stack
+
+- **Framework**: [Next.js](https://nextjs.org/) (TypeScript)
+- **Styling**: [Tailwind CSS](https://tailwindcss.com/)
+- **UI Components**: Radix UI + Shadcn UI
+- **Database**: [PostgreSQL](https://www.postgresql.org/) with [Drizzle ORM](https://orm.drizzle.team/)
+- **Authentication**: JWT-based custom auth system
+- **Email**: [Nodemailer](https://nodemailer.com/)
+- **Extraction Engine**: `yt-dlp` via Python bridge
+
+## Installation
 
 ```bash
+# Clone the repository
+git clone https://github.com/KaranBhosale8585/clipvault.git
+
+# Install dependencies
+pnpm install
+
+# Run the development server
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Environment Variables
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+Create a `.env` file in the root directory and add the following:
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```env
+DATABASE_URL=
+JWT_SECRET=
+SMTP_HOST=
+SMTP_PORT=
+SMTP_USER=
+SMTP_PASS=
+ADMIN_EMAIL=
+```
 
-## Learn More
+## Development Setup
 
-To learn more about Next.js, take a look at the following resources:
+1.  **Database**: Ensure a PostgreSQL instance is running.
+2.  **Migrations**: Run `npm run db:push` to synchronize the schema.
+3.  **Python**: Ensure Python 3 and `yt-dlp` are installed for the extraction service.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Production Deployment
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+The project is optimized for deployment on Vercel or any containerized environment using the provided `Dockerfile` and `docker-compose.yml`.
 
-## Deploy on Vercel
+## Database Setup
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+```bash
+# Push schema to database
+npm run db:push
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+# Open Drizzle Studio for manual management
+npm run db:studio
+```
+
+## Admin Features
+
+- **Stats Overview**: Real-time analytics on users, downloads, and system logs.
+- **Pro Access Management**: Review, approve, or reject user applications for unlimited access.
+- **Contact Inquiries**: Manage and respond to user submissions.
+- **System Maintenance**: Tools for clearing cache, purging logs, and managing downloads.
+
+## Project Structure
+
+- `app/`: Next.js App Router pages and API routes.
+- `components/`: Reusable UI components and business logic.
+- `db/`: Database schema and connection configuration.
+- `services/python/`: Python-based extraction service.
+- `utils/`: Centralized utility functions and bridges.
+- `docs/`: Technical documentation and development logs.
+
+## Future Roadmap
+
+- [ ] Support for Instagram Stories and Posts.
+- [ ] Bulk download capabilities.
+- [ ] Browser extension for one-click extraction.
+- [ ] Advanced analytics for Pro users.
+
+## Screenshots
+
+*(Placeholder for screenshots)*
+
+## Contributing
+
+This project is private and is **not accepting public contributions** at this time.
+
+---
+
+Copyright © 2026 Karan Bhosale. All Rights Reserved.

@@ -1,10 +1,10 @@
-import { NextRequest, NextResponse } from "next/server";
+import { NextResponse } from "next/server";
 import { getUser } from "@/utils/getUser";
 import { db } from "@/db";
 import { downloadsTable } from "@/db/schema";
 import { desc, eq } from "drizzle-orm";
 
-export async function GET(_req: NextRequest) {
+export async function GET() {
   try {
     const user = await getUser();
     
@@ -36,7 +36,7 @@ export async function GET(_req: NextRequest) {
   }
 }
 
-export async function DELETE(_req: NextRequest) {
+export async function DELETE() {
   try {
     const user = await getUser();
     

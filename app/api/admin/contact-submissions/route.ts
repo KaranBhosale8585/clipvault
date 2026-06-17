@@ -1,11 +1,11 @@
-import { NextRequest, NextResponse } from "next/server";
+import { NextResponse } from "next/server";
 import { db } from "@/db";
 import { contactSubmissionsTable } from "@/db/schema";
 import { getUser } from "@/utils/getUser";
 import { desc } from "drizzle-orm";
 import { logger } from "@/utils/logger";
 
-export async function GET(req: NextRequest) {
+export async function GET() {
   try {
     const user = await getUser();
 

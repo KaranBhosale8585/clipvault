@@ -4,7 +4,7 @@ import { db } from "@/db";
 import { unlimitedAccessRequestsTable } from "@/db/schema";
 import { eq, and, desc } from "drizzle-orm";
 
-export async function GET(_req: NextRequest) {
+export async function GET() {
   try {
     const user = await getUser();
     if (!user) {
