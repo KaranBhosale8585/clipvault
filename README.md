@@ -100,6 +100,45 @@ npm run db:studio
 
 This project is private and is **not accepting public contributions** at this time.
 
+## Deployment Guide
+
+Follow these steps to deploy ClipVault to production.
+
+### 1. Database Setup (Neon)
+1.  Create a new project on [Neon](https://neon.tech/).
+2.  Get your `DATABASE_URL` (connection string).
+3.  Ensure `?sslmode=require` is appended to the connection string.
+4.  Run migrations locally to initialize the production database:
+    ```bash
+    DATABASE_URL=your_neon_url pnpm run db:push
+    ```
+
+### 2. Email Setup (Resend Recommended)
+1.  Create an account on [Resend](https://resend.com/).
+2.  Get your API Key.
+3.  Set `EMAIL_SERVER_HOST` to `smtp.resend.com` and `EMAIL_SERVER_PORT` to `465`.
+4.  Set `EMAIL_SERVER_PASSWORD` to your Resend API Key.
+
+### 3. GitHub Setup
+1.  Push your code to a private GitHub repository.
+2.  Ensure `.env` is NOT committed.
+
+### 4. Render Deployment (Docker)
+1.  Create a new **Web Service** on [Render](https://render.com/).
+2.  Connect your GitHub repository.
+3.  Select **Docker** as the Runtime.
+4.  Add the following **Environment Variables** in Render:
+    - `DATABASE_URL`: Your Neon connection string.
+    - `JWT_SECRET`: A long random string.
+    - `EMAIL_SERVER_HOST`, `EMAIL_SERVER_PORT`, `EMAIL_SERVER_USER`, `EMAIL_SERVER_PASSWORD`, `EMAIL_FROM`, `ADMIN_EMAIL`.
+    - `NEXT_PUBLIC_APP_URL`: Your Render service URL (e.g., `https://clipvault.onrender.com`).
+5.  Render will automatically build and deploy the container using the provided `Dockerfile`.
+
+### 5. Post-Deployment
+1.  Verify the health check (Render handles this via port 3000).
+2.  Test the downloader with an Instagram URL.
+3.  Verify that emails are being sent for contact submissions and PRO requests.
+
 ---
 
 Copyright © 2026 Karan Bhosale. All Rights Reserved.
