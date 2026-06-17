@@ -1,5 +1,6 @@
 import { db } from "@/db";
 import { usersTable } from "@/db/schema";
+import { logger } from "@/utils/logger";
 import bcrypt from "bcryptjs";
 import { eq } from "drizzle-orm";
 import { NextRequest, NextResponse } from "next/server";
@@ -19,8 +20,6 @@ export async function POST(req: NextRequest) {
       .select()
       .from(usersTable)
       .where(eq(usersTable.email, email));
-
-    console.log(isUser);
 
     if (isUser.length > 0) {
       return NextResponse.json(
@@ -43,7 +42,7 @@ export async function POST(req: NextRequest) {
       { status: 200 },
     );
   } catch (error) {
-    console.log("Registration error:", error);
+    await logger.error("Registration error", "auth/signup", error);
     return NextResponse.json(
       {
         error: "Server error. Please try again later.",

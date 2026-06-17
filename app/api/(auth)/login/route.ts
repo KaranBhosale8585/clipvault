@@ -1,6 +1,7 @@
 import { db } from "@/db";
 import { usersTable } from "@/db/schema";
 import { setAuthCookie } from "@/utils/auth";
+import { logger } from "@/utils/logger";
 import bcrypt from "bcryptjs";
 import { eq } from "drizzle-orm";
 import { NextRequest, NextResponse } from "next/server";
@@ -46,10 +47,10 @@ export async function POST(req: NextRequest) {
       { status: 201 },
     );
   } catch (error) {
-    console.log(error);
+    await logger.error("Login error", "auth/login", error);
     return NextResponse.json(
       { message: "Server error. Please try again later." },
-      { status: 400 },
+      { status: 500 },
     );
   }
 }

@@ -5,6 +5,7 @@ import { fetchReelMetadata, validateReelUrl } from "@/utils/instagram";
 import { db } from "@/db";
 import { downloadsTable, usersTable } from "@/db/schema";
 import { checkDownloadRateLimit, checkIPRateLimit } from "@/utils/rateLimit";
+import { logger } from "@/utils/logger";
 import { eq, and, desc, gte, isNull, count, or, sql } from "drizzle-orm";
 
 export async function POST(req: NextRequest) {
@@ -54,13 +55,16 @@ export async function POST(req: NextRequest) {
       if (dbUser) {
         // PRO users bypass all daily limits
         if (dbUser.isProAccess) {
-          console.log(`PRO access bypass for user: ${dbUser.id}`);
+          await logger.info(`PRO access bypass for user: ${dbUser.id}`, "reel/metadata");
         } else {
           const now = new Date();
           const lastReset = new Date(dbUser.lastDownloadReset);
           
           // Reset count if it's a new day (UTC based for consistency)
-          if (now.toDateString() !== lastReset.toDateString()) {
+          if (now.getUTCFullYear() !== lastReset.getUTCFullYear() || 
+              now.getUTCMonth() !== lastReset.getUTCMonth() || 
+              now.getUTCDate() !== lastReset.getUTCDate()) {
+            
             await db
               .update(usersTable)
               .set({ 
@@ -68,7 +72,10 @@ export async function POST(req: NextRequest) {
                 lastDownloadReset: now 
               })
               .where(eq(usersTable.id, user.id));
+            
+            // Update local object to reflect reset
             dbUser.dailyDownloadCount = 0;
+            await logger.info(`Daily count reset for user: ${dbUser.id}`, "reel/metadata");
           }
 
           if (dbUser.dailyDownloadCount >= 10 && dbUser.role !== 'admin') {
@@ -125,7 +132,7 @@ export async function POST(req: NextRequest) {
     let metadata;
 
     if (cachedDownload && cachedDownload.videoUrl && cachedDownload.thumbnailUrl) {
-      console.log(`Cache hit for ${url}`);
+      await logger.info(`Cache hit for ${url}`, "reel/metadata");
       metadata = {
         id: cachedDownload.id,
         reelUrl: cachedDownload.reelUrl,
@@ -171,7 +178,7 @@ export async function POST(req: NextRequest) {
     });
   } catch (error: unknown) {
     const message = error instanceof Error ? error.message : "An unexpected error occurred.";
-    console.error("Reel extraction error:", error);
+    await logger.error("Reel extraction error", "reel/metadata", error);
     return NextResponse.json(
       { error: "Internal Server Error", message },
       { status: 500 }

@@ -1,4 +1,5 @@
 import { getUser } from "@/utils/getUser";
+import { logger } from "@/utils/logger";
 import { NextResponse } from "next/server";
 
 export async function GET() {
@@ -9,7 +10,7 @@ export async function GET() {
     }
     return NextResponse.json(res);
   } catch (error) {
-    console.log(error);
+    await logger.error("Get user error", "auth/get-me", error);
     return NextResponse.json(
       { error: "Server error. Please try again later." },
       { status: 500 },

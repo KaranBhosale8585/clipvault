@@ -66,7 +66,34 @@
 
 ## 2026-06-17
 
-### Task: Release Preparation
+### Task: Docker Build Fix (pnpm Compatibility)
+- **Timestamp**: 2026-06-17 04:30 PM
+- **Status**: Completed
+- **Files**: `pnpm-workspace.yaml`, `package.json`
+- **Root Cause Analysis**: 
+    - The Docker build was failing with `ERR_PNPM_IGNORED_BUILDS` due to pnpm@11's stricter security defaults regarding build scripts. 
+    - Additionally, `pnpm-workspace.yaml` contained an `ignoredBuiltDependencies` list that was explicitly blocking `sharp` and `unrs-resolver`.
+- **Implementation Details**: 
+    - Updated `pnpm-workspace.yaml` to explicitly allow build scripts for `esbuild`, `sharp`, and `unrs-resolver`.
+    - Removed misconfigured `ignoredBuiltDependencies` from `pnpm-workspace.yaml`.
+    - Verified `pnpm install` succeeds without build script warnings.
+- **Verification**: 
+    - Local `pnpm install` successful.
+    - Full `npm run build` (Next.js) successful.
+
+### Task: Production Audit & Log Cleanup
+- **Timestamp**: 2026-06-17 05:00 PM
+- **Status**: Completed
+- **Files**: `app/api/**/*`, `components/ReelDownloader.tsx`, `.dockerignore`
+- **Implementation Details**: 
+    - **Log Integration**: Migrated major API routes (`signup`, `login`, `metadata`, `download-proxy`, `get-me`, `logout`) to use the centralized `logger` utility for error and informational logging.
+    - **Debug Removal**: Removed direct `console.log` and `console.error` calls from API routes and client-side components to ensure a clean production console.
+    - **Optimization**: Cleaned up and optimized `.dockerignore` to reduce image size and ensure build hygiene.
+- **Verification**: 
+    - Verified build integrity with `npm run build`.
+    - Audited source code for remaining debug statements.
+
+## 2026-06-17 (Earlier)
 - **Timestamp**: 2026-06-17 12:45 PM
 - **Status**: In Progress
 - **Files**: `.gitignore`, `package.json`, `README.md`, `LICENSE`, `docs/*`

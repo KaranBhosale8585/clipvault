@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getUser } from "@/utils/getUser";
+import { logger } from "@/utils/logger";
 
 export async function GET(req: NextRequest) {
   try {
@@ -15,7 +16,7 @@ export async function GET(req: NextRequest) {
       return new NextResponse("URL is required", { status: 400 });
     }
 
-    console.log(`Proxying ${download ? "download" : "preview"} for URL: ${url}`);
+    await logger.info(`Proxying ${download ? "download" : "preview"} for URL: ${url}`, "download-proxy");
 
     const response = await fetch(url, {
       headers: {
@@ -31,12 +32,12 @@ export async function GET(req: NextRequest) {
     });
 
     if (!response.ok) {
-      console.error(`External fetch failed: ${response.status} ${response.statusText}`);
+      await logger.error(`External fetch failed: ${response.status} ${response.statusText}`, "download-proxy");
       return new NextResponse(`Failed to fetch media from source: ${response.statusText}`, { status: response.status });
     }
 
     const blob = await response.blob();
-    console.log(`Successfully fetched blob, size: ${blob.size} bytes`);
+    await logger.info(`Successfully fetched blob, size: ${blob.size} bytes`, "download-proxy");
     
     const headers = new Headers();
     const contentType = response.headers.get("Content-Type") || (url.includes(".mp4") ? "video/mp4" : "image/jpeg");
@@ -56,7 +57,7 @@ export async function GET(req: NextRequest) {
     });
   } catch (error: unknown) {
     const message = error instanceof Error ? error.message : "Internal Server Error";
-    console.error("Download proxy error:", error);
+    await logger.error("Download proxy error", "download-proxy", error);
     return new NextResponse(message, { status: 500 });
   }
 }
