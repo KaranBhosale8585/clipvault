@@ -14,14 +14,19 @@ export async function GET(req: NextRequest) {
     const { searchParams } = new URL(req.url);
     const status = searchParams.get("status");
 
-    let query = db
-      .select()
-      .from(unlimitedAccessRequestsTable)
-      .orderBy(desc(unlimitedAccessRequestsTable.createdAt));
+    let query;
 
     if (status && status !== "ALL") {
-      // @ts-expect-error - drizzle type complexity with dynamic queries
-      query = query.where(eq(unlimitedAccessRequestsTable.status, status));
+      query = db
+        .select()
+        .from(unlimitedAccessRequestsTable)
+        .where(eq(unlimitedAccessRequestsTable.status, status))
+        .orderBy(desc(unlimitedAccessRequestsTable.createdAt));
+    } else {
+      query = db
+        .select()
+        .from(unlimitedAccessRequestsTable)
+        .orderBy(desc(unlimitedAccessRequestsTable.createdAt));
     }
 
     const requests = await query;

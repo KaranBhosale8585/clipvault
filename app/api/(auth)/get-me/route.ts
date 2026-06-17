@@ -5,7 +5,7 @@ export async function GET() {
   try {
     const res = await getUser();
     if (!res) {
-      return NextResponse.json({ message: "User not found!" }, { status: 404 });
+      return NextResponse.json(null);
     }
     return NextResponse.json(res);
   } catch (error) {
