@@ -89,12 +89,12 @@ export async function checkIPRateLimit(ip: string, action: string) {
     return false;
   }
 
-  // Log the hit (don't wait for it to finish)
-  db.insert(logsTable).values({
+  // Log the hit (don't wait for it to finish if you want, but execute() is invalid)
+  await db.insert(logsTable).values({
     level: "info",
     source: `ratelimit:${action}`,
     message: ip,
-  }).execute();
+  });
 
   return true;
 }

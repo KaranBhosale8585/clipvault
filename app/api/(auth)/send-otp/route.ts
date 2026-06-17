@@ -3,6 +3,7 @@ import { otpTable } from "@/db/schema";
 import { getUser } from "@/utils/getUser";
 import { checkRateLimit } from "@/utils/rateLimit";
 import { sendOtp } from "@/utils/sendOtp";
+import { logger } from "@/utils/logger";
 import { eq } from "drizzle-orm";
 import { NextResponse } from "next/server";
 
@@ -15,6 +16,7 @@ export async function POST() {
   const allowed = await checkRateLimit(user.id);
 
   if (!allowed) {
+    logger.warn(`OTP rate limit exceeded for user: ${user.email}`, "auth/send-otp");
     return NextResponse.json(
       { message: "Too many requests. Try after 10 minutes." },
       { status: 429 },
@@ -36,13 +38,14 @@ export async function POST() {
     });
 
     await sendOtp(user.email, user.name, otp);
+    logger.info(`OTP sent successfully to ${user.email}`, "auth/send-otp");
 
     return NextResponse.json({ message: "OTP sent successfully" });
   } catch (error) {
-    console.error("Error sending OTP:", error);
+    await logger.error("Error sending OTP", "auth/send-otp", error);
     return NextResponse.json(
       { message: "Server error. Please try again later." },
-      { status: 400 },
+      { status: 500 },
     );
   }
 }

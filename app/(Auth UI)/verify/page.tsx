@@ -15,6 +15,11 @@ export default function VerifyOTP() {
   const router = useRouter();
 
   useEffect(() => {
+    // Send OTP on mount
+    handleSendOtp();
+  }, []);
+
+  useEffect(() => {
     if (timer <= 0) return;
     const interval = setInterval(() => setTimer((prev) => prev - 1), 1000);
     return () => clearInterval(interval);
@@ -76,7 +81,7 @@ export default function VerifyOTP() {
       if (!res.ok) return toast.error(data.message);
 
       toast.success("Verified 🎉");
-      router.push("/");
+      window.location.href = "/dashboard";
     } catch {
       toast.error("Something went wrong");
     } finally {

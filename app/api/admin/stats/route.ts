@@ -17,8 +17,8 @@ export async function GET() {
 
     // SCALABILITY: Periodic Cleanup (older than 30 days)
     const thirtyDaysAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000);
-    db.delete(logsTable).where(lt(logsTable.createdAt, thirtyDaysAgo)).execute();
-    db.delete(downloadsTable).where(lt(downloadsTable.createdAt, thirtyDaysAgo)).execute();
+    await db.delete(logsTable).where(lt(logsTable.createdAt, thirtyDaysAgo));
+    await db.delete(downloadsTable).where(lt(downloadsTable.createdAt, thirtyDaysAgo));
 
     // 1. Basic Stats
     const [userCount] = await db.select({ total: count() }).from(usersTable);

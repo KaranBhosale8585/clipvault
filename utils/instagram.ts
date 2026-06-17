@@ -37,11 +37,9 @@ interface PythonDownloaderData {
   id: string;
   title: string;
   uploader: string;
-  thumbnail: string;
-  thumbnails: unknown[]; // yt-dlp thumbnails can be complex
+  thumbnail_url: string;
   duration: number;
-  videoUrl: string;
-  formats: unknown[];
+  video_url: string;
 }
 
 /**
@@ -67,15 +65,15 @@ export async function fetchReelMetadata(url: string): Promise<ReelMetadata | nul
       throw new Error(result.error || "Failed to extract metadata from Instagram");
     }
 
-    const { data, debug } = result;
+    const { data } = result;
 
-    await logger.info(`yt-dlp raw output received for ${url}`, source, { data, debug });
+    await logger.info(`yt-dlp raw output received for ${url}`, source, { data });
 
     const metadata: ReelMetadata = {
       id: data.id || extractShortcode(url) || "unknown",
       reelUrl: url,
-      videoUrl: data.videoUrl,
-      thumbnailUrl: data.thumbnail,
+      videoUrl: data.video_url,
+      thumbnailUrl: data.thumbnail_url,
       title: data.title || `Instagram Reel by ${data.uploader || "unknown"}`,
     };
 

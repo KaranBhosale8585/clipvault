@@ -19,7 +19,17 @@ export const logger = {
       // Truncate stringified metadata to 4096 characters
       let truncatedMetadata = null;
       if (metadata) {
-        const stringified = JSON.stringify(metadata);
+        let stringified;
+        if (metadata instanceof Error) {
+          stringified = JSON.stringify({
+            name: metadata.name,
+            message: metadata.message,
+            stack: metadata.stack,
+            cause: metadata.cause,
+          });
+        } else {
+          stringified = JSON.stringify(metadata);
+        }
         truncatedMetadata = stringified.length > 4096 ? stringified.substring(0, 4093) + "..." : stringified;
       }
 

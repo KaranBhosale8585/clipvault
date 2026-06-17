@@ -7,7 +7,7 @@ import { checkIPRateLimit } from "@/utils/rateLimit";
 
 export async function POST(req: NextRequest) {
   try {
-    const ip = req.headers.get("x-forwarded-for") || "unknown";
+    const ip = req.headers.get("x-forwarded-for")?.split(',')[0] || "127.0.0.1";
     const isAllowed = await checkIPRateLimit(ip, "contact");
     
     if (!isAllowed) {

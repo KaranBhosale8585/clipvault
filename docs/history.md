@@ -9,6 +9,10 @@
 - **Description**: Resolved CSS specificity issues, implemented semantic theme variables, and added a three-way theme cycle (Light, Dark, Pitch Dark).
 - **Files Changed**: `app/globals.css`, `app/layout.tsx`, `app/page.tsx`, `components/ThemeToggle.tsx`, `components/Header.tsx`, `components/Footer.tsx`, and all Auth UI pages.
 
+### fix: auth state synchronization after verification and logout
+- **Description**: Resolved issues where users were not properly redirected or recognized as verified/logged-out without a manual page refresh. Switched to `cookies().delete()` for robust cookie termination and implemented `window.location.href` to bypass client-side router caching during authentication boundary crossings.
+- **Files Changed**: `utils/auth.ts`, `components/Header.tsx`, `app/(Auth UI)/verify/page.tsx`.
+
 ### refactor: migrate middleware to proxy
 - **Description**: Migrated `middleware.ts` to `proxy.ts` to align with the new Next.js convention. Renamed the exported function from `middleware` to `proxy`.
 - **Files Changed**: `middleware.ts` (renamed to `proxy.ts`), `proxy.ts`.

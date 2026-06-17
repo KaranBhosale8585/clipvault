@@ -1,4 +1,4 @@
-import { cookies } from "next/headers";
+import { cookies, headers } from "next/headers";
 import { signToken, verifyToken, type ClipVaultJWTPayload } from "./jwt";
 import { v4 as uuidv4 } from "uuid";
 
@@ -6,6 +6,16 @@ interface User extends ClipVaultJWTPayload {
   id: string;
   isVerified: boolean;
   role: string;
+}
+
+/**
+ * Helper to determine if the cookie should be secure.
+ */
+async function isSecure() {
+  if (process.env.NODE_ENV !== "production") return false;
+  
+  const host = (await headers()).get("host") || "";
+  return !host.includes("localhost") && !host.includes("127.0.0.1");
 }
 
 /**
@@ -31,7 +41,7 @@ export async function getVisitorId() {
 
   cookieStore.set("visitor_id", token, {
     httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
+    secure: await isSecure(),
     sameSite: "lax",
     path: "/",
     maxAge: 60 * 60 * 24 * 365, // 1 year
@@ -50,7 +60,7 @@ export async function setAuthCookie(user: User) {
 
   cookieStore.set("refresh_token", token, {
     httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
+    secure: await isSecure(),
     sameSite: "lax",
     path: "/",
     maxAge: 60 * 60 * 24 * 7, // 7 days
@@ -65,13 +75,7 @@ export async function setAuthCookie(user: User) {
 export async function clearAuthCookie() {
   const cookieStore = await cookies();
 
-  cookieStore.set("refresh_token", "", {
-    httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
-    sameSite: "lax",
-    path: "/",
-    maxAge: 0,
-  });
+  cookieStore.delete("refresh_token");
 
   return { message: "Logged out successfully" };
 }

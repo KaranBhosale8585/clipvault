@@ -1,5 +1,23 @@
 # Development Log - ClipVault
 
+### Task: Auth State Synchronization Fix
+- **Timestamp**: 2026-06-17 06:15 PM
+- **Status**: Completed
+- **Files**: `utils/auth.ts`, `components/Header.tsx`, `app/(Auth UI)/verify/page.tsx`
+- **Root Cause Analysis**: 
+    - The logout flow (`clearAuthCookie`) was incorrectly attempting to clear the cookie by setting an empty value with a max-age of 0, which occasionally failed depending on secure flag evaluations during Next.js server actions. Additionally, the client-side router (`router.push`) was being used for both logout and post-verification redirects, which preserved the old client-side state and prevented the middleware and server components from recognizing the newly updated (or deleted) cookie without a hard refresh.
+- **Implementation Details**: 
+    - **Cookie Deletion**: Updated `utils/auth.ts` to use the standard Next.js `cookies().delete("refresh_token")` method for reliable session termination.
+    - **Hard Redirects**: Replaced `router.push()` with `window.location.href` in both the `Header.tsx` (Logout) and `VerifyOTP` component (Post-Verification).
+    - **Auth Flow Before vs After**: 
+        - *Before*: Logout -> Router Push -> Client cached old state -> User unable to access /login. Verify -> Router Push -> User still seen as unverified.
+        - *After*: Logout -> Hard Redirect to /login -> Middleware runs -> Login page accessible. Verify -> Hard Redirect to /dashboard -> User seen as verified immediately.
+- **Verification Result**: 
+    - Signup → Verify Email → Auto Redirect Dashboard: ✅
+    - Logout → Login Page Accessible: ✅
+    - Login Button Works After Logout: ✅
+    - No Manual Refresh Required: ✅
+
 ## 2026-06-15
 
 ### Task: UX Improvement: Replace Native Confirm Dialog

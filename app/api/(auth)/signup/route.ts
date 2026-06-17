@@ -1,5 +1,6 @@
 import { db } from "@/db";
 import { usersTable } from "@/db/schema";
+import { setAuthCookie } from "@/utils/auth";
 import { logger } from "@/utils/logger";
 import bcrypt from "bcryptjs";
 import { eq } from "drizzle-orm";
@@ -31,15 +32,25 @@ export async function POST(req: NextRequest) {
     const salt = bcrypt.genSaltSync(10);
     const hashed = bcrypt.hashSync(password, salt);
 
-    await db.insert(usersTable).values({
-      name,
-      email,
-      password: hashed,
+    const [newUser] = await db
+      .insert(usersTable)
+      .values({
+        name,
+        email,
+        password: hashed,
+      })
+      .returning();
+
+    // Log in the user automatically
+    await setAuthCookie({
+      id: newUser.id,
+      isVerified: newUser.isVerified,
+      role: newUser.role,
     });
 
     return NextResponse.json(
       { message: "Signup Successful!" },
-      { status: 200 },
+      { status: 201 },
     );
   } catch (error) {
     await logger.error("Registration error", "auth/signup", error);

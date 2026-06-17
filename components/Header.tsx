@@ -48,7 +48,7 @@ export default function Header() {
       if (res.ok) {
         toast.success("Logged out");
         setUser(null);
-        router.push("/login");
+        window.location.href = "/login";
       }
     } catch {
       toast.error("Something went wrong");
