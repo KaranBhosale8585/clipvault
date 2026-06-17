@@ -16,8 +16,8 @@ FROM node:20-alpine AS runner
 WORKDIR /app
 ENV NODE_ENV production
 
-# Install Python and dependencies for yt-dlp
-RUN apk add --no-cache python3 py3-pip
+# Install Python, FFmpeg and dependencies
+RUN apk add --no-cache python3 py3-pip ffmpeg
 
 # Create a virtual environment and install yt-dlp
 RUN python3 -m venv /opt/venv

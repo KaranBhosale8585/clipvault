@@ -16,3 +16,17 @@ LICENSE
 docs
 .vscode
 .idea
+coverage
+playwright-report
+test-results
+tmp
+temp
+yarn-error.log*
+.pnpm-debug.log*
+.DS_Store
+.vercel
+README.md
+LICENSE
+docs
+.vscode
+.idea
