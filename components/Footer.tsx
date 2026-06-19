@@ -37,6 +37,7 @@ export default function Footer() {
               <Link href="/" className="hover:text-indigo-500 transition-colors">Downloader</Link>
               <Link href="/features" className="hover:text-indigo-500 transition-colors">Features</Link>
               <Link href="/pricing" className="hover:text-indigo-500 transition-colors">Pricing</Link>
+              <Link href="/#faq" className="hover:text-indigo-500 transition-colors">FAQ</Link>
               <Link href="/about" className="hover:text-indigo-500 transition-colors">About Us</Link>
             </div>
           </div>

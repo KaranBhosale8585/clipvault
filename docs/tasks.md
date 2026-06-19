@@ -168,3 +168,8 @@
   - [x] Setup cache invalidation/revalidation tags ("admin-stats") triggered on new downloads and admin maintenance actions
   - [x] Optimize periodic database cleanup tasks (purging logs and downloads older than 30 days) to run asynchronously in the background
   - [x] Verify zero build/typecheck/lint errors
+- [x] Finalize Internal Linking and Robots directives for SEO
+  - [x] Add ID anchor `#faq` to homepage FAQ section
+  - [x] Implement internal link shortcuts in Header and Footer pointing to `/#faq`
+  - [x] Configure explicit disallow paths in robots.ts for sensitive auth and profile layouts
+  - [x] Verify production build compiles with zero errors

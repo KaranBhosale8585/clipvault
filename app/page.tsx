@@ -444,7 +444,7 @@ export default function DownloadDashboard() {
         )}
 
         {/* FAQ Section */}
-        <div className="mt-20 md:mt-32 border-t border-border pt-16 md:pt-24">
+        <div id="faq" className="mt-20 md:mt-32 border-t border-border pt-16 md:pt-24">
           <div className="max-w-4xl mx-auto">
             <h2 className="text-3xl md:text-5xl font-black tracking-tighter text-center mb-4">Frequently Asked Questions</h2>
             <p className="text-muted-foreground text-center font-medium mb-12 text-sm md:text-base max-w-lg mx-auto">

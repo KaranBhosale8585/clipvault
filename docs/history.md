@@ -187,3 +187,11 @@
   - **On-Demand Cache Revalidation**: Added `revalidateTag("admin-stats")` triggers to delete-actions (clear logs, purge downloads, flush cache) and new download tracking creations.
   - **Background Cleanup Performance**: Shifted logs/downloads periodic cleanup queries to execute asynchronously in the background instead of blocking GET requests.
 - **Files Changed**: `components/UserDashboard.tsx`, `components/DownloadHistory.tsx`, `app/admin/page.tsx`, `components/Header.tsx`, `app/page.tsx`, `app/api/admin/stats/route.ts`, `app/api/admin/actions/clear-cache/route.ts`, `app/api/admin/actions/clear-downloads/route.ts`, `app/api/admin/actions/clear-logs/route.ts`, `app/api/reel/metadata/route.ts`.
+
+### feat: finalize internal linking and robots directives for SEO
+- **Description**: Configured HTML anchor identifiers, linked them in navigation structures, and optimized Search Console indexing boundaries for secure layouts.
+- **Key Changes**:
+  - **FAQ Anchor**: Added `id="faq"` to the landing page FAQ section in `app/page.tsx`.
+  - **Internal Navigation**: Added direct link anchors pointing to `/#faq` inside header (`components/Header.tsx`) and footer (`components/Footer.tsx`) links.
+  - **Robots Exclusions**: Expanded disallow entries inside `app/robots.ts` to include protected client dashboards (`/dashboard/`, `/history/`, `/unlimited-access/`), authentication intermediate paths (`/forgot-password/`), and API endpoints.
+- **Files Changed**: `app/page.tsx`, `components/Header.tsx`, `components/Footer.tsx`, `app/robots.ts`.
