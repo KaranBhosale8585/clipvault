@@ -19,9 +19,9 @@ export const metadata: Metadata = {
     description: "Get in touch with the ClipVault support team for technical inquiries, bug reports, and business questions.",
   },
   icons: {
-    icon: "/icon.svg?v=2",
-    shortcut: "/icon.svg?v=2",
-    apple: "/icon.svg?v=2",
+    icon: "/favicon.svg?v=2",
+    shortcut: "/favicon.svg?v=2",
+    apple: "/favicon.svg?v=2",
   },
 };
 

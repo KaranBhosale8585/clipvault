@@ -7,14 +7,19 @@ import { useTheme } from "next-themes";
 
 export default function Footer() {
   const currentYear = new Date().getFullYear();
-  const { resolvedTheme } = useTheme();
+  const { theme, resolvedTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
     setMounted(true);
   }, []);
 
-  const isDark = mounted && (resolvedTheme === "dark" || resolvedTheme === "pitch-dark");
+  const isDark = mounted && (
+    theme === "dark" || 
+    theme === "pitch-dark" || 
+    resolvedTheme === "dark" || 
+    resolvedTheme === "pitch-dark"
+  );
 
   return (
     <footer className="bg-background border-t border-border text-muted-foreground transition-all duration-300">

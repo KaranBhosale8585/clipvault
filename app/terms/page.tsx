@@ -20,9 +20,9 @@ export const metadata: Metadata = {
     description: "Read the ClipVault Terms & Conditions to understand permitted usage, download limitations, intellectual property waivers, and termination policies.",
   },
   icons: {
-    icon: "/icon.svg?v=2",
-    shortcut: "/icon.svg?v=2",
-    apple: "/icon.svg?v=2",
+    icon: "/favicon.svg?v=2",
+    shortcut: "/favicon.svg?v=2",
+    apple: "/favicon.svg?v=2",
   },
 };
 

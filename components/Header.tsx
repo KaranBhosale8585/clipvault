@@ -27,14 +27,19 @@ export default function Header() {
   const [loading, setLoading] = useState(false);
   const { data: user, mutate } = useSWR<{ id: string; name: string; email: string; role: string } | null>("/api/get-me", fetcher);
   const pathname = usePathname();
-  const { resolvedTheme } = useTheme();
+  const { theme, resolvedTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
     setMounted(true);
   }, []);
 
-  const isDark = mounted && (resolvedTheme === "dark" || resolvedTheme === "pitch-dark");
+  const isDark = mounted && (
+    theme === "dark" || 
+    theme === "pitch-dark" || 
+    resolvedTheme === "dark" || 
+    resolvedTheme === "pitch-dark"
+  );
 
   const handleLogout = async () => {
     try {
