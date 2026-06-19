@@ -189,6 +189,9 @@
 - [x] Integrate Google AdSense script
   - [x] Inject custom AdSense tag into the layout.tsx head
   - [x] Verify successful build production compile
+- [x] Configure ads.txt for AdSense monetization
+  - [x] Create public/ads.txt with authorized seller info
+
 
 
 

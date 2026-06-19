@@ -225,6 +225,13 @@
   - **AdSense Script (`app/layout.tsx`)**: Injected the standard async script `https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4526812202141186` with `crossOrigin="anonymous"` in layout head.
 - **Files Changed**: `app/layout.tsx`.
 
+### feat: configure ads.txt for monetization
+- **Description**: Added authorized digital sellers verification file (ads.txt) inside the public asset directory.
+- **Key Changes**:
+  - **Seller Registry (`public/ads.txt`)**: Registered the authorized seller entry `google.com, pub-4526812202141186, DIRECT, f08c47fec0942fa0`.
+- **Files Changed**: `public/ads.txt`.
+
+
 
 
 

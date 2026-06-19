@@ -1,5 +1,14 @@
 # Development Log - ClipVault
 
+### Task: Configure ads.txt Authorized Digital Sellers File
+- **Timestamp**: 2026-06-20 02:30 AM
+- **Status**: Completed
+- **Files**: `public/ads.txt`, docs/*
+- **Implementation Details**:
+    - **ads.txt Integration**: Staged, verified, and committed the `public/ads.txt` containing the authorized publisher record: `google.com, pub-4526812202141186, DIRECT, f08c47fec0942fa0`.
+- **Verification**:
+    - Confirmed file presence under standard static route `/ads.txt` at runtime.
+
 ### Task: Integrate Google AdSense Script
 - **Timestamp**: 2026-06-20 02:20 AM
 - **Status**: Completed
