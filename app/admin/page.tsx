@@ -247,15 +247,18 @@ export default function AdminDashboard() {
           {/* Main Content */}
           <div className="lg:col-span-2 space-y-8">
             <Tabs defaultValue="downloads" className="w-full">
-              <TabsList className="bg-muted/50 p-1 mb-6 rounded-2xl border border-border">
-                <TabsTrigger value="downloads" className="rounded-xl px-6 py-2.5 font-bold data-[state=active]:bg-background data-[state=active]:shadow-sm">
-                  Recent Downloads
+              <TabsList className="grid grid-cols-3 w-full h-auto bg-muted/50 p-1 mb-6 rounded-2xl border border-border">
+                <TabsTrigger value="downloads" className="rounded-xl px-2 sm:px-6 py-2.5 font-bold text-xs sm:text-sm data-[state=active]:bg-background data-[state=active]:shadow-sm">
+                  <span className="sm:hidden">Downloads</span>
+                  <span className="hidden sm:inline">Recent Downloads</span>
                 </TabsTrigger>
-                <TabsTrigger value="logs" className="rounded-xl px-6 py-2.5 font-bold data-[state=active]:bg-background data-[state=active]:shadow-sm">
-                  System Logs
+                <TabsTrigger value="logs" className="rounded-xl px-2 sm:px-6 py-2.5 font-bold text-xs sm:text-sm data-[state=active]:bg-background data-[state=active]:shadow-sm">
+                  <span className="sm:hidden">Logs</span>
+                  <span className="hidden sm:inline">System Logs</span>
                 </TabsTrigger>
-                <TabsTrigger value="analytics" className="rounded-xl px-6 py-2.5 font-bold data-[state=active]:bg-background data-[state=active]:shadow-sm">
-                  Top Content
+                <TabsTrigger value="analytics" className="rounded-xl px-2 sm:px-6 py-2.5 font-bold text-xs sm:text-sm data-[state=active]:bg-background data-[state=active]:shadow-sm">
+                  <span className="sm:hidden">Top</span>
+                  <span className="hidden sm:inline">Top Content</span>
                 </TabsTrigger>
               </TabsList>
 
