@@ -5,9 +5,20 @@ const authPages = ["/login", "/signup"];
 const protectedRoutes = ["/dashboard", "/history", "/admin", "/verify", "/unlimited-access"];
 
 export async function proxy(req: NextRequest) {
-  const { pathname } = req.nextUrl;
+  const { pathname, search } = req.nextUrl;
+  const host = req.headers.get("host");
 
-  // Bypass API routes and static files
+  // 1. Permanent 301 Redirect for the Render domain to the primary domain
+  if (host && (host === "clipvault-eohk.onrender.com" || host.endsWith(".onrender.com"))) {
+    const redirectUrl = `https://clipvault.online${pathname}${search}`;
+    const response = NextResponse.redirect(redirectUrl, 301);
+    
+    // SEO safety net: tell search engines that the Render domain should not be indexed
+    response.headers.set("X-Robots-Tag", "noindex, nofollow, noarchive");
+    return response;
+  }
+
+  // Bypass API routes and static files for internal routing check
   if (pathname.startsWith("/api") || pathname.startsWith("/_next") || pathname.includes(".")) {
     return NextResponse.next();
   }
@@ -20,12 +31,12 @@ export async function proxy(req: NextRequest) {
   const isVerified = user?.isVerified;
   const role = user?.role;
 
-  // 1. Force verification if not verified
+  // Force verification if not verified
   if (user && !isVerified && pathname !== "/verify") {
     return NextResponse.redirect(new URL("/verify", req.url));
   }
 
-  // 2. Protect routes from unauthenticated users
+  // Protect routes from unauthenticated users
   const isProtectedRoute = protectedRoutes.some(route => pathname.startsWith(route));
 
   if (!user && isProtectedRoute) {
@@ -34,13 +45,13 @@ export async function proxy(req: NextRequest) {
     return NextResponse.redirect(loginUrl);
   }
 
-  // 3. Protect Admin routes from non-admin users
+  // Protect Admin routes from non-admin users
   const isAdminRoute = pathname.startsWith("/admin");
   if (isAdminRoute && role !== "admin") {
     return NextResponse.redirect(new URL("/", req.url));
   }
 
-  // 4. Redirect logged-in users away from auth pages
+  // Redirect logged-in users away from auth pages
   if (user && authPages.includes(pathname)) {
     return NextResponse.redirect(new URL("/dashboard", req.url));
   }
@@ -51,11 +62,9 @@ export async function proxy(req: NextRequest) {
 export const config = {
   matcher: [
     /*
-     * Match all request paths except for the ones starting with:
-     * - _next/static (static files)
-     * - _next/image (image optimization files)
-     * - favicon.ico (favicon file)
+     * Match all request paths to ensure domain-level redirects happen for all assets,
+     * while allowing internal fast-path bypasses for static files/APIs.
      */
-    "/((?!_next/static|_next/image|favicon.ico).*)",
+    "/:path*",
   ],
 };

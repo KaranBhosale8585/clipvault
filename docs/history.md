@@ -211,4 +211,13 @@
   - **Initialization Snippet (`app/layout.tsx`)**: Injected the dynamic global dataLayer object and initial configurations to register page views dynamically using standard Next.js Script strategy.
 - **Files Changed**: `app/layout.tsx`.
 
+### feat: implement production domain 301 redirects and canonicals
+- **Description**: Fixed duplicate content issues on search engines and AdSense blocker risks by forcing redirects from Render default domains to the primary clipvault.online domain.
+- **Key Changes**:
+  - **Host Redirects (`proxy.ts`)**: Added detection for `clipvault-eohk.onrender.com` or any fallback `.onrender.com` domain to trigger a permanent 301 redirect while passing pathname/search parameters.
+  - **Header Directives (`proxy.ts`)**: Appended `X-Robots-Tag: noindex, nofollow, noarchive` on redirect response headers to enforce index exclusion of Render domains.
+  - **Default URLs Config (`app/layout.tsx`, `app/page.tsx`, `app/robots.ts`, `app/sitemap.ts`)**: Updated fallback/default domains to `https://clipvault.online` to ensure matching metadata bases.
+- **Files Changed**: `proxy.ts`, `app/layout.tsx`, `app/page.tsx`, `app/robots.ts`, `app/sitemap.ts`.
+
+
 

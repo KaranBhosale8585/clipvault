@@ -182,5 +182,10 @@
   - [x] Add Google tag manager script (gtag.js) to layout.tsx
   - [x] Inject custom initialized gtag configuration snippet
   - [x] Verify successful build production compile
+- [x] Configure production domain 301 canonical redirects
+  - [x] Implement 301 redirects for Render domains inside proxy.ts
+  - [x] Set fallback configuration URLs to clipvault.online in layout, sitemap, robots, and homepage
+  - [x] Prevent search indexing of the Render domain using X-Robots-Tag
+
 
 

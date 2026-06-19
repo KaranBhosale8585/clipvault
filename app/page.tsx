@@ -39,7 +39,7 @@ export default function DownloadDashboard() {
   const [openFaqIndex, setOpenFaqIndex] = useState<number | null>(null);
 
 
-  const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "https://clipvault.com";
+  const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "https://clipvault.online";
 
   // Structured Data for SEO
   const jsonLd = {

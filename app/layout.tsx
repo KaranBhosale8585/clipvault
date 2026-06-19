@@ -17,7 +17,7 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
-const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "https://clipvault.com";
+const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "https://clipvault.online";
 
 export const metadata: Metadata = {
   metadataBase: new URL(baseUrl),

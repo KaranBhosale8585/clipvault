@@ -1,5 +1,16 @@
 # Development Log - ClipVault
 
+### Task: Implement Canonical 301 Redirects and SEO Exclusions
+- **Timestamp**: 2026-06-20 01:25 AM
+- **Status**: Completed
+- **Files**: `proxy.ts`, `app/layout.tsx`, `app/page.tsx`, `app/robots.ts`, `app/sitemap.ts`, `docs/*`
+- **Implementation Details**:
+    - **Render-to-Online Redirects (`proxy.ts`)**: Configured the Next.js 16 `proxy` file to check the requested host. If requests hit `clipvault-eohk.onrender.com` or any fallback `.onrender.com` domain, they are permanently redirected (HTTP 301) to `https://clipvault.online`, preserving paths and queries.
+    - **Header Exclusions**: Added `X-Robots-Tag: noindex, nofollow, noarchive` on these redirected responses as a safety boundary for crawler indexes.
+    - **Configuration Alignment**: Changed the fallback application host from `https://clipvault.com` to `https://clipvault.online` across metadataBase configurations (`layout.tsx`), structured data schemas (`page.tsx`), robots.txt generator (`robots.ts`), and sitemap URLs (`sitemap.ts`).
+- **Verification**:
+    - Ran typechecks (`pnpm typecheck`) and compiled Next.js standalone productions (`pnpm build`) with success.
+
 ### Task: Integrate Google Analytics Script
 - **Timestamp**: 2026-06-20 01:00 AM
 - **Status**: Completed
