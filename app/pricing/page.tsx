@@ -20,7 +20,12 @@ export const metadata: Metadata = {
     card: "summary",
     title: "Pricing | ClipVault",
     description: "Simple, transparent pricing for ClipVault users. Use our core Instagram Reel Downloader for free during beta.",
-  }
+  },
+  icons: {
+    icon: "/icon.svg",
+    shortcut: "/icon.svg",
+    apple: "/icon.svg",
+  },
 };
 
 export default function PricingPage() {

@@ -16,7 +16,12 @@ export const metadata: Metadata = {
     card: "summary",
     title: "Login | ClipVault",
     description: "Sign in to your ClipVault account to manage your collection history and request unlimited PRO access.",
-  }
+  },
+  icons: {
+    icon: "/icon.svg",
+    shortcut: "/icon.svg",
+    apple: "/icon.svg",
+  },
 };
 
 export default function LoginLayout({ children }: { children: React.ReactNode }) {

@@ -18,7 +18,12 @@ export const metadata: Metadata = {
     card: "summary",
     title: "Privacy Policy | ClipVault",
     description: "Learn how ClipVault handles account data, session cookies, visitor tracking, rate limits, and 30-day retention policies.",
-  }
+  },
+  icons: {
+    icon: "/icon.svg",
+    shortcut: "/icon.svg",
+    apple: "/icon.svg",
+  },
 };
 
 export default function PrivacyPolicyPage() {

@@ -18,7 +18,12 @@ export const metadata: Metadata = {
     card: "summary",
     title: "About Us | ClipVault",
     description: "Learn about ClipVault, our mission, vision, and our commitment to providing a secure and private content extraction engine.",
-  }
+  },
+  icons: {
+    icon: "/icon.svg",
+    shortcut: "/icon.svg",
+    apple: "/icon.svg",
+  },
 };
 
 export default function AboutPage() {

@@ -16,7 +16,12 @@ export const metadata: Metadata = {
     card: "summary",
     title: "Sign Up | ClipVault",
     description: "Create a free ClipVault account to sync download history and unlock 10 premium Reels downloads per day.",
-  }
+  },
+  icons: {
+    icon: "/icon.svg",
+    shortcut: "/icon.svg",
+    apple: "/icon.svg",
+  },
 };
 
 export default function SignupLayout({ children }: { children: React.ReactNode }) {

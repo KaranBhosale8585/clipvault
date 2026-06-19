@@ -17,7 +17,12 @@ export const metadata: Metadata = {
     card: "summary",
     title: "Contact Us | ClipVault",
     description: "Get in touch with the ClipVault support team for technical inquiries, bug reports, and business questions.",
-  }
+  },
+  icons: {
+    icon: "/icon.svg",
+    shortcut: "/icon.svg",
+    apple: "/icon.svg",
+  },
 };
 
 export default function ContactPage() {

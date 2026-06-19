@@ -18,7 +18,12 @@ export const metadata: Metadata = {
     card: "summary",
     title: "Terms & Conditions | ClipVault",
     description: "Read the ClipVault Terms & Conditions to understand permitted usage, download limitations, intellectual property waivers, and termination policies.",
-  }
+  },
+  icons: {
+    icon: "/icon.svg",
+    shortcut: "/icon.svg",
+    apple: "/icon.svg",
+  },
 };
 
 export default function TermsPage() {
