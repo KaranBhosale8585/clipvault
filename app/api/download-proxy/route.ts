@@ -1,6 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getUser } from "@/utils/getUser";
 import { logger } from "@/utils/logger";
+import dns from "node:dns";
+
+dns.setDefaultResultOrder("ipv4first");
 
 export async function GET(req: NextRequest) {
   try {

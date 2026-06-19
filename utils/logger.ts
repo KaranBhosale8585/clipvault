@@ -56,7 +56,13 @@ export const logger = {
   },
 
   async error(message: string, source?: string, metadata?: unknown) {
-    console.error(`[ERROR][${source || "system"}]: ${message}`);
+    if (metadata instanceof Error) {
+      console.error(`[ERROR][${source || "system"}]: ${message} - ${metadata.message}\n${metadata.stack}`);
+    } else if (metadata) {
+      console.error(`[ERROR][${source || "system"}]: ${message} - ${JSON.stringify(metadata)}`);
+    } else {
+      console.error(`[ERROR][${source || "system"}]: ${message}`);
+    }
     return this.log({ level: "error", message, source, metadata });
   },
 };
