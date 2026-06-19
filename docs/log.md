@@ -1,5 +1,16 @@
 # Development Log - ClipVault
 
+### Task: Integrate Google Analytics Script
+- **Timestamp**: 2026-06-20 01:00 AM
+- **Status**: Completed
+- **Files**: `app/layout.tsx`, `docs/*`
+- **Implementation Details**:
+    - **Script Integration**: Imported and configured the `next/script` component in `app/layout.tsx`.
+    - **Google Analytics Configuration**: Embedded the async Google Analytics (gtag.js) tracking tag (`G-WDK075JXR8`) and dynamic initialization snippet immediately before the closing `</body>` tag.
+- **Verification**:
+    - Verified compile type-safety using `pnpm typecheck`.
+    - Verified build passes successfully (`pnpm build`).
+
 ### Task: Implement Custom Error and Fallback Pages
 - **Timestamp**: 2026-06-20 12:45 AM
 - **Status**: Completed

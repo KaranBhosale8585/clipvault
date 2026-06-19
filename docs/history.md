@@ -204,3 +204,11 @@
   - **System Fallback Shell (`app/global-error.tsx`)**: Defined a standalone page structure for root template failures, styled with native font families to prevent compilation bugs.
 - **Files Changed**: `app/not-found.tsx`, `app/error.tsx`, `app/global-error.tsx`.
 
+### feat: integrate google analytics tracking scripts
+- **Description**: Enabled site traffic tracking and audience analysis using Google Analytics GTag manager.
+- **Key Changes**:
+  - **Google Tag Script (`app/layout.tsx`)**: Appended the async script component loading `https://www.googletagmanager.com/gtag/js?id=G-WDK075JXR8`.
+  - **Initialization Snippet (`app/layout.tsx`)**: Injected the dynamic global dataLayer object and initial configurations to register page views dynamically using standard Next.js Script strategy.
+- **Files Changed**: `app/layout.tsx`.
+
+
