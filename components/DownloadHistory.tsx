@@ -17,25 +17,18 @@ interface DownloadRecord {
   createdAt: string;
 }
 
+import useSWR from "swr";
+
+const fetcher = (url: string) => fetch(url).then((res) => {
+  if (!res.ok) throw new Error("Failed to fetch");
+  return res.json();
+});
+
 export default function DownloadHistory() {
-  const [history, setHistory] = useState<DownloadRecord[]>([]);
-  const [loading, setLoading] = useState(true);
+  const { data: historyData, isLoading, mutate } = useSWR<{ data: DownloadRecord[] }>("/api/reel/history", fetcher);
+  const history = historyData?.data || [];
   const [clearing, setClearing] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
-
-  const fetchHistory = async () => {
-    try {
-      const res = await fetch("/api/reel/history");
-      const data = await res.json();
-      if (res.ok) {
-        setHistory(data.data);
-      }
-    } catch (error) {
-      console.error("Failed to fetch history:", error);
-    } finally {
-      setLoading(false);
-    }
-  };
 
   const handleClearHistory = async () => {
     setClearing(true);
@@ -46,7 +39,7 @@ export default function DownloadHistory() {
 
       if (res.ok) {
         toast.success("History cleared successfully");
-        setHistory([]);
+        mutate({ data: [] }, false);
         setShowConfirm(false);
       } else {
         const data = await res.json();
@@ -60,20 +53,15 @@ export default function DownloadHistory() {
   };
 
   useEffect(() => {
-    const timer = setTimeout(() => {
-      fetchHistory();
-    }, 0);
-    
     // Refresh history when a new download is triggered (via custom event)
-    const handleRefresh = () => fetchHistory();
+    const handleRefresh = () => mutate();
     window.addEventListener("refresh-history", handleRefresh);
     return () => {
-      clearTimeout(timer);
       window.removeEventListener("refresh-history", handleRefresh);
     };
-  }, []);
+  }, [mutate]);
 
-  if (loading) {
+  if (isLoading) {
     return (
       <Card className="border-border rounded-3xl p-8 shadow-none bg-card">
         <CardHeader className="p-0 mb-6">

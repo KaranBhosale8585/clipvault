@@ -179,3 +179,11 @@
   - **CDNs Preconnecting**: Appended preconnect link headers for `scontent.cdninstagram.com` inside the root layout head, optimizing DNS and TCP connection overhead.
 - **Files Changed**: `app/layout.tsx`, `app/dashboard/page.tsx`, `components/UserDashboard.tsx`, `app/history/page.tsx`, `app/unlimited-access/page.tsx`, `app/admin/layout.tsx`, `app/(Auth UI)/verify/layout.tsx`, `app/(Auth UI)/forgot-password/layout.tsx`, `app/(Auth UI)/login/layout.tsx`, `app/(Auth UI)/signup/layout.tsx`, `components/ReelDownloader.tsx`, `components/DownloadHistory.tsx`.
 
+### feat: complete navigation latency and database caching optimization
+- **Description**: Resolved issues where navigating between dashboard, admin panel, and download history caused repeated page flashes and skeleton screen loading. Switched to SWR for client-side caching of session and data endpoints, and implemented Next.js server-side `unstable_cache` for database aggregations.
+- **Key Changes**:
+  - **SWR Client-side Caching**: Integrated the `swr` library to handle client-side session fetching (`/api/get-me`), history list retrieval (`/api/reel/history`), and admin stats queries (`/api/admin/stats`). This serves page data instantly from cache during navigation, and revalidates in the background.
+  - **Server-side unstable_cache**: Wrapped heavy SQL count and aggregation queries in `app/api/admin/stats/route.ts` with Next.js `unstable_cache` under tag `"admin-stats"` and 30-second TTL.
+  - **On-Demand Cache Revalidation**: Added `revalidateTag("admin-stats")` triggers to delete-actions (clear logs, purge downloads, flush cache) and new download tracking creations.
+  - **Background Cleanup Performance**: Shifted logs/downloads periodic cleanup queries to execute asynchronously in the background instead of blocking GET requests.
+- **Files Changed**: `components/UserDashboard.tsx`, `components/DownloadHistory.tsx`, `app/admin/page.tsx`, `components/Header.tsx`, `app/page.tsx`, `app/api/admin/stats/route.ts`, `app/api/admin/actions/clear-cache/route.ts`, `app/api/admin/actions/clear-downloads/route.ts`, `app/api/admin/actions/clear-logs/route.ts`, `app/api/reel/metadata/route.ts`.

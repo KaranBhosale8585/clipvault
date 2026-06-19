@@ -4,6 +4,8 @@ import { db } from "@/db";
 import { downloadsTable } from "@/db/schema";
 import { isNull } from "drizzle-orm";
 
+import { revalidateTag } from "next/cache";
+
 export async function POST() {
   try {
     const user = await getUser();
@@ -13,6 +15,8 @@ export async function POST() {
 
     // "Cache" in our system is currently anonymous records used for 12h metadata caching
     await db.delete(downloadsTable).where(isNull(downloadsTable.userId));
+
+    revalidateTag("admin-stats", "default");
 
     return NextResponse.json({ message: "Cache cleared successfully" });
   } catch {

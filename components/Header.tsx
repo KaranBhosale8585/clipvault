@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Menu, X, LogOut, Sparkles, LayoutDashboard, History, ArrowRight } from "lucide-react";
 import { usePathname } from "next/navigation";
 import { toast } from "sonner";
@@ -14,28 +14,19 @@ type NavLink = {
   icon?: React.ReactNode;
 };
 
+import useSWR from "swr";
+
+const fetcher = (url: string) => fetch(url).then((res) => {
+  if (!res.ok) throw new Error("Failed to fetch");
+  return res.json();
+});
+
 export default function Header() {
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [user, setUser] = useState<{ id: string } | null>(null);
+  const { data: user, mutate } = useSWR<{ id: string; name: string; email: string; role: string } | null>("/api/get-me", fetcher);
   const pathname = usePathname();
 
-  useEffect(() => {
-    const fetchUser = async () => {
-      try {
-        const res = await fetch("/api/get-me");
-        if (res.ok) {
-          const data = await res.json();
-          setUser(data);
-        } else {
-          setUser(null);
-        }
-      } catch {
-        setUser(null);
-      }
-    };
-    fetchUser();
-  }, [pathname]);
 
   const handleLogout = async () => {
     try {
@@ -46,7 +37,7 @@ export default function Header() {
       });
       if (res.ok) {
         toast.success("Logged out");
-        setUser(null);
+        mutate(null);
         window.location.href = "/login";
       }
     } catch {

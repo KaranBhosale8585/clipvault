@@ -1,11 +1,17 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Zap, History, LayoutDashboard, ShieldCheck } from "lucide-react";
 import Link from "next/link";
 import { Skeleton } from "@/components/ui/skeleton";
+
+import useSWR from "swr";
+
+const fetcher = (url: string) => fetch(url).then((res) => {
+  if (!res.ok) throw new Error("Failed to fetch");
+  return res.json();
+});
 
 interface UserData {
   id: string;
@@ -16,27 +22,10 @@ interface UserData {
 }
 
 export default function UserDashboard() {
-  const [user, setUser] = useState<UserData | null>(null);
-  const [loading, setLoading] = useState(true);
+  const { data: user, isLoading } = useSWR<UserData | null>("/api/get-me", fetcher);
 
-  useEffect(() => {
-    const fetchUser = async () => {
-      try {
-        const res = await fetch("/api/get-me");
-        if (res.ok) {
-          const data = await res.json();
-          setUser(data);
-        }
-      } catch {
-        // Handle error
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchUser();
-  }, []);
 
-  if (loading) {
+  if (isLoading || !user) {
     return (
       <div className="min-h-screen bg-background py-24">
         <div className="max-w-5xl mx-auto px-6 space-y-8 animate-pulse">

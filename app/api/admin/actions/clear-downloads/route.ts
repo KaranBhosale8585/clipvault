@@ -3,6 +3,8 @@ import { getUser } from "@/utils/getUser";
 import { db } from "@/db";
 import { downloadsTable } from "@/db/schema";
 
+import { revalidateTag } from "next/cache";
+
 export async function POST() {
   try {
     const user = await getUser();
@@ -11,6 +13,8 @@ export async function POST() {
     }
 
     await db.delete(downloadsTable);
+
+    revalidateTag("admin-stats", "default");
 
     return NextResponse.json({ message: "Downloads cleared successfully" });
   } catch {

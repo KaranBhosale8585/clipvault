@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useMemo } from "react";
+import { useState, useMemo } from "react";
 import { toast } from "sonner";
 import { 
   Users, ShieldCheck, Activity, ArrowLeft, 
@@ -67,9 +67,16 @@ function safeJsonFormat(jsonStr: string | null): string {
   }
 }
 
+import useSWR from "swr";
+
+const fetcher = (url: string) => fetch(url).then((res) => {
+  if (!res.ok) throw new Error("Failed to fetch");
+  return res.json();
+});
+
 export default function AdminDashboard() {
-  const [data, setData] = useState<AdminData | null>(null);
-  const [loading, setLoading] = useState(true);
+  const { data: statsData, isLoading, mutate } = useSWR<{ data: AdminData }>("/api/admin/stats", fetcher);
+  const data = statsData?.data || null;
   const [actionLoading, setActionLoading] = useState<string | null>(null);
   const [searchQuery, setSearchSearchQuery] = useState("");
 
@@ -82,29 +89,6 @@ export default function AdminDashboard() {
     action: null,
   });
 
-  const fetchAdminData = async () => {
-    try {
-      const res = await fetch("/api/admin/stats");
-      const json = await res.json();
-
-      if (!res.ok) {
-        toast.error(json.message || "Failed to fetch admin data.");
-      } else {
-        setData(json.data);
-      }
-    } catch {
-      toast.error("Network error fetching admin stats.");
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      fetchAdminData();
-    }, 0);
-    return () => clearTimeout(timer);
-  }, []);
 
   const handleAction = async () => {
     const { action } = confirmDialog;
@@ -117,7 +101,7 @@ export default function AdminDashboard() {
       const res = await fetch(`/api/admin/actions/${action}`, { method: "POST" });
       if (res.ok) {
         toast.success("Action completed successfully");
-        fetchAdminData();
+        mutate();
       } else {
         toast.error("Action failed");
       }
@@ -137,7 +121,7 @@ export default function AdminDashboard() {
     );
   }, [data, searchQuery]);
 
-  if (loading) {
+  if (isLoading || !data) {
     return (
       <div className="min-h-screen bg-background p-8">
         <div className="max-w-7xl mx-auto space-y-8">
@@ -169,7 +153,7 @@ export default function AdminDashboard() {
             <p className="text-muted-foreground font-medium">Monitor platform health and manage resources.</p>
           </div>
           <div className="flex items-center gap-3">
-            <Button variant="outline" onClick={fetchAdminData} className="rounded-xl border-border">
+            <Button variant="outline" onClick={() => mutate()} className="rounded-xl border-border">
               <RefreshCcw size={16} className="mr-2" /> Refresh
             </Button>
             <Link href="/">

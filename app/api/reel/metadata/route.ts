@@ -4,6 +4,8 @@ import { getVisitorId } from "@/utils/auth";
 import { fetchReelMetadata, validateReelUrl } from "@/utils/instagram";
 import { db } from "@/db";
 import { downloadsTable, usersTable } from "@/db/schema";
+import { revalidateTag } from "next/cache";
+
 import { checkDownloadRateLimit, checkIPRateLimit } from "@/utils/rateLimit";
 import { logger } from "@/utils/logger";
 import { eq, and, desc, gte, isNull, count, or, sql } from "drizzle-orm";
@@ -170,6 +172,12 @@ export async function POST(req: NextRequest) {
         .update(usersTable)
         .set({ dailyDownloadCount: sql`${usersTable.dailyDownloadCount} + 1` })
         .where(eq(usersTable.id, user.id));
+    }
+
+    try {
+      revalidateTag("admin-stats", "default");
+    } catch (e) {
+      console.error("Cache revalidation error:", e);
     }
 
     return NextResponse.json({

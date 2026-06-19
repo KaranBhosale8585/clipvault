@@ -93,6 +93,9 @@ D:\products\downloader\
 - **Metadata Caching**: Metadata is cached for 12 hours in the database to minimize expensive Python child process execution.
 - **Database Optimization**: Added B-tree indexes to `user_id`, `reel_url`, and `visitor_id` for rapid lookups.
 - **Resource Management**: The `yt-dlp` service is managed via a Node-Python bridge to ensure concurrency doesn't overwhelm system resources.
+- **Client-side Caching (SWR)**: Navigation routes (Dashboard, Admin, History) leverage SWR to cache endpoint queries on the client side. This eliminates loading screen flickers during tab changes, serving stale data instantly and revalidating it in the background.
+- **Server-side Query Caching (unstable_cache)**: Heavy counts and analytical queries in the Admin API are cached using Next.js `unstable_cache` with a tag-based invalidation model ("admin-stats") to minimize database CPU cycles on concurrent access.
+
 
 ## Monitoring & Deployment
 - **Security Logging**: All critical events (extraction hits, rate limit triggers) are recorded in the `logs` table.

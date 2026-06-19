@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { toast } from "sonner";
 import Link from "next/link";
 import { 
@@ -24,13 +24,20 @@ type User = {
   isProAccess: boolean;
 };
 
+import useSWR from "swr";
+
+const fetcher = (url: string) => fetch(url).then((res) => {
+  if (!res.ok) throw new Error("Failed to fetch");
+  return res.json();
+});
+
 export default function DownloadDashboard() {
-  const [user, setUser] = useState<User | null>(null);
-  const [loading, setLoading] = useState(true);
+  const { data: user, isLoading, mutate } = useSWR<User | null>("/api/get-me", fetcher);
   const [isLimitReached, setIsLimitReached] = useState(false);
   const [isDailyLimitReached, setIsDailyLimitReached] = useState(false);
   const [lastUrl, setLastUrl] = useState("");
   const [openFaqIndex, setOpenFaqIndex] = useState<number | null>(null);
+
 
   const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "https://clipvault.com";
 
@@ -88,28 +95,7 @@ export default function DownloadDashboard() {
     ]
   };
 
-  useEffect(() => {
-    const fetchUser = async () => {
-      try {
-        const res = await fetch("/api/get-me", {
-          method: "GET",
-          cache: "no-store",
-        });
 
-        const data = await res.json();
-
-        if (res.ok) {
-          setUser(data);
-        }
-      } catch {
-        // Silently handle auth fetch errors
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchUser();
-  }, []);
 
   const handleLogout = async () => {
     try {
@@ -119,6 +105,7 @@ export default function DownloadDashboard() {
 
       if (res.ok) {
         toast.success("Logged out successfully");
+        mutate(null);
         window.location.href = "/login";
       }
     } catch {
@@ -135,7 +122,7 @@ export default function DownloadDashboard() {
     setIsDailyLimitReached(true);
   };
 
-  if (loading) {
+  if (isLoading) {
     return (
       <div className="min-h-screen bg-background flex flex-col items-center justify-center p-6">
         <div className="w-full max-w-4xl space-y-8 animate-pulse">

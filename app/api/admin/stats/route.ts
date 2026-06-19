@@ -3,23 +3,10 @@ import { getUser } from "@/utils/getUser";
 import { db } from "@/db";
 import { usersTable, downloadsTable, logsTable } from "@/db/schema";
 import { count, desc, eq, lt, gte, isNull, isNotNull } from "drizzle-orm";
+import { unstable_cache } from "next/cache";
 
-export async function GET() {
-  try {
-    const user = await getUser();
-    
-    if (!user || user.role !== "admin") {
-      return NextResponse.json(
-        { error: "Forbidden", message: "Administrative access required." },
-        { status: 403 }
-      );
-    }
-
-    // SCALABILITY: Periodic Cleanup (older than 30 days)
-    const thirtyDaysAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000);
-    await db.delete(logsTable).where(lt(logsTable.createdAt, thirtyDaysAgo));
-    await db.delete(downloadsTable).where(lt(downloadsTable.createdAt, thirtyDaysAgo));
-
+const getCachedStats = unstable_cache(
+  async () => {
     // 1. Basic Stats
     const [userCount] = await db.select({ total: count() }).from(usersTable);
     const [downloadCount] = await db.select({ total: count() }).from(downloadsTable);
@@ -55,6 +42,45 @@ export async function GET() {
       .orderBy(desc(count(downloadsTable.id)))
       .limit(5);
 
+    return {
+      stats: {
+        totalUsers: Number(userCount.total),
+        totalDownloads: Number(downloadCount.total),
+        downloadsToday: Number(downloadsToday.total),
+        anonDownloads: Number(anonDownloads.total),
+        regDownloads: Number(regDownloads.total),
+      },
+      topUrls,
+    };
+  },
+  ["admin-stats-counts"],
+  { revalidate: 30, tags: ["admin-stats"] }
+);
+
+export async function GET() {
+  try {
+    const user = await getUser();
+    
+    if (!user || user.role !== "admin") {
+      return NextResponse.json(
+        { error: "Forbidden", message: "Administrative access required." },
+        { status: 403 }
+      );
+    }
+
+    // SCALABILITY: Periodic Cleanup (older than 30 days) - Run in background without blocking the response
+    const thirtyDaysAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000);
+    db.delete(logsTable).where(lt(logsTable.createdAt, thirtyDaysAgo)).catch(err => 
+      console.error("Background logs cleanup error:", err)
+    );
+    db.delete(downloadsTable).where(lt(downloadsTable.createdAt, thirtyDaysAgo)).catch(err => 
+      console.error("Background downloads cleanup error:", err)
+    );
+
+    // Fetch cached stats and top URLs
+    const cachedData = await getCachedStats();
+
+    // Fetch real-time recent downloads and logs
     const recentDownloads = await db
       .select({
         id: downloadsTable.id,
@@ -76,14 +102,8 @@ export async function GET() {
 
     return NextResponse.json({
       data: {
-        stats: {
-          totalUsers: Number(userCount.total),
-          totalDownloads: Number(downloadCount.total),
-          downloadsToday: Number(downloadsToday.total),
-          anonDownloads: Number(anonDownloads.total),
-          regDownloads: Number(regDownloads.total),
-        },
-        topUrls,
+        stats: cachedData.stats,
+        topUrls: cachedData.topUrls,
         recentDownloads,
         latestLogs,
       },
