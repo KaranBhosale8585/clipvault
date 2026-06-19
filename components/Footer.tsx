@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { Sparkles, Globe, MessageSquare } from "lucide-react";
+import { Globe, MessageSquare } from "lucide-react";
 
 export default function Footer() {
   const currentYear = new Date().getFullYear();
@@ -12,8 +12,8 @@ export default function Footer() {
         
         <div className="flex flex-col gap-6 max-w-sm w-full">
           <div className="flex items-center gap-2.5 text-foreground font-black text-xl tracking-tighter">
-            <div className="bg-foreground p-1.5 rounded-xl text-background shadow-lg shadow-indigo-500/5">
-              <Sparkles size={16} fill="currentColor" />
+            <div className="flex items-center justify-center w-7 h-7">
+              <img src="/icon.png" alt="ClipVault Logo" className="w-7 h-7 object-contain" />
             </div>
             ClipVault
           </div>

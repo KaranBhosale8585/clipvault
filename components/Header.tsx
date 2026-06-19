@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useState } from "react";
-import { Menu, X, LogOut, Sparkles, LayoutDashboard, History, ArrowRight } from "lucide-react";
+import { Menu, X, LogOut, LayoutDashboard, History, ArrowRight } from "lucide-react";
 import { usePathname } from "next/navigation";
 import { toast } from "sonner";
 import { ThemeToggle } from "./ThemeToggle";
@@ -68,8 +68,8 @@ export default function Header() {
         {/* Logo */}
         <div className="flex items-center gap-6 lg:gap-10 shrink-0">
           <Link href="/" className="flex items-center gap-2.5 group">
-            <div className="bg-foreground p-1.5 rounded-xl text-background shadow-lg shadow-indigo-500/10 group-hover:scale-105 transition-transform duration-500 ease-spring">
-              <Sparkles size={18} fill="currentColor" />
+            <div className="group-hover:scale-105 transition-transform duration-500 ease-spring flex items-center justify-center w-8 h-8">
+              <img src="/icon.png" alt="ClipVault Logo" className="w-8 h-8 object-contain" />
             </div>
             <span className="text-xl font-black tracking-tighter text-foreground group-hover:opacity-80 transition-opacity whitespace-nowrap">
               ClipVault
