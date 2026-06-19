@@ -13,7 +13,7 @@ export default function Footer() {
         <div className="flex flex-col gap-6 max-w-sm w-full">
           <div className="flex items-center gap-2.5 text-foreground font-black text-xl tracking-tighter">
             <div className="flex items-center justify-center w-7 h-7">
-              <img src="/icon.svg" alt="ClipVault Logo" className="w-7 h-7 object-contain" />
+              <img src="/icon.svg" alt="ClipVault Logo" className="w-7 h-7 object-contain dark:invert" />
             </div>
             ClipVault
           </div>

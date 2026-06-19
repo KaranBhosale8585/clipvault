@@ -69,7 +69,7 @@ export default function Header() {
         <div className="flex items-center gap-6 lg:gap-10 shrink-0">
           <Link href="/" className="flex items-center gap-2.5 group">
             <div className="group-hover:scale-105 transition-transform duration-500 ease-spring flex items-center justify-center w-8 h-8">
-              <img src="/icon.svg" alt="ClipVault Logo" className="w-8 h-8 object-contain" />
+              <img src="/icon.svg" alt="ClipVault Logo" className="w-8 h-8 object-contain dark:invert" />
             </div>
             <span className="text-xl font-black tracking-tighter text-foreground group-hover:opacity-80 transition-opacity whitespace-nowrap">
               ClipVault
