@@ -80,7 +80,7 @@ export default function ReelDownloader({ onLimitReached, onDailyLimitReached }: 
         // Notify DownloadHistory to refresh
         window.dispatchEvent(new CustomEvent("refresh-history"));
       }
-    } catch (error) {
+    } catch {
       toast.error("Something went wrong");
     } finally {
       setLoading(false);
@@ -144,6 +144,8 @@ export default function ReelDownloader({ onLimitReached, onDailyLimitReached }: 
                   <img
                     src={`/api/download-proxy?url=${encodeURIComponent(metadata.thumbnailUrl)}&download=false`}
                     alt={metadata.title}
+                    loading="lazy"
+                    decoding="async"
                     className="w-full h-64 md:h-full object-cover transition-transform duration-500 group-hover:scale-105"
                   />
                   <div 

@@ -3,8 +3,22 @@ import { Zap, Globe, Lock, Download, Sparkles, Smartphone } from "lucide-react";
 import { Card } from "@/components/ui/card";
 
 export const metadata: Metadata = {
-  title: "Features | ClipVault",
-  description: "Explore the advanced features of ClipVault extraction engine.",
+  title: "Features",
+  description: "Explore the advanced technical features of ClipVault's high-speed content extraction engine.",
+  alternates: {
+    canonical: "/features",
+  },
+  openGraph: {
+    title: "Features | ClipVault",
+    description: "Explore the advanced technical features of ClipVault's high-speed content extraction engine.",
+    url: "/features",
+    type: "website",
+  },
+  twitter: {
+    card: "summary",
+    title: "Features | ClipVault",
+    description: "Explore the advanced technical features of ClipVault's high-speed content extraction engine.",
+  }
 };
 
 export default function FeaturesPage() {

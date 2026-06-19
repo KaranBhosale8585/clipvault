@@ -5,8 +5,22 @@ import { Card } from "@/components/ui/card";
 import Link from "next/link";
 
 export const metadata: Metadata = {
-  title: "Pricing | ClipVault",
-  description: "Simple, transparent pricing for ClipVault users.",
+  title: "Pricing",
+  description: "Simple, transparent pricing for ClipVault users. Use our core Instagram Reel Downloader for free during beta.",
+  alternates: {
+    canonical: "/pricing",
+  },
+  openGraph: {
+    title: "Pricing | ClipVault",
+    description: "Simple, transparent pricing for ClipVault users. Use our core Instagram Reel Downloader for free during beta.",
+    url: "/pricing",
+    type: "website",
+  },
+  twitter: {
+    card: "summary",
+    title: "Pricing | ClipVault",
+    description: "Simple, transparent pricing for ClipVault users. Use our core Instagram Reel Downloader for free during beta.",
+  }
 };
 
 export default function PricingPage() {

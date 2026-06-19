@@ -4,6 +4,10 @@ import DownloadHistory from "@/components/DownloadHistory";
 export const metadata: Metadata = {
   title: "Download History | ClipVault",
   description: "View and manage your ClipVault extraction history.",
+  robots: {
+    index: false,
+    follow: false,
+  },
 };
 
 export default function HistoryPage() {

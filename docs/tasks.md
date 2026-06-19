@@ -136,5 +136,29 @@
   - [x] Fix Email Verification Flow redirect to Dashboard
   - [x] Fix Logout Flow redirect and cookie termination logic
   - [x] Ensure proxy.ts middleware behaves correctly on hard navigation
+- [x] Legal, Compliance, SEO & Launch Readiness Audit
+  - [x] Create Privacy Policy page reflecting cookie tracking, IP handling, limits, and 30-day retention
+  - [x] Create Terms & Conditions page with intellectual property disclaimer and Reels limitation
+  - [x] Update About Us page to specify Reels only and commitments without fake statistics
+  - [x] Split Contact page into Server Component (for SEO metadata) and Client Component
+  - [x] Link Privacy and Terms pages from the footer
+  - [x] Add new public pages to sitemap.xml
+  - [x] Build comprehensive homepage FAQ accordion (14 user questions) and add FAQ JSON-LD metadata
+  - [x] Verify zero build/typecheck/lint errors
+- [x] ClipVault SEO Optimization Audit
+  - [x] Research keywords (primary, secondary, long-tail difficulty and intent)
+  - [x] Optimize landing page H1 keyword prominence ("Instagram Reel Downloader" for guests)
+  - [x] Create rich layout sections (How It Works, Benefits, Advanced Features) with keywords
+  - [x] Establish contextual links to privacy, terms, and contact routes
+  - [x] Expand multi-schema structured data: inject Organization & Breadcrumb lists
+  - [x] Overhaul metadata on all public pages (unique canonicals, OpenGraph, and Twitter tags)
+  - [x] Run typecheck, lint, and build to verify zero compile warnings or errors
+- [x] Final Advanced SEO Audit & Performance Overhaul
+  - [x] Audit Core Web Vitals (LCP, CLS, INP) loading dynamics
+  - [x] Apply explicit noindex/nofollow robots configuration to secure routes (/dashboard, /history, /admin, /verify, /forgot-password)
+  - [x] Create separate layout files for login/signup routes with unique indexable metadata
+  - [x] Enable browser-level lazy loading and async decoding for history/downloader image thumbnails
+  - [x] Configure DNS preconnect parameters for Instagram's CDN host in root layout head
+  - [x] Verify production build compiles with zero errors
 
 

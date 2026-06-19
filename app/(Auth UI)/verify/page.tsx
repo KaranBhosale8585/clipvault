@@ -3,7 +3,6 @@
 import { useState, useEffect } from "react";
 import { ShieldCheck, Loader2 } from "lucide-react";
 import { toast } from "sonner";
-import { useRouter } from "next/navigation";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 
@@ -12,18 +11,6 @@ export default function VerifyOTP() {
   const [loading, setLoading] = useState(false);
   const [sendingOtp, setSendingOtp] = useState(false);
   const [timer, setTimer] = useState(0);
-  const router = useRouter();
-
-  useEffect(() => {
-    // Send OTP on mount
-    handleSendOtp();
-  }, []);
-
-  useEffect(() => {
-    if (timer <= 0) return;
-    const interval = setInterval(() => setTimer((prev) => prev - 1), 1000);
-    return () => clearInterval(interval);
-  }, [timer]);
 
   const handleSendOtp = async () => {
     try {
@@ -42,6 +29,20 @@ export default function VerifyOTP() {
       setSendingOtp(false);
     }
   };
+
+  useEffect(() => {
+    // Send OTP on mount
+    const t = setTimeout(() => {
+      handleSendOtp();
+    }, 0);
+    return () => clearTimeout(t);
+  }, []);
+
+  useEffect(() => {
+    if (timer <= 0) return;
+    const interval = setInterval(() => setTimer((prev) => prev - 1), 1000);
+    return () => clearInterval(interval);
+  }, [timer]);
 
   const handleChange = (value: string, index: number) => {
     if (!/^[0-9]?$/.test(value)) return;

@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useState, useEffect } from "react";
 import { Menu, X, LogOut, Sparkles, LayoutDashboard, History, ArrowRight } from "lucide-react";
-import { useRouter, usePathname } from "next/navigation";
+import { usePathname } from "next/navigation";
 import { toast } from "sonner";
 import { ThemeToggle } from "./ThemeToggle";
 import { cn } from "@/utils/cn";
@@ -18,7 +18,6 @@ export default function Header() {
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [user, setUser] = useState<{ id: string } | null>(null);
-  const router = useRouter();
   const pathname = usePathname();
 
   useEffect(() => {

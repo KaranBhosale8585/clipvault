@@ -51,9 +51,11 @@ export default function Footer() {
           </div>
 
           <div className="flex flex-col gap-4 text-center sm:text-left sm:col-span-2 md:col-span-1">
-            <h4 className="text-xs font-bold text-foreground uppercase tracking-widest">Support</h4>
+            <h4 className="text-xs font-bold text-foreground uppercase tracking-widest">Support & Legal</h4>
             <div className="flex flex-col gap-3 text-sm font-medium">
-              <Link href="/contact" className="hover:text-indigo-500 transition-colors">Contact</Link>
+              <Link href="/contact" className="hover:text-indigo-500 transition-colors">Contact Us</Link>
+              <Link href="/privacy" className="hover:text-indigo-500 transition-colors">Privacy Policy</Link>
+              <Link href="/terms" className="hover:text-indigo-500 transition-colors">Terms & Conditions</Link>
               <a href="mailto:support@clipvault.com" className="hover:text-indigo-500 transition-colors">Email Support</a>
             </div>
           </div>

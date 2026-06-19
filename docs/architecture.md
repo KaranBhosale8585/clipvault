@@ -26,10 +26,12 @@ D:\products\downloader\
 
 ## Route Structure
 - `/`: Core downloader application. Public access for free trial (3 downloads), then requires authentication.
-- `/about`: Company mission and values.
+- `/about`: Company mission, values, and platform limitations.
 - `/features`: Detailed technical capabilities of the extraction engine.
 - `/pricing`: Subscription tiers (Free/Pro).
-- `/contact`: Support and feedback channel.
+- `/contact`: Support and feedback channel (split Server/Client form).
+- `/privacy`: Privacy Policy detailing data handling, session cookies, rate limits, and 30-day purge cycle.
+- `/terms`: Terms & Conditions outlining user responsibility and liability waivers.
 - `/dashboard`: Protected user overview and profile.
 - `/history`: Protected download history viewer.
 - `/admin`: Protected admin dashboard for platform monitoring.
@@ -54,8 +56,12 @@ D:\products\downloader\
 
 ## SEO Strategy
 - **Core Application Hub**: The root route (`/`) serves as the central downloader application, optimized for both conversion and search visibility.
-- **Dynamic Metadata**: `app/layout.tsx` includes comprehensive OpenGraph, Twitter Cards, and canonical URLs.
-- **Structured Data**: JSON-LD (`WebApplication` schema) is injected into pages for enhanced search engine indexing.
+- **Dynamic Metadata**: All public pages (`/about`, `/features`, `/pricing`, `/contact`, `/privacy`, `/terms`) export unique title templates, custom descriptions, canonical URL paths, OpenGraph properties, and Twitter Card specifications.
+- **Secure Index Prevention**: Protected user paths (`/dashboard`, `/history`, `/unlimited-access`, and admin panels) are explicitly configured with `robots: { index: false, follow: false }` metadata using Server Layouts and exports to prevent search leaks. Intermediate auth paths (`/verify`, `/forgot-password`) are also index-blocked.
+- **Dedicated Auth Meta Routing**: Configured isolated layouts for `/login` and `/signup` to assign search-friendly title structures, description details, and canonicals, preventing indexing defaults clashes.
+- **Structured Data**: Injects detailed multi-schema JSON-LD metadata, including `WebApplication` on root, a dynamic `FAQPage` matching search intents, an `Organization` descriptor mapping site identity/social links, and a `BreadcrumbList` representation for home route verification.
+- **Sitemap Indexing**: A dynamic sitemap (`app/sitemap.ts`) maps all public marketing, legal, support, and account endpoints. Crawling directives are managed through a robust `app/robots.ts` config.
+- **LCP & Preconnect Acceleration**: Injects preconnect attributes for Instagram's CDN host `scontent.cdninstagram.com` inside the root head to reduce handshake times. Employs browser-level `loading="lazy"` and `decoding="async"` for image thumbnails in collections and previews to protect Largest Contentful Paint (LCP) and CLS thresholds.
 
 ## Limit Enforcement & Conversion
 - **Anonymous Tracking**: Guest users are allowed 3 downloads total. Tracking uses a combination of IP address and a signed `visitor_id` cookie.

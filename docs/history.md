@@ -147,3 +147,35 @@
   - **Type Safety**: Refined error handling and linter compliance by using explicit `Error` casting.
 - **Files Changed**: `app/api/contact/route.ts`.
 
+## 2026-06-19
+### feat: complete legal, compliance, SEO, and launch readiness audit
+- **Description**: Performed a full-scale legal compliance and SEO audit. Created required legal pages, updated SEO sitemap configuration, resolved all lint and typecheck errors, and improved landing page FAQs.
+- **Key Changes**:
+  - **Privacy Policy**: Created `app/privacy/page.tsx` with specific information detailing accounts, session cookies, visitor tracking, rate limits, IP logging, and 30-day retention policies.
+  - **Terms & Conditions**: Created `app/terms/page.tsx` with necessary compliance disclaimers regarding user responsibility, third-party content ownership, and Instagram Reels restriction.
+  - **About Us**: Refactored `app/about/page.tsx` to highlight our core supported platform (Instagram Reels only) and detail our commitments without fake statistics.
+  - **Contact Us**: Restructured `app/contact/page.tsx` as a Server Component for SEO metadata and extracted the interactive elements into a client component `components/ContactForm.tsx`.
+  - **FAQ Section & JSON-LD**: Added a responsive Framer-Motion based interactive accordion FAQ section to the homepage (`app/page.tsx`) answering the 14 recommended user questions, and injected `FAQPage` JSON-LD structured data.
+  - **Sitemap & Links**: Integrated the new pages into the dynamic sitemap (`app/sitemap.ts`) and linked them from the footer (`components/Footer.tsx`).
+  - **Linter & Bug Fixes**: Resolved unused variable warnings in terms, header, and downloader pages; fixed synchronous setState React warning in `app/(Auth UI)/verify/page.tsx` by wrapping the trigger in `setTimeout` with cleanup.
+- **Files Changed**: `app/privacy/page.tsx`, `app/terms/page.tsx`, `app/about/page.tsx`, `app/contact/page.tsx`, `components/ContactForm.tsx`, `app/page.tsx`, `components/Footer.tsx`, `app/sitemap.ts`, `app/(Auth UI)/verify/page.tsx`, `components/Header.tsx`, `components/ReelDownloader.tsx`.
+
+### feat: complete comprehensive SEO Optimization Audit and enhancements
+- **Description**: Performed a detailed SEO audit. Implemented metadata optimization, landing page H1 keyword prominence, dynamic multi-schema JSON-LD markup, internal linking, and rich marketing/FAQ copy.
+- **Key Changes**:
+  - **Landing Page H1**: Optimized the default guest heading on `/` to read "Instagram Reel Downloader" to improve search query alignment.
+  - **Rich Landing Page Copy**: Injected structured sections detailing "How to Download Instagram Reels", "Why Choose ClipVault", and "Advanced Features" containing targeted primary and secondary keywords.
+  - **Contextual Linking**: Embedded text links pointing to `/privacy`, `/terms`, and `/contact` to build strong internal navigation equity.
+  - **Multi-Schema JSON-LD**: Appended dynamically configured `Organization` and `BreadcrumbList` schemas to existing `WebApplication` and `FAQPage` JSON-LD schemas.
+  - **Metadata Overhaul**: Standardized metadata exports on `/about`, `/features`, `/pricing`, `/contact`, `/privacy`, and `/terms` to export specific canonical links, Open Graph parameters, and Twitter Cards.
+- **Files Changed**: `app/page.tsx`, `app/about/page.tsx`, `app/features/page.tsx`, `app/pricing/page.tsx`, `app/contact/page.tsx`, `app/privacy/page.tsx`, `app/terms/page.tsx`.
+
+### feat: final advanced SEO audit and performance enhancements
+- **Description**: Completed a final advanced SEO audit. Implemented explicit indexing controls, customized login/signup metadata layouts, optimized dynamic image loading, and preconnect parameters.
+- **Key Changes**:
+  - **Robust Indexing Prevention**: Configured explicit `robots: { index: false, follow: false }` metadata for private paths: dashboard, history, admin panels, OTP verification, and password resets, preventing search indexing leaks.
+  - **Login/Signup SEO Overhaul**: Created Server Layouts for `/login` and `/signup` with custom metadata to ensure they are properly indexed under unique names instead of falling back to home defaults.
+  - **Core Web Vitals (LCP/CLS)**: Enabled browser-level lazy loading (`loading="lazy"`) and asynchronous rendering (`decoding="async"`) for dynamic downloads and collection thumbnails in `DownloadHistory` and `ReelDownloader`.
+  - **CDNs Preconnecting**: Appended preconnect link headers for `scontent.cdninstagram.com` inside the root layout head, optimizing DNS and TCP connection overhead.
+- **Files Changed**: `app/layout.tsx`, `app/dashboard/page.tsx`, `components/UserDashboard.tsx`, `app/history/page.tsx`, `app/unlimited-access/page.tsx`, `app/admin/layout.tsx`, `app/(Auth UI)/verify/layout.tsx`, `app/(Auth UI)/forgot-password/layout.tsx`, `app/(Auth UI)/login/layout.tsx`, `app/(Auth UI)/signup/layout.tsx`, `components/ReelDownloader.tsx`, `components/DownloadHistory.tsx`.
+

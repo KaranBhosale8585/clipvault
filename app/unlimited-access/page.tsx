@@ -4,6 +4,10 @@ import UnlimitedAccessRequestForm from "@/components/UnlimitedAccessRequestForm"
 export const metadata: Metadata = {
   title: "Request Unlimited Access | ClipVault",
   description: "Apply for unlimited, professional-grade access to the ClipVault extraction engine.",
+  robots: {
+    index: false,
+    follow: false,
+  },
 };
 
 export default function UnlimitedAccessPage() {
