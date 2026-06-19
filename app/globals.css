@@ -121,9 +121,3 @@ body {
     margin: 0;
   }
 }
-
-/* Logo dark theme styling */
-.dark .theme-logo,
-.pitch-dark .theme-logo {
-  filter: invert(1) brightness(1.2) !important;
-}

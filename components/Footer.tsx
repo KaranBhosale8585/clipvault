@@ -2,9 +2,19 @@
 
 import Link from "next/link";
 import { Globe, MessageSquare } from "lucide-react";
+import { useState, useEffect } from "react";
+import { useTheme } from "next-themes";
 
 export default function Footer() {
   const currentYear = new Date().getFullYear();
+  const { resolvedTheme } = useTheme();
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  const isDark = mounted && (resolvedTheme === "dark" || resolvedTheme === "pitch-dark");
 
   return (
     <footer className="bg-background border-t border-border text-muted-foreground transition-all duration-300">
@@ -13,7 +23,12 @@ export default function Footer() {
         <div className="flex flex-col gap-6 max-w-sm w-full">
           <div className="flex items-center gap-2.5 text-foreground font-black text-xl tracking-tighter">
             <div className="flex items-center justify-center w-7 h-7">
-              <img src="/icon.svg?v=2" alt="ClipVault Logo" className="w-7 h-7 object-contain theme-logo" />
+              <img 
+                src="/icon.svg?v=2" 
+                alt="ClipVault Logo" 
+                className="w-7 h-7 object-contain" 
+                style={isDark ? { filter: "invert(1) brightness(1.2)" } : undefined}
+              />
             </div>
             ClipVault
           </div>

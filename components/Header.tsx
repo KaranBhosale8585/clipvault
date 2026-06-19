@@ -1,12 +1,13 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Menu, X, LogOut, LayoutDashboard, History, ArrowRight } from "lucide-react";
 import { usePathname } from "next/navigation";
 import { toast } from "sonner";
 import { ThemeToggle } from "./ThemeToggle";
 import { cn } from "@/utils/cn";
+import { useTheme } from "next-themes";
 
 type NavLink = {
   name: string;
@@ -26,7 +27,14 @@ export default function Header() {
   const [loading, setLoading] = useState(false);
   const { data: user, mutate } = useSWR<{ id: string; name: string; email: string; role: string } | null>("/api/get-me", fetcher);
   const pathname = usePathname();
+  const { resolvedTheme } = useTheme();
+  const [mounted, setMounted] = useState(false);
 
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  const isDark = mounted && (resolvedTheme === "dark" || resolvedTheme === "pitch-dark");
 
   const handleLogout = async () => {
     try {
@@ -70,7 +78,12 @@ export default function Header() {
         <div className="flex items-center gap-6 lg:gap-10 shrink-0">
           <Link href="/" className="flex items-center gap-2.5 group">
             <div className="group-hover:scale-105 transition-transform duration-500 ease-spring flex items-center justify-center w-8 h-8">
-              <img src="/icon.svg?v=2" alt="ClipVault Logo" className="w-8 h-8 object-contain theme-logo" />
+              <img 
+                src="/icon.svg?v=2" 
+                alt="ClipVault Logo" 
+                className="w-8 h-8 object-contain" 
+                style={isDark ? { filter: "invert(1) brightness(1.2)" } : undefined}
+              />
             </div>
             <span className="text-xl font-black tracking-tighter text-foreground group-hover:opacity-80 transition-opacity whitespace-nowrap">
               ClipVault
