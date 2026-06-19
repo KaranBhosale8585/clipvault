@@ -37,9 +37,9 @@ interface PythonDownloaderData {
   id: string;
   title: string;
   uploader: string;
-  thumbnail_url: string;
+  thumbnail: string;
   duration: number;
-  video_url: string;
+  videoUrl: string;
 }
 
 /**
@@ -72,8 +72,8 @@ export async function fetchReelMetadata(url: string): Promise<ReelMetadata | nul
     const metadata: ReelMetadata = {
       id: data.id || extractShortcode(url) || "unknown",
       reelUrl: url,
-      videoUrl: data.video_url,
-      thumbnailUrl: data.thumbnail_url,
+      videoUrl: data.videoUrl,
+      thumbnailUrl: data.thumbnail,
       title: data.title || `Instagram Reel by ${data.uploader || "unknown"}`,
     };
 
