@@ -85,6 +85,11 @@ export default function RootLayout({
       <head>
         <link rel="preconnect" href="https://scontent.cdninstagram.com" crossOrigin="anonymous" />
         <link rel="preconnect" href="https://scontent.cdninstagram.com" />
+        <script
+          async
+          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4526812202141186"
+          crossOrigin="anonymous"
+        />
       </head>
       <body className="min-h-full flex flex-col bg-background text-foreground selection:bg-indigo-500/30 transition-colors duration-300">
         <ThemeProvider

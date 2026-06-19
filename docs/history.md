@@ -219,5 +219,12 @@
   - **Default URLs Config (`app/layout.tsx`, `app/page.tsx`, `app/robots.ts`, `app/sitemap.ts`)**: Updated fallback/default domains to `https://clipvault.online` to ensure matching metadata bases.
 - **Files Changed**: `proxy.ts`, `app/layout.tsx`, `app/page.tsx`, `app/robots.ts`, `app/sitemap.ts`.
 
+### feat: integrate google adsense script
+- **Description**: Configured Google AdSense crawler code snippet for platform monetization.
+- **Key Changes**:
+  - **AdSense Script (`app/layout.tsx`)**: Injected the standard async script `https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4526812202141186` with `crossOrigin="anonymous"` in layout head.
+- **Files Changed**: `app/layout.tsx`.
+
+
 
 

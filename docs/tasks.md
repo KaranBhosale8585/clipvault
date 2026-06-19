@@ -186,6 +186,10 @@
   - [x] Implement 301 redirects for Render domains inside proxy.ts
   - [x] Set fallback configuration URLs to clipvault.online in layout, sitemap, robots, and homepage
   - [x] Prevent search indexing of the Render domain using X-Robots-Tag
+- [x] Integrate Google AdSense script
+  - [x] Inject custom AdSense tag into the layout.tsx head
+  - [x] Verify successful build production compile
+
 
 
 

@@ -1,5 +1,15 @@
 # Development Log - ClipVault
 
+### Task: Integrate Google AdSense Script
+- **Timestamp**: 2026-06-20 02:20 AM
+- **Status**: Completed
+- **Files**: `app/layout.tsx`, docs/*
+- **Implementation Details**:
+    - **AdSense Integration**: Injected the standard async script `https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4526812202141186` with `crossOrigin="anonymous"` inside the `<head>` element of `app/layout.tsx` for optimal crawler discovery and layout validation.
+- **Verification**:
+    - Confirmed build-time type safety with `pnpm typecheck`.
+    - Confirmed production compile success with `pnpm build`.
+
 ### Task: Implement Canonical 301 Redirects and SEO Exclusions
 - **Timestamp**: 2026-06-20 01:25 AM
 - **Status**: Completed
