@@ -20,9 +20,9 @@ export const metadata: Metadata = {
     description: "Explore the advanced technical features of ClipVault's high-speed content extraction engine.",
   },
   icons: {
-    icon: "/icon.svg",
-    shortcut: "/icon.svg",
-    apple: "/icon.svg",
+    icon: "/icon.svg?v=2",
+    shortcut: "/icon.svg?v=2",
+    apple: "/icon.svg?v=2",
   },
 };
 

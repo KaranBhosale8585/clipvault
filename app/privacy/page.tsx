@@ -20,9 +20,9 @@ export const metadata: Metadata = {
     description: "Learn how ClipVault handles account data, session cookies, visitor tracking, rate limits, and 30-day retention policies.",
   },
   icons: {
-    icon: "/icon.svg",
-    shortcut: "/icon.svg",
-    apple: "/icon.svg",
+    icon: "/icon.svg?v=2",
+    shortcut: "/icon.svg?v=2",
+    apple: "/icon.svg?v=2",
   },
 };
 

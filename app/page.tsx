@@ -75,7 +75,7 @@ export default function DownloadDashboard() {
     "@type": "Organization",
     "name": "ClipVault",
     "url": `${baseUrl}/`,
-    "logo": `${baseUrl}/icon.svg`,
+    "logo": `${baseUrl}/icon.svg?v=2`,
     "sameAs": [
       "https://twitter.com/clipvault_app",
       "https://github.com/clipvault"
