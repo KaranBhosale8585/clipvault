@@ -193,5 +193,14 @@
 - **Key Changes**:
   - **FAQ Anchor**: Added `id="faq"` to the landing page FAQ section in `app/page.tsx`.
   - **Internal Navigation**: Added direct link anchors pointing to `/#faq` inside header (`components/Header.tsx`) and footer (`components/Footer.tsx`) links.
-  - **Robots Exclusions**: Expanded disallow entries inside `app/robots.ts` to include protected client dashboards (`/dashboard/`, `/history/`, `/unlimited-access/`), authentication intermediate paths (`/forgot-password/`), and API endpoints.
+  - **Robots Exclusions**: Expanded disallow entries inside `app/robots.ts` to include protected client dashboards (`/dashboard/`, `/history/`), authentication intermediate paths (`/forgot-password/`), and API endpoints.
 - **Files Changed**: `app/page.tsx`, `components/Header.tsx`, `components/Footer.tsx`, `app/robots.ts`.
+
+### feat: implement custom error, not-found, and global-error pages
+- **Description**: Added custom styling and interactive behaviors for default 404 paths, React error boundaries, and root system crashes within ClipVault.
+- **Key Changes**:
+  - **Custom 404 Route (`app/not-found.tsx`)**: Created a responsive layout featuring Framer Motion fade-ins, support channels, and a return shortcut.
+  - **Router Error Boundary (`app/error.tsx`)**: Built a recovery boundary screen to handle page-level exceptions dynamically with retry recovery functions.
+  - **System Fallback Shell (`app/global-error.tsx`)**: Defined a standalone page structure for root template failures, styled with native font families to prevent compilation bugs.
+- **Files Changed**: `app/not-found.tsx`, `app/error.tsx`, `app/global-error.tsx`.
+

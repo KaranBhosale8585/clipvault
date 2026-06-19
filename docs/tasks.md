@@ -173,3 +173,9 @@
   - [x] Implement internal link shortcuts in Header and Footer pointing to `/#faq`
   - [x] Configure explicit disallow paths in robots.ts for sensitive auth and profile layouts
   - [x] Verify production build compiles with zero errors
+- [x] Implement custom Next.js error, not-found, and global-error pages
+  - [x] Create styled mobile-first 404 Page (not-found.tsx) with Framer Motion and support links
+  - [x] Create 500 error boundary recovery screen (error.tsx) with platform reset CTA
+  - [x] Establish a standalone root shell crash recovery layout (global-error.tsx) using system font fallback
+  - [x] Verify successful build production compile
+
