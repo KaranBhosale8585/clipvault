@@ -14,7 +14,8 @@ export default function robots(): MetadataRoute.Robots {
         "/dashboard/",
         "/history/",
         "/unlimited-access/",
-        "/forgot-password/"
+        "/forgot-password/",
+        "/health"
       ],
     },
     sitemap: `${baseUrl}/sitemap.xml`,

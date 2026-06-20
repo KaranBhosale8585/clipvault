@@ -231,6 +231,14 @@
   - **Seller Registry (`public/ads.txt`)**: Registered the authorized seller entry `google.com, pub-4526812202141186, DIRECT, f08c47fec0942fa0`.
 - **Files Changed**: `public/ads.txt`.
 
+### feat: create root-level health check route
+- **Description**: Implemented `/health` route at the root level for automated status and health checks.
+- **Key Changes**:
+  - **Health Route (`app/health/route.ts`)**: Created the endpoint returning JSON with `ok` status and timestamp.
+  - **Middleware Bypass (`proxy.ts`)**: Bypassed authentication constraints in the proxy router for `/health`.
+  - **Robots Disallow (`app/robots.ts`)**: Added `/health` to crawler exclusions.
+- **Files Changed**: `app/health/route.ts`, `proxy.ts`, `app/robots.ts`.
+
 
 
 

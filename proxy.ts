@@ -18,8 +18,8 @@ export async function proxy(req: NextRequest) {
     return response;
   }
 
-  // Bypass API routes and static files for internal routing check
-  if (pathname.startsWith("/api") || pathname.startsWith("/_next") || pathname.includes(".")) {
+  // Bypass API routes, health check, and static files for internal routing check
+  if (pathname === "/health" || pathname.startsWith("/api") || pathname.startsWith("/_next") || pathname.includes(".")) {
     return NextResponse.next();
   }
 

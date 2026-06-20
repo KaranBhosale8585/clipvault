@@ -1,5 +1,17 @@
 # Development Log - ClipVault
 
+### Task: Create Root-Level Health Check Route
+- **Timestamp**: 2026-06-20 11:30 AM
+- **Status**: Completed
+- **Files**: `app/health/route.ts`, `proxy.ts`, `app/robots.ts`, `docs/*`
+- **Implementation Details**:
+    - **Health Check Endpoint (`app/health/route.ts`)**: Created the endpoint `/health` returning a JSON response indicating status `ok`, the current timestamp, and the service name `clipvault`.
+    - **Proxy Middleware Bypass (`proxy.ts`)**: Added `/health` check to the proxy bypass rules. This avoids unnecessary database queries, cookie evaluation, and JWT token checks, ensuring that automated uptime monitoring checks return instantly with minimal server resource consumption.
+    - **Robots Exclusion (`app/robots.ts`)**: Added `/health` to the disallow list to prevent search engines from crawling or indexing the health check page.
+- **Verification**:
+    - Confirmed build-time type safety with `pnpm typecheck`.
+    - Confirmed production compile success with `pnpm build`.
+
 ### Task: Configure ads.txt Authorized Digital Sellers File
 - **Timestamp**: 2026-06-20 02:30 AM
 - **Status**: Completed
