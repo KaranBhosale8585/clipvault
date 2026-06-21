@@ -3,7 +3,12 @@
 import { Suspense } from "react";
 import Link from "next/link";
 import { Zap, Lock, ShieldCheck, ArrowLeft, Video, ChevronRight, HelpCircle, Laptop, Smartphone, HelpCircle as HelpIcon } from "lucide-react";
-import ReelDownloader from "@/components/ReelDownloader";
+import dynamic from "next/dynamic";
+
+const ReelDownloader = dynamic(() => import("@/components/ReelDownloader"), {
+  ssr: false,
+  loading: () => <div className="h-48 w-full animate-pulse bg-muted rounded-2xl" />,
+});
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { motion } from "framer-motion";

@@ -7,10 +7,25 @@ import {
   Zap, Lock, LayoutDashboard, Sparkles,
   ArrowRight, CheckCircle2, ChevronDown
 } from "lucide-react";
-import ReelDownloader from "@/components/ReelDownloader";
-import DownloadHistory from "@/components/DownloadHistory";
-import LimitReached from "@/components/LimitReached";
-import DailyLimitReached from "@/components/DailyLimitReached";
+import dynamic from "next/dynamic";
+
+const ReelDownloader = dynamic(() => import("@/components/ReelDownloader"), {
+  ssr: false,
+  loading: () => <div className="h-48 w-full animate-pulse bg-muted rounded-2xl" />,
+});
+
+const DownloadHistory = dynamic(() => import("@/components/DownloadHistory"), {
+  ssr: false,
+  loading: () => <div className="h-48 w-full animate-pulse bg-muted rounded-2xl" />,
+});
+
+const LimitReached = dynamic(() => import("@/components/LimitReached"), {
+  ssr: false,
+});
+
+const DailyLimitReached = dynamic(() => import("@/components/DailyLimitReached"), {
+  ssr: false,
+});
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { motion, AnimatePresence } from "framer-motion";

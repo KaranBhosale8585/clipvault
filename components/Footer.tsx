@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { Globe, MessageSquare } from "lucide-react";
 import { useState, useEffect } from "react";
 import { useTheme } from "next-themes";
@@ -28,9 +29,11 @@ export default function Footer() {
         <div className="flex flex-col gap-6 max-w-sm w-full">
           <div className="flex items-center gap-2.5 text-foreground font-black text-xl tracking-tighter">
             <div className="flex items-center justify-center w-7 h-7">
-              <img 
+              <Image 
                 src="/icon.svg?v=2" 
                 alt="ClipVault Logo" 
+                width={28}
+                height={28}
                 className="w-7 h-7 object-contain" 
                 style={isDark ? { filter: "invert(1) brightness(1.2)" } : undefined}
               />

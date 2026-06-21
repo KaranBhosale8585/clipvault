@@ -1,11 +1,11 @@
 import type { Metadata } from "next";
-import Script from "next/script";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { Toaster } from "sonner";
 import { ThemeProvider } from "@/components/ThemeProvider";
+import ThirdPartyScripts from "@/components/ThirdPartyScripts";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -85,11 +85,6 @@ export default function RootLayout({
       <head>
         <link rel="preconnect" href="https://scontent.cdninstagram.com" crossOrigin="anonymous" />
         <link rel="preconnect" href="https://scontent.cdninstagram.com" />
-        <script
-          async
-          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4526812202141186"
-          crossOrigin="anonymous"
-        />
       </head>
       <body className="min-h-full flex flex-col bg-background text-foreground selection:bg-indigo-500/30 transition-colors duration-300">
         <ThemeProvider
@@ -112,20 +107,8 @@ export default function RootLayout({
             closeButton 
             theme="system"
           />
+          <ThirdPartyScripts />
         </ThemeProvider>
-        <Script
-          src="https://www.googletagmanager.com/gtag/js?id=G-WDK075JXR8"
-          strategy="afterInteractive"
-        />
-        <Script id="google-analytics" strategy="afterInteractive">
-          {`
-            window.dataLayer = window.dataLayer || [];
-            function gtag(){dataLayer.push(arguments);}
-            gtag('js', new Date());
-
-            gtag('config', 'G-WDK075JXR8');
-          `}
-        </Script>
       </body>
     </html>
   );

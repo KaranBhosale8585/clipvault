@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Image from "next/image";
 import { toast } from "sonner";
 import { Download, History, Play, ExternalLink, Loader2, Trash2 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -142,12 +143,13 @@ export default function DownloadHistory() {
               >
                 <div className="aspect-video relative overflow-hidden bg-muted">
                   {item.thumbnailUrl ? (
-                    <img 
+                    <Image 
                       src={`/api/download-proxy?url=${encodeURIComponent(item.thumbnailUrl)}&download=false`} 
                       alt={item.title || "Reel"} 
-                      loading="lazy"
-                      decoding="async"
-                      className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                      fill
+                      sizes="(max-width: 768px) 100vw, 50vw"
+                      className="object-cover transition-transform duration-500 group-hover:scale-110"
+                      unoptimized
                     />
                   ) : (
                     <div className="w-full h-full flex items-center justify-center">

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import Image from "next/image";
 import { toast } from "sonner";
 import { Download, Link as LinkIcon, Loader2, Play } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -141,12 +142,13 @@ export default function ReelDownloader({ onLimitReached, onDailyLimitReached }: 
             <div className="w-full md:w-1/3 relative group bg-black flex items-center justify-center min-h-[200px]">
               {!showPreview ? (
                 <>
-                  <img
+                  <Image
                     src={`/api/download-proxy?url=${encodeURIComponent(metadata.thumbnailUrl)}&download=false`}
                     alt={metadata.title}
-                    loading="lazy"
-                    decoding="async"
-                    className="w-full h-64 md:h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                    fill
+                    sizes="(max-width: 768px) 100vw, 33vw"
+                    className="object-cover transition-transform duration-500 group-hover:scale-105"
+                    unoptimized
                   />
                   <div 
                     className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer"

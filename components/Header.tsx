@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { useState, useEffect } from "react";
 import { Menu, X, LogOut, LayoutDashboard, History, ArrowRight } from "lucide-react";
 import { usePathname } from "next/navigation";
@@ -83,9 +84,11 @@ export default function Header() {
         <div className="flex items-center gap-6 lg:gap-10 shrink-0">
           <Link href="/" className="flex items-center gap-2.5 group">
             <div className="group-hover:scale-105 transition-transform duration-500 ease-spring flex items-center justify-center w-8 h-8">
-              <img 
+              <Image 
                 src="/icon.svg?v=2" 
                 alt="ClipVault Logo" 
+                width={32}
+                height={32}
                 className="w-8 h-8 object-contain" 
                 style={isDark ? { filter: "invert(1) brightness(1.2)" } : undefined}
               />
