@@ -50,15 +50,24 @@ export default function Footer() {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-10 sm:gap-12 lg:gap-20 w-full lg:w-auto">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-10 sm:gap-12 lg:gap-20 w-full lg:w-auto">
           <div className="flex flex-col gap-4 text-center sm:text-left">
             <h4 className="text-xs font-bold text-foreground uppercase tracking-widest">Platform</h4>
             <div className="flex flex-col gap-3 text-sm font-medium">
               <Link href="/" className="hover:text-indigo-500 transition-colors">Downloader</Link>
               <Link href="/features" className="hover:text-indigo-500 transition-colors">Features</Link>
               <Link href="/pricing" className="hover:text-indigo-500 transition-colors">Pricing</Link>
-              <Link href="/#faq" className="hover:text-indigo-500 transition-colors">FAQ</Link>
               <Link href="/about" className="hover:text-indigo-500 transition-colors">About Us</Link>
+            </div>
+          </div>
+
+          <div className="flex flex-col gap-4 text-center sm:text-left">
+            <h4 className="text-xs font-bold text-foreground uppercase tracking-widest">Resources</h4>
+            <div className="flex flex-col gap-3 text-sm font-medium">
+              <Link href="/instagram-reel-downloader" className="hover:text-indigo-500 transition-colors">Reel Downloader</Link>
+              <Link href="/instagram-video-downloader" className="hover:text-indigo-500 transition-colors">Video Downloader</Link>
+              <Link href="/how-to-download-instagram-reels" className="hover:text-indigo-500 transition-colors">How-to Guide</Link>
+              <Link href="/faq" className="hover:text-indigo-500 transition-colors">FAQ Page</Link>
             </div>
           </div>
 
@@ -71,7 +80,7 @@ export default function Footer() {
             </div>
           </div>
 
-          <div className="flex flex-col gap-4 text-center sm:text-left sm:col-span-2 md:col-span-1">
+          <div className="flex flex-col gap-4 text-center sm:text-left">
             <h4 className="text-xs font-bold text-foreground uppercase tracking-widest">Support & Legal</h4>
             <div className="flex flex-col gap-3 text-sm font-medium">
               <Link href="/contact" className="hover:text-indigo-500 transition-colors">Contact Us</Link>

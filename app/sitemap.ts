@@ -10,6 +10,26 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 1.0,
     },
     {
+      url: "/instagram-reel-downloader",
+      changeFrequency: "daily" as const,
+      priority: 0.9,
+    },
+    {
+      url: "/instagram-video-downloader",
+      changeFrequency: "daily" as const,
+      priority: 0.9,
+    },
+    {
+      url: "/how-to-download-instagram-reels",
+      changeFrequency: "weekly" as const,
+      priority: 0.8,
+    },
+    {
+      url: "/faq",
+      changeFrequency: "weekly" as const,
+      priority: 0.8,
+    },
+    {
       url: "/features",
       changeFrequency: "weekly" as const,
       priority: 0.8,

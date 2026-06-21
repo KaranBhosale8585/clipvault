@@ -22,11 +22,11 @@ const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "https://clipvault.online";
 export const metadata: Metadata = {
   metadataBase: new URL(baseUrl),
   title: {
-    default: "ClipVault • Premium Content Extraction",
+    default: "Free Instagram Reel Downloader Online | ClipVault",
     template: "%s | ClipVault",
   },
-  description: "Download high-quality Instagram Reels instantly. ClipVault is a secure, fast, and professional tool with no hidden limits. Try it now without logging in.",
-  keywords: ["Instagram Downloader", "Reel Downloader", "Download Instagram Video", "Save Reels", "ClipVault"],
+  description: "Download Instagram Reels, videos and public content online with ClipVault. Fast, secure and easy to use. No login required.",
+  keywords: ["Instagram Downloader", "Reel Downloader", "Download Instagram Video", "Save Reels", "ClipVault", "instagram reel downloader", "instagram video downloader", "download instagram reels", "reel downloader online", "save instagram reels"],
   authors: [{ name: "ClipVault Team" }],
   alternates: {
     canonical: "/",
@@ -35,8 +35,8 @@ export const metadata: Metadata = {
     type: "website",
     locale: "en_US",
     url: baseUrl,
-    title: "ClipVault • Premium Content Extraction",
-    description: "Download high-quality Instagram Reels instantly. ClipVault is a secure, fast, and professional tool.",
+    title: "Free Instagram Reel Downloader Online | ClipVault",
+    description: "Download Instagram Reels, videos and public content online with ClipVault. Fast, secure and easy to use. No login required.",
     siteName: "ClipVault",
     images: [
       {
@@ -49,8 +49,8 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "ClipVault • Premium Content Extraction",
-    description: "Download high-quality Instagram Reels instantly. Secure and fast.",
+    title: "Free Instagram Reel Downloader Online | ClipVault",
+    description: "Download Instagram Reels, videos and public content online with ClipVault. Fast, secure and easy to use. No login required.",
     images: ["/twitter-image.jpg"],
   },
   robots: {

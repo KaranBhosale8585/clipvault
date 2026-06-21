@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, Suspense } from "react";
 import { toast } from "sonner";
 import Link from "next/link";
 import { 
@@ -47,7 +47,7 @@ export default function DownloadDashboard() {
     "@type": "WebApplication",
     "name": "ClipVault",
     "url": `${baseUrl}/`,
-    "description": "Download high-quality Instagram Reels instantly and securely.",
+    "description": "Download Instagram Reels, videos and public content online with ClipVault. Fast, secure and easy to use. No login required.",
     "applicationCategory": "MultimediaApplication",
     "operatingSystem": "All",
     "offers": {
@@ -80,6 +80,21 @@ export default function DownloadDashboard() {
       "https://twitter.com/clipvault_app",
       "https://github.com/clipvault"
     ]
+  };
+
+  const websiteJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "name": "ClipVault",
+    "url": `${baseUrl}/`,
+    "potentialAction": {
+      "@type": "SearchAction",
+      "target": {
+        "@type": "EntryPoint",
+        "urlTemplate": `${baseUrl}/?url={search_term_string}`
+      },
+      "query-input": "required name=search_term_string"
+    }
   };
 
   const breadcrumbJsonLd = {
@@ -152,6 +167,10 @@ export default function DownloadDashboard() {
       />
       <script
         type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteJsonLd) }}
+      />
+      <script
+        type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
       />
       
@@ -170,20 +189,22 @@ export default function DownloadDashboard() {
                   <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
                     <div>
                       <h1 className="text-3xl sm:text-4xl md:text-6xl font-black tracking-tighter mb-2 leading-tight">
-                        {user ? `Welcome, ${user.name.split(' ')[0]}` : "Instagram Reel Downloader"}
+                        {user ? `Welcome, ${user.name.split(' ')[0]}` : "Free Instagram Reel Downloader Online"}
                       </h1>
                       <p className="text-muted-foreground font-medium text-base md:text-xl max-w-xl">
-                        {user ? "Manage your saved Reels and start new extractions." : "Download high-quality Instagram Reels instantly and securely with ClipVault."}
+                        {user ? "Manage your saved Reels and start new extractions." : "Download Instagram Reels, videos, and photos instantly using our free reel downloader online. No account or installation required."}
                       </p>
                     </div>
                   </div>
 
                   <Card className="border-border bg-card/50 backdrop-blur-2xl rounded-3xl md:rounded-[3rem] p-4 md:p-10 shadow-2xl shadow-indigo-500/5 relative overflow-hidden group">
                     <div className="relative z-10">
-                      <ReelDownloader 
-                        onLimitReached={handleLimitReached} 
-                        onDailyLimitReached={handleDailyLimitReached}
-                      />
+                      <Suspense fallback={<div className="h-32 w-full animate-pulse bg-muted rounded-2xl" />}>
+                        <ReelDownloader 
+                          onLimitReached={handleLimitReached} 
+                          onDailyLimitReached={handleDailyLimitReached}
+                        />
+                      </Suspense>
                     </div>
                     <div className="absolute -bottom-24 -right-24 w-64 h-64 bg-indigo-600/5 rounded-full blur-3xl" />
                   </Card>
@@ -341,10 +362,10 @@ export default function DownloadDashboard() {
             <div className="space-y-12">
               <div className="text-center space-y-4">
                 <h2 className="text-2xl md:text-4xl font-black tracking-tighter">
-                  How to Download Instagram Reels Online
+                  How to Download Instagram Reels
                 </h2>
                 <p className="text-muted-foreground font-medium max-w-lg mx-auto text-xs md:text-sm leading-relaxed">
-                  Save your favorite Instagram Reel videos directly to your mobile phone or desktop in three simple steps.
+                  Save your favorite Instagram Reels using our free <strong>instagram reel downloader</strong>. Get high-quality MP4 files directly to your phone or desktop in three simple steps.
                 </p>
               </div>
               
@@ -352,12 +373,12 @@ export default function DownloadDashboard() {
                 <StepCard 
                   num="01" 
                   title="Copy the Reel Link" 
-                  desc="Open Instagram, find the Reel you want to download, tap the options menu (three dots or share icon), and select 'Copy Link'." 
+                  desc="Open Instagram, find the Reel or video you want to download, tap the options menu (three dots or share icon), and select 'Copy Link'." 
                 />
                 <StepCard 
                   num="02" 
                   title="Paste Link in ClipVault" 
-                  desc="Return to ClipVault, paste the copied link into the URL input field at the top of the page, and press the download button." 
+                  desc="Return to ClipVault, paste the copied link into the URL input field at the top of the page, and press the analysis button." 
                 />
                 <StepCard 
                   num="03" 
@@ -371,10 +392,10 @@ export default function DownloadDashboard() {
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
               <div className="space-y-6">
                 <h2 className="text-2xl md:text-4xl font-black tracking-tighter leading-tight">
-                  Why Use ClipVault to Download Instagram Reels?
+                  Why Choose ClipVault
                 </h2>
                 <p className="text-muted-foreground font-medium text-sm leading-relaxed">
-                  ClipVault is engineered specifically as a premium Instagram Reel downloader. Unlike standard web scrapers that fail frequently, display intrusive ads, or redirect you to malware sites, ClipVault provides a secure, streamlined experience.
+                  ClipVault is engineered specifically as a fast and secure <strong>instagram reel downloader</strong> and <strong>instagram video downloader</strong>. If you want to <strong>download instagram reels</strong> or <strong>save instagram reels</strong> directly to your local storage, standard scrapers are often full of intrusive ads and slow downloads. ClipVault offers a premium, high-speed <strong>reel downloader online</strong> utility that is completely free.
                 </p>
                 <div className="space-y-4">
                   <BenefitItem 
@@ -408,7 +429,7 @@ export default function DownloadDashboard() {
                   </li>
                 </ul>
                 <div className="border-t border-border pt-6 text-xs text-muted-foreground leading-relaxed">
-                  Read our <Link href="/privacy" className="text-indigo-500 hover:underline">Privacy Policy</Link> to learn how we protect your information, and review our <Link href="/terms" className="text-indigo-500 hover:underline">Terms & Conditions</Link> for usage policies. If you have questions or encounter bugs, please reach out through our <Link href="/contact" className="text-indigo-500 hover:underline">Contact Page</Link>.
+                  Looking for more? Check out our specialized tools: <Link href="/instagram-reel-downloader" className="text-indigo-500 hover:underline font-bold">Instagram Reel Downloader</Link>, <Link href="/instagram-video-downloader" className="text-indigo-500 hover:underline font-bold">Instagram Video Downloader</Link>, browse our step-by-step guide on <Link href="/how-to-download-instagram-reels" className="text-indigo-500 hover:underline font-bold">How to Download Instagram Reels</Link>, or read the full list of queries in our <Link href="/faq" className="text-indigo-500 hover:underline font-bold">FAQ Page</Link>.
                 </div>
               </div>
             </div>
@@ -486,6 +507,7 @@ function FaqAccordionItem({ question, answer, isOpen, onClick }: { question: str
     <div className="border border-border rounded-2xl bg-card/40 backdrop-blur-sm overflow-hidden transition-all duration-300">
       <button
         onClick={onClick}
+        suppressHydrationWarning
         className="w-full flex items-center justify-between text-left p-5 md:p-6 text-sm md:text-base font-bold text-foreground hover:text-indigo-500 transition-colors"
       >
         <span className="pr-4">{question}</span>
