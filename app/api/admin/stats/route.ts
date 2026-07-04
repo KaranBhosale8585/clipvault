@@ -4,6 +4,7 @@ import { db } from "@/db";
 import { usersTable, downloadsTable, logsTable } from "@/db/schema";
 import { count, desc, eq, lt, gte, isNull, isNotNull } from "drizzle-orm";
 import { unstable_cache } from "next/cache";
+import { runPythonScript } from "@/utils/pythonBridge";
 
 const getCachedStats = unstable_cache(
   async () => {
@@ -100,12 +101,20 @@ export async function GET() {
       .orderBy(desc(logsTable.createdAt))
       .limit(30);
 
+    // Fetch current yt-dlp version via the Python bridge
+    const versionResult = await runPythonScript<{ version: string }>(
+      "services/python/downloader.py",
+      ["--version"]
+    );
+    const ytDlpVersion = versionResult.success ? versionResult.data?.version : "unknown";
+
     return NextResponse.json({
       data: {
         stats: cachedData.stats,
         topUrls: cachedData.topUrls,
         recentDownloads,
         latestLogs,
+        ytDlpVersion,
       },
       message: "Admin stats fetched successfully.",
     });
@@ -118,3 +127,4 @@ export async function GET() {
     );
   }
 }
+

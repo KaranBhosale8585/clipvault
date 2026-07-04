@@ -55,6 +55,7 @@ interface AdminData {
     source: string | null;
     createdAt: string;
   }>;
+  ytDlpVersion: string;
 }
 
 function safeJsonFormat(jsonStr: string | null): string {
@@ -83,7 +84,7 @@ export default function AdminDashboard() {
   // Dialog State
   const [confirmDialog, setConfirmDialog] = useState<{
     isOpen: boolean;
-    action: "clear-logs" | "clear-downloads" | "clear-cache" | null;
+    action: "clear-logs" | "clear-downloads" | "clear-cache" | "update-ytdlp" | null;
   }>({
     isOpen: false,
     action: null,
@@ -99,11 +100,16 @@ export default function AdminDashboard() {
 
     try {
       const res = await fetch(`/api/admin/actions/${action}`, { method: "POST" });
+      const resData = await res.json().catch(() => ({}));
       if (res.ok) {
-        toast.success("Action completed successfully");
+        if (action === "update-ytdlp") {
+          toast.success(resData.message || "yt-dlp updated successfully!");
+        } else {
+          toast.success("Action completed successfully");
+        }
         mutate();
       } else {
-        toast.error("Action failed");
+        toast.error(resData.error || "Action failed");
       }
     } catch {
       toast.error("Network error performing action");
@@ -481,6 +487,13 @@ export default function AdminDashboard() {
                   onClick={() => setConfirmDialog({ isOpen: true, action: "clear-cache" })}
                   variant="outline"
                 />
+                <AdminActionButton 
+                  label="Update yt-dlp" 
+                  icon={<RefreshCcw size={16} />}
+                  isLoading={actionLoading === "update-ytdlp"}
+                  onClick={() => setConfirmDialog({ isOpen: true, action: "update-ytdlp" })}
+                  variant="outline"
+                />
               </CardContent>
             </Card>
 
@@ -493,7 +506,7 @@ export default function AdminDashboard() {
               <CardContent className="p-0 space-y-4">
                 <HealthItem label="API Status" status="Online" color="bg-emerald-500" />
                 <HealthItem label="Database" status="Optimal" color="bg-emerald-500" />
-                <HealthItem label="Downloader" status="Idle" color="bg-sky-500" />
+                <HealthItem label="yt-dlp Engine" status={data?.ytDlpVersion || "Loading..."} color="bg-emerald-500" />
               </CardContent>
             </Card>
           </div>
@@ -507,12 +520,19 @@ export default function AdminDashboard() {
       >
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Confirm Destructive Action</AlertDialogTitle>
+            <AlertDialogTitle>
+              {confirmDialog.action === "update-ytdlp" ? "Upgrade yt-dlp Engine" : "Confirm Destructive Action"}
+            </AlertDialogTitle>
             <AlertDialogDescription>
-              Are you sure you want to proceed? This action cannot be undone and will permanently remove 
-              {confirmDialog.action === "clear-logs" ? " all system logs." : 
-               confirmDialog.action === "clear-downloads" ? " all download history." : 
-               " the system cache."}
+              {confirmDialog.action === "update-ytdlp" ? (
+                "Are you sure you want to upgrade the yt-dlp extraction engine to the latest release? This will run pip upgrade inside the server environment."
+              ) : (
+                `Are you sure you want to proceed? This action cannot be undone and will permanently remove ${
+                  confirmDialog.action === "clear-logs" ? "all system logs." : 
+                  confirmDialog.action === "clear-downloads" ? "all download history." : 
+                  "the system cache."
+                }`
+              )}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
@@ -522,7 +542,7 @@ export default function AdminDashboard() {
                 e.preventDefault();
                 handleAction();
               }}
-              className="bg-red-600 hover:bg-red-700 text-white"
+              className={confirmDialog.action === "update-ytdlp" ? "bg-indigo-600 hover:bg-indigo-700 text-white" : "bg-red-600 hover:bg-red-700 text-white"}
               disabled={!!actionLoading}
             >
               {actionLoading ? (
