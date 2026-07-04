@@ -591,6 +591,10 @@ const FAQS = [
     a: "ClipVault currently supports standard public Instagram Reel URLs only (e.g. links starting with https://www.instagram.com/reel/). Private accounts or other content types (like Stories or Posts) are not supported."
   },
   {
+    q: "Do you require my Instagram account login or session cookies?",
+    a: "No. For privacy and security reasons, ClipVault does NOT require, accept, or store your Instagram account credentials, session cookies, or browser session files under any circumstances. We only process publicly accessible Reels."
+  },
+  {
     q: "Why is a Reel unavailable?",
     a: "Reels may be unavailable if the source account is set to private, the Reel has been deleted, or if Instagram's servers are temporarily blocking extraction. In such cases, the service will return an appropriate error message."
   },

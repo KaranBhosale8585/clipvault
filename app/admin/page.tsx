@@ -82,7 +82,6 @@ export default function AdminDashboard() {
   const [searchQuery, setSearchSearchQuery] = useState("");
 
   // Scraper Settings State
-  const [cookiesVal, setCookiesVal] = useState("");
   const [proxyVal, setProxyVal] = useState("");
   const [isSettingsLoading, setIsSettingsLoading] = useState(true);
   const [isSavingSettings, setIsSavingSettings] = useState(false);
@@ -93,7 +92,6 @@ export default function AdminDashboard() {
         const res = await fetch("/api/admin/settings");
         if (res.ok) {
           const json = await res.json();
-          setCookiesVal(json.data.instagramCookies || "");
           setProxyVal(json.data.instagramProxy || "");
         }
       } catch (err) {
@@ -113,7 +111,6 @@ export default function AdminDashboard() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          instagramCookies: cookiesVal,
           instagramProxy: proxyVal,
         }),
       });
@@ -486,16 +483,12 @@ export default function AdminDashboard() {
                   <CardHeader className="border-b border-border bg-muted/20 px-8 py-6">
                     <CardTitle className="text-xl font-black">Scraper Settings</CardTitle>
                     <CardDescription>
-                      Configure Instagram Cookies and Proxy settings to bypass datacenter blocks.
+                      Configure the Instagram Scraper Proxy settings. Instagram session cookies are neither required nor accepted for privacy and security compliance.
                     </CardDescription>
                   </CardHeader>
                   <CardContent className="p-8">
                     {isSettingsLoading ? (
                       <div className="space-y-6">
-                        <div className="space-y-2">
-                          <Skeleton className="h-4 w-32" />
-                          <Skeleton className="h-40 w-full rounded-xl" />
-                        </div>
                         <div className="space-y-2">
                           <Skeleton className="h-4 w-24" />
                           <Skeleton className="h-10 w-full rounded-xl" />
@@ -505,22 +498,9 @@ export default function AdminDashboard() {
                     ) : (
                       <form onSubmit={handleSaveSettings} className="space-y-6">
                         <div className="space-y-2">
-                          <label className="text-sm font-bold text-foreground">Instagram Cookies</label>
-                          <p className="text-xs text-muted-foreground">
-                            Paste Netscape (text) cookies or JSON cookies. We will automatically parse and convert them.
-                          </p>
-                          <textarea
-                            className="w-full min-h-[180px] rounded-xl bg-background border border-border p-4 text-xs font-mono focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all custom-scrollbar"
-                            placeholder="# Netscape HTTP Cookie File or JSON array of cookies..."
-                            value={cookiesVal}
-                            onChange={(e) => setCookiesVal(e.target.value)}
-                          />
-                        </div>
-
-                        <div className="space-y-2">
                           <label className="text-sm font-bold text-foreground">Instagram Proxy URL</label>
                           <p className="text-xs text-muted-foreground">
-                            Specify a proxy URL if the server IP is restricted by Instagram.
+                            Specify a proxy URL if the server IP is restricted by Instagram. Only public content will be fetched.
                           </p>
                           <Input
                             placeholder="http://username:password@proxy_host:port"

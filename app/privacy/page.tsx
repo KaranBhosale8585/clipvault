@@ -69,6 +69,9 @@ export default function PrivacyPolicyPage() {
               <li><strong>Download History:</strong> Registered users have their download logs (Instagram Reel URL, video title, thumbnail path, video source link, and status) saved in our database to populate the &quot;History&quot; tab.</li>
               <li><strong>Anonymous Usage Data:</strong> For visitors who do not log in, we track the count of free downloads (up to 3 total) using a hybrid approach combining the client&apos;s IP address and a signed, secure <code className="text-indigo-500 font-mono">visitor_id</code> cookie.</li>
             </ul>
+            <p className="text-muted-foreground font-semibold leading-relaxed border-l-2 border-amber-500 pl-4 py-1 my-4 bg-amber-500/5 text-amber-600 dark:text-amber-400 text-xs md:text-sm">
+              <strong>Important Security & Privacy Notice:</strong> ClipVault does NOT collect, store, process, transmit, or accept Instagram session cookies, account credentials, or browser session files. We process publicly available Instagram content only. Under no circumstances should users attempt to supply account credentials or session cookies.
+            </p>
           </section>
 
           <section className="space-y-4">

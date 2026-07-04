@@ -12,13 +12,15 @@ export async function GET() {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
+    // Proactively purge any remaining Instagram cookie keys from the database for privacy/security compliance
+    await db.delete(systemSettingsTable).where(eq(systemSettingsTable.key, "instagram_cookies"));
+    await db.delete(systemSettingsTable).where(eq(systemSettingsTable.key, "instagram_cookies_browser"));
+
     const settings = await db.select().from(systemSettingsTable);
-    const instagramCookies = settings.find(s => s.key === "instagram_cookies")?.value || "";
     const instagramProxy = settings.find(s => s.key === "instagram_proxy")?.value || "";
 
     return NextResponse.json({
       data: {
-        instagramCookies,
         instagramProxy,
       },
     });
@@ -36,7 +38,15 @@ export async function POST(req: Request) {
     }
 
     const body = await req.json();
-    const { instagramCookies, instagramProxy } = body;
+    const { instagramCookies, instagramCookiesBrowser, instagramProxy } = body;
+
+    // Validation: Reject cookie submissions if attempted
+    if (instagramCookies || instagramCookiesBrowser) {
+      return NextResponse.json(
+        { error: "Instagram account cookies are neither required nor accepted for privacy and security reasons." },
+        { status: 400 }
+      );
+    }
 
     // Helper to upsert a system setting
     const upsertSetting = async (key: string, value: string) => {
@@ -56,7 +66,10 @@ export async function POST(req: Request) {
       }
     };
 
-    await upsertSetting("instagram_cookies", instagramCookies || "");
+    // Clean database of cookie settings
+    await db.delete(systemSettingsTable).where(eq(systemSettingsTable.key, "instagram_cookies"));
+    await db.delete(systemSettingsTable).where(eq(systemSettingsTable.key, "instagram_cookies_browser"));
+
     await upsertSetting("instagram_proxy", instagramProxy || "");
 
     // Clear stats cache so any dependent UI updates

@@ -57,21 +57,16 @@ export async function fetchReelMetadata(url: string): Promise<ReelMetadata | nul
   }
 
   try {
-    // Retrieve cookies and proxy configurations from database
-    let instagramCookies = "";
+    // Retrieve proxy configurations from database
     let instagramProxy = "";
     try {
       const settings = await db.select().from(systemSettingsTable);
-      instagramCookies = settings.find(s => s.key === "instagram_cookies")?.value || "";
       instagramProxy = settings.find(s => s.key === "instagram_proxy")?.value || "";
     } catch (err) {
       await logger.warn(`Failed to fetch scraper settings from DB: ${err instanceof Error ? err.message : err}`, source);
     }
 
     const extraEnv: Record<string, string> = {};
-    if (instagramCookies) {
-      extraEnv["INSTAGRAM_COOKIES"] = instagramCookies;
-    }
     if (instagramProxy) {
       extraEnv["INSTAGRAM_PROXY"] = instagramProxy;
     }
