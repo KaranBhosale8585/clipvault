@@ -2,6 +2,7 @@ import sys
 import json
 import os
 import yt_dlp
+import yt_dlp.version
 import traceback
 import urllib.request
 import urllib.parse
@@ -105,7 +106,6 @@ def extract_metadata(url):
                 info = ydl.extract_info(url, download=False)
                 
                 try:
-                    import yt_dlp.version
                     yt_dlp_version = yt_dlp.version.__version__
                 except Exception:
                     yt_dlp_version = "unknown"
@@ -134,7 +134,6 @@ def extract_metadata(url):
 
     # 4. Graceful Error Handling & User-friendly Mapping
     try:
-        import yt_dlp.version
         yt_dlp_version = yt_dlp.version.__version__
     except Exception:
         yt_dlp_version = "unknown"
@@ -171,7 +170,6 @@ if __name__ == "__main__":
     # Handle --version or -v
     if url == "--version" or url == "-v":
         try:
-            import yt_dlp.version
             ver = yt_dlp.version.__version__
         except Exception:
             ver = "unknown"
