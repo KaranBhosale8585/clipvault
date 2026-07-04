@@ -59,16 +59,6 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: "monthly" as const,
       priority: 0.5,
     },
-    {
-      url: "/login",
-      changeFrequency: "monthly" as const,
-      priority: 0.6,
-    },
-    {
-      url: "/signup",
-      changeFrequency: "monthly" as const,
-      priority: 0.6,
-    },
   ];
 
   return routes.map((route) => ({

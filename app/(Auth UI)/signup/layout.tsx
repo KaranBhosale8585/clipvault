@@ -17,6 +17,10 @@ export const metadata: Metadata = {
     title: "Sign Up | ClipVault",
     description: "Create a free ClipVault account to sync download history and unlock 10 premium Reels downloads per day.",
   },
+  robots: {
+    index: false,
+    follow: false,
+  },
   icons: {
     icon: "/favicon.svg?v=2",
     shortcut: "/favicon.svg?v=2",

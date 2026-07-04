@@ -17,6 +17,10 @@ export const metadata: Metadata = {
     title: "Login | ClipVault",
     description: "Sign in to your ClipVault account to manage your collection history and request unlimited PRO access.",
   },
+  robots: {
+    index: false,
+    follow: false,
+  },
   icons: {
     icon: "/favicon.svg?v=2",
     shortcut: "/favicon.svg?v=2",
