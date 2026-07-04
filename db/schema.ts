@@ -2,6 +2,7 @@ import {
   uuid,
   pgTable,
   varchar,
+  text,
   timestamp,
   boolean,
   index,
@@ -182,3 +183,12 @@ export const contactSubmissionsTable = pgTable(
     statusIdx: index("contact_status_idx").on(table.status),
   }),
 );
+
+export const systemSettingsTable = pgTable("system_settings", {
+  key: varchar("key", { length: 255 }).primaryKey(),
+  value: text("value").notNull(),
+  updatedAt: timestamp("updated_at")
+    .defaultNow()
+    .$onUpdate(() => new Date()),
+});
+

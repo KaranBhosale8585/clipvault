@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { toast } from "sonner";
 import { 
   Users, ShieldCheck, Activity, ArrowLeft, 
@@ -80,6 +80,54 @@ export default function AdminDashboard() {
   const data = statsData?.data || null;
   const [actionLoading, setActionLoading] = useState<string | null>(null);
   const [searchQuery, setSearchSearchQuery] = useState("");
+
+  // Scraper Settings State
+  const [cookiesVal, setCookiesVal] = useState("");
+  const [proxyVal, setProxyVal] = useState("");
+  const [isSettingsLoading, setIsSettingsLoading] = useState(true);
+  const [isSavingSettings, setIsSavingSettings] = useState(false);
+
+  useEffect(() => {
+    async function loadSettings() {
+      try {
+        const res = await fetch("/api/admin/settings");
+        if (res.ok) {
+          const json = await res.json();
+          setCookiesVal(json.data.instagramCookies || "");
+          setProxyVal(json.data.instagramProxy || "");
+        }
+      } catch (err) {
+        toast.error("Failed to load scraper settings");
+      } finally {
+        setIsSettingsLoading(false);
+      }
+    }
+    loadSettings();
+  }, []);
+
+  const handleSaveSettings = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsSavingSettings(true);
+    try {
+      const res = await fetch("/api/admin/settings", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          instagramCookies: cookiesVal,
+          instagramProxy: proxyVal,
+        }),
+      });
+      if (res.ok) {
+        toast.success("Scraper settings saved successfully!");
+      } else {
+        toast.error("Failed to save settings");
+      }
+    } catch {
+      toast.error("Network error saving settings");
+    } finally {
+      setIsSavingSettings(false);
+    }
+  };
 
   // Dialog State
   const [confirmDialog, setConfirmDialog] = useState<{
@@ -253,7 +301,7 @@ export default function AdminDashboard() {
           {/* Main Content */}
           <div className="lg:col-span-2 space-y-8">
             <Tabs defaultValue="downloads" className="w-full">
-              <TabsList className="grid grid-cols-3 w-full h-auto bg-muted/50 p-1 mb-6 rounded-2xl border border-border">
+              <TabsList className="grid grid-cols-4 w-full h-auto bg-muted/50 p-1 mb-6 rounded-2xl border border-border">
                 <TabsTrigger value="downloads" className="rounded-xl px-2 sm:px-6 py-2.5 font-bold text-xs sm:text-sm data-[state=active]:bg-background data-[state=active]:shadow-sm">
                   <span className="sm:hidden">Downloads</span>
                   <span className="hidden sm:inline">Recent Downloads</span>
@@ -265,6 +313,10 @@ export default function AdminDashboard() {
                 <TabsTrigger value="analytics" className="rounded-xl px-2 sm:px-6 py-2.5 font-bold text-xs sm:text-sm data-[state=active]:bg-background data-[state=active]:shadow-sm">
                   <span className="sm:hidden">Top</span>
                   <span className="hidden sm:inline">Top Content</span>
+                </TabsTrigger>
+                <TabsTrigger value="scraper-settings" className="rounded-xl px-2 sm:px-6 py-2.5 font-bold text-xs sm:text-sm data-[state=active]:bg-background data-[state=active]:shadow-sm">
+                  <span className="sm:hidden">Settings</span>
+                  <span className="hidden sm:inline">Scraper Settings</span>
                 </TabsTrigger>
               </TabsList>
 
@@ -425,6 +477,72 @@ export default function AdminDashboard() {
                         </div>
                       ))}
                     </div>
+                  </CardContent>
+                </Card>
+              </TabsContent>
+
+              <TabsContent value="scraper-settings">
+                <Card className="border-border rounded-3xl overflow-hidden">
+                  <CardHeader className="border-b border-border bg-muted/20 px-8 py-6">
+                    <CardTitle className="text-xl font-black">Scraper Settings</CardTitle>
+                    <CardDescription>
+                      Configure Instagram Cookies and Proxy settings to bypass datacenter blocks.
+                    </CardDescription>
+                  </CardHeader>
+                  <CardContent className="p-8">
+                    {isSettingsLoading ? (
+                      <div className="space-y-6">
+                        <div className="space-y-2">
+                          <Skeleton className="h-4 w-32" />
+                          <Skeleton className="h-40 w-full rounded-xl" />
+                        </div>
+                        <div className="space-y-2">
+                          <Skeleton className="h-4 w-24" />
+                          <Skeleton className="h-10 w-full rounded-xl" />
+                        </div>
+                        <Skeleton className="h-12 w-32 rounded-xl" />
+                      </div>
+                    ) : (
+                      <form onSubmit={handleSaveSettings} className="space-y-6">
+                        <div className="space-y-2">
+                          <label className="text-sm font-bold text-foreground">Instagram Cookies</label>
+                          <p className="text-xs text-muted-foreground">
+                            Paste Netscape (text) cookies or JSON cookies. We will automatically parse and convert them.
+                          </p>
+                          <textarea
+                            className="w-full min-h-[180px] rounded-xl bg-background border border-border p-4 text-xs font-mono focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all custom-scrollbar"
+                            placeholder="# Netscape HTTP Cookie File or JSON array of cookies..."
+                            value={cookiesVal}
+                            onChange={(e) => setCookiesVal(e.target.value)}
+                          />
+                        </div>
+
+                        <div className="space-y-2">
+                          <label className="text-sm font-bold text-foreground">Instagram Proxy URL</label>
+                          <p className="text-xs text-muted-foreground">
+                            Specify a proxy URL if the server IP is restricted by Instagram.
+                          </p>
+                          <Input
+                            placeholder="http://username:password@proxy_host:port"
+                            value={proxyVal}
+                            onChange={(e) => setProxyVal(e.target.value)}
+                            className="rounded-xl bg-background border-border"
+                          />
+                        </div>
+
+                        <Button 
+                          type="submit" 
+                          disabled={isSavingSettings}
+                          className="h-12 px-6 rounded-xl font-black text-xs uppercase tracking-widest bg-indigo-600 hover:bg-indigo-700 text-white shadow-lg shadow-indigo-500/20"
+                        >
+                          {isSavingSettings ? (
+                            <>
+                              <RefreshCcw size={16} className="animate-spin mr-2" /> Saving...
+                            </>
+                          ) : "Save Settings"}
+                        </Button>
+                      </form>
+                    )}
                   </CardContent>
                 </Card>
               </TabsContent>

@@ -18,7 +18,8 @@ export interface PythonBridgeResponse<T> {
  */
 export async function runPythonScript<T>(
   scriptPath: string,
-  args: string[] = []
+  args: string[] = [],
+  extraEnv?: Record<string, string>
 ): Promise<PythonBridgeResponse<T>> {
   const pythonExecutable = process.env.NODE_ENV === "production" ? "python3" : "python";
   const absoluteScriptPath = path.join(process.cwd(), scriptPath);
@@ -27,7 +28,12 @@ export async function runPythonScript<T>(
   const source = "python-bridge";
 
   try {
-    const { stdout, stderr } = await execPromise(command);
+    const { stdout, stderr } = await execPromise(command, {
+      env: {
+        ...process.env,
+        ...extraEnv,
+      }
+    });
 
     if (stderr) {
       await logger.warn(`Python script stderr: ${stderr}`, source);

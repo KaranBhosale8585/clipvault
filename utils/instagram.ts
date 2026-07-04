@@ -32,6 +32,8 @@ function extractShortcode(url: string): string | null {
 
 import { logger } from "./logger";
 import { runPythonScript } from "./pythonBridge";
+import { db } from "@/db";
+import { systemSettingsTable } from "@/db/schema";
 
 interface PythonDownloaderData {
   id: string;
@@ -55,7 +57,30 @@ export async function fetchReelMetadata(url: string): Promise<ReelMetadata | nul
   }
 
   try {
-    const result = await runPythonScript<PythonDownloaderData>("services/python/downloader.py", [url]);
+    // Retrieve cookies and proxy configurations from database
+    let instagramCookies = "";
+    let instagramProxy = "";
+    try {
+      const settings = await db.select().from(systemSettingsTable);
+      instagramCookies = settings.find(s => s.key === "instagram_cookies")?.value || "";
+      instagramProxy = settings.find(s => s.key === "instagram_proxy")?.value || "";
+    } catch (err) {
+      await logger.warn(`Failed to fetch scraper settings from DB: ${err instanceof Error ? err.message : err}`, source);
+    }
+
+    const extraEnv: Record<string, string> = {};
+    if (instagramCookies) {
+      extraEnv["INSTAGRAM_COOKIES"] = instagramCookies;
+    }
+    if (instagramProxy) {
+      extraEnv["INSTAGRAM_PROXY"] = instagramProxy;
+    }
+
+    const result = await runPythonScript<PythonDownloaderData>(
+      "services/python/downloader.py",
+      [url],
+      extraEnv
+    );
 
     if (!result.success || !result.data) {
       await logger.error(`yt-dlp extraction failed: ${result.error}`, source, {
