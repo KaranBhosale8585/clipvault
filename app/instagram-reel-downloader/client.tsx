@@ -14,8 +14,54 @@ import { Button } from "@/components/ui/button";
 import { motion } from "framer-motion";
 
 export default function InstagramReelDownloaderClient() {
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "ClipVault Instagram Reel Downloader",
+    "url": "https://clipvault.online/instagram-reel-downloader",
+    "image": "https://clipvault.online/og-image.jpg",
+    "description": "Download Instagram Reels online for free in high quality 1080p. The fastest Instagram Reel downloader online. Save Reels directly to iPhone, Android or PC.",
+    "applicationCategory": "MultimediaApplication",
+    "operatingSystem": "All",
+    "browserRequirements": "Requires HTML5 support",
+    "permissions": "None",
+    "offers": {
+      "@type": "Offer",
+      "price": "0",
+      "priceCurrency": "USD"
+    }
+  };
+
+  const breadcrumbJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      {
+        "@type": "ListItem",
+        "position": 1,
+        "name": "Home",
+        "item": "https://clipvault.online"
+      },
+      {
+        "@type": "ListItem",
+        "position": 2,
+        "name": "Instagram Reel Downloader",
+        "item": "https://clipvault.online/instagram-reel-downloader"
+      }
+    ]
+  };
+
   return (
     <div className="min-h-screen bg-background text-foreground selection:bg-indigo-500/30 overflow-x-hidden">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
+      />
+
       <div className="max-w-7xl mx-auto px-4 md:px-10 py-12 md:py-24">
         
         {/* Back Link */}

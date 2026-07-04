@@ -14,8 +14,54 @@ import { Button } from "@/components/ui/button";
 import { motion } from "framer-motion";
 
 export default function InstagramVideoDownloaderClient() {
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "ClipVault Instagram Video Downloader",
+    "url": "https://clipvault.online/instagram-video-downloader",
+    "image": "https://clipvault.online/og-image.jpg",
+    "description": "Easily save Instagram videos and Reels. Extract high-quality MP4 files in a single click, completely free of charge.",
+    "applicationCategory": "MultimediaApplication",
+    "operatingSystem": "All",
+    "browserRequirements": "Requires HTML5 support",
+    "permissions": "None",
+    "offers": {
+      "@type": "Offer",
+      "price": "0",
+      "priceCurrency": "USD"
+    }
+  };
+
+  const breadcrumbJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      {
+        "@type": "ListItem",
+        "position": 1,
+        "name": "Home",
+        "item": "https://clipvault.online"
+      },
+      {
+        "@type": "ListItem",
+        "position": 2,
+        "name": "Instagram Video Downloader",
+        "item": "https://clipvault.online/instagram-video-downloader"
+      }
+    ]
+  };
+
   return (
     <div className="min-h-screen bg-background text-foreground selection:bg-indigo-500/30 overflow-x-hidden">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
+      />
+
       <div className="max-w-7xl mx-auto px-4 md:px-10 py-12 md:py-24">
         
         {/* Back Link */}
