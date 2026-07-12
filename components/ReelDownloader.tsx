@@ -9,6 +9,9 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useSearchParams } from "next/navigation";
 
+// Declare global chrome object for TypeScript compilation
+declare const chrome: any;
+
 interface ReelMetadata {
   id: string;
   reelUrl: string;
@@ -28,16 +31,88 @@ export default function ReelDownloader({ onLimitReached, onDailyLimitReached }: 
   const [loading, setLoading] = useState(false);
   const [metadata, setMetadata] = useState<ReelMetadata | null>(null);
   const [showPreview, setShowPreview] = useState(false);
+  const [extensionInstalled, setExtensionInstalled] = useState(false);
+  const [showInstallModal, setShowInstallModal] = useState(false);
+
+  // Read Extension ID with dynamic developer override support
+  const getExtensionId = (): string => {
+    if (typeof window !== "undefined") {
+      return localStorage.getItem("CLIPVAULT_EXTENSION_ID") || "lgpjmggeigcbeigpnmocgjgadljglcbf";
+    }
+    return "lgpjmggeigcbeigpnmocgjgadljglcbf";
+  };
+
+  // Detect Extension presence via externally_connectable runtime PING on interval
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const checkExtension = () => {
+        if (typeof chrome !== "undefined" && chrome.runtime && chrome.runtime.sendMessage) {
+          const extensionId = getExtensionId();
+          chrome.runtime.sendMessage(extensionId, { action: "PING" }, (response: any) => {
+            if (chrome.runtime.lastError) {
+              setExtensionInstalled(false);
+            } else if (response && response.success) {
+              setExtensionInstalled(true);
+            } else {
+              setExtensionInstalled(false);
+            }
+          });
+        } else {
+          setExtensionInstalled(false);
+        }
+      };
+
+      checkExtension();
+      const interval = setInterval(checkExtension, 3000);
+      return () => clearInterval(interval);
+    }
+  }, []);
 
   // Still keep an effect if the user navigates to a new URL with a different ?url param
   useEffect(() => {
     const queryUrl = searchParams.get("url");
     if (queryUrl && queryUrl !== url) {
-      // Use setTimeout to avoid synchronous setState in effect (linter error)
       const timeout = setTimeout(() => setUrl(queryUrl), 0);
       return () => clearTimeout(timeout);
     }
   }, [searchParams, url]);
+
+  const performServerRegistration = async (extData?: any) => {
+    const res = await fetch("/api/reel/metadata", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ url, extensionData: extData }),
+    });
+
+    const data = await res.json();
+
+    if (!res.ok) {
+      if (res.status === 401 && data.error === "Limit Exceeded") {
+        onLimitReached?.(url);
+        return false;
+      }
+
+      if (res.status === 403 && data.error === "Daily Limit Reached") {
+        onDailyLimitReached?.();
+        return false;
+      }
+      
+      if (res.status === 429) {
+        toast.error(data.message || "Too many requests. Please wait.");
+      } else {
+        toast.error(data.message || "Failed to extract Reel");
+        if (res.status === 500 && !extensionInstalled) {
+          setShowInstallModal(true);
+        }
+      }
+      return false;
+    } else {
+      setMetadata(data.data);
+      toast.success(extData ? "Reel extracted via ClipVault Companion!" : "Reel metadata extracted!");
+      window.dispatchEvent(new CustomEvent("refresh-history"));
+      return true;
+    }
+  };
 
   const handleExtract = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -50,48 +125,68 @@ export default function ReelDownloader({ onLimitReached, onDailyLimitReached }: 
     setMetadata(null);
     setShowPreview(false);
 
-    try {
-      const res = await fetch("/api/reel/metadata", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ url }),
-      });
-
-      const data = await res.json();
-
-      if (!res.ok) {
-        if (res.status === 401 && data.error === "Limit Exceeded") {
-          onLimitReached?.(url);
-          return;
-        }
-
-        if (res.status === 403 && data.error === "Daily Limit Reached") {
-          onDailyLimitReached?.();
-          return;
-        }
-        
-        if (res.status === 429) {
-          toast.error(data.message || "Too many requests. Please wait.");
+    if (extensionInstalled && typeof chrome !== "undefined" && chrome.runtime && chrome.runtime.sendMessage) {
+      const extensionId = getExtensionId();
+      chrome.runtime.sendMessage(extensionId, { action: "EXTRACT", url }, async (response: any) => {
+        if (chrome.runtime.lastError) {
+          console.error("Extension extraction failed:", chrome.runtime.lastError);
+          toast.error("Extension communication failed. Trying server fallback...");
+          await performServerRegistration();
+          setLoading(false);
+        } else if (response && response.success && response.data) {
+          await performServerRegistration(response.data);
+          setLoading(false);
         } else {
-          toast.error(data.message || "Failed to extract Reel");
+          const errMsg = response ? response.error : "Unknown extension error";
+          toast.error(`Extension failed: ${errMsg}. Trying server fallback...`);
+          await performServerRegistration();
+          setLoading(false);
         }
-      } else {
-        setMetadata(data.data);
-        toast.success("Reel metadata extracted!");
-        // Notify DownloadHistory to refresh
-        window.dispatchEvent(new CustomEvent("refresh-history"));
+      });
+    } else {
+      // Standard server extraction fallback
+      try {
+        await performServerRegistration();
+      } catch {
+        toast.error("Something went wrong");
+      } finally {
+        setLoading(false);
       }
-    } catch {
-      toast.error("Something went wrong");
-    } finally {
-      setLoading(false);
     }
   };
 
   const handleDownload = () => {
     if (!metadata) return;
     
-    // Use the download proxy to bypass CORS and force download
+    if (extensionInstalled && typeof chrome !== "undefined" && chrome.runtime && chrome.runtime.sendMessage) {
+      toast("Triggering direct download...");
+      const extensionId = getExtensionId();
+      chrome.runtime.sendMessage(
+        extensionId,
+        {
+          action: "DOWNLOAD",
+          videoUrl: metadata.videoUrl,
+          filename: `clipvault-reel-${metadata.id}.mp4`
+        },
+        (response: any) => {
+          if (chrome.runtime.lastError) {
+            console.error("Direct download failed, falling back to server:", chrome.runtime.lastError);
+            triggerProxyDownload();
+          } else if (response && response.success) {
+            toast.success("Download started directly in your browser!");
+          } else {
+            console.warn("Direct download failed, falling back to server:", response?.error);
+            triggerProxyDownload();
+          }
+        }
+      );
+    } else {
+      triggerProxyDownload();
+    }
+  };
+
+  const triggerProxyDownload = () => {
+    if (!metadata) return;
     const proxyUrl = `/api/download-proxy?url=${encodeURIComponent(metadata.videoUrl)}&filename=${encodeURIComponent(`reel-${metadata.id}.mp4`)}`;
     window.location.href = proxyUrl;
     toast.success("Starting download...");
@@ -100,11 +195,26 @@ export default function ReelDownloader({ onLimitReached, onDailyLimitReached }: 
   return (
     <div className="space-y-6">
       <Card className="border-border transition-all hover:shadow-2xl hover:shadow-indigo-500/5 overflow-hidden">
-        <CardHeader className="pb-4">
+        <CardHeader className="pb-4 flex flex-row items-center justify-between space-y-0">
           <CardTitle className="text-lg md:text-xl font-bold text-foreground flex items-center gap-2">
             <Download className="w-5 h-5 text-indigo-500" />
             ClipVault Extraction Engine
           </CardTitle>
+          <div>
+            {extensionInstalled ? (
+              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-emerald-500/10 text-emerald-400 border border-emerald-500/25">
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                Companion Active
+              </span>
+            ) : (
+              <button 
+                onClick={() => setShowInstallModal(true)}
+                className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-indigo-500/10 text-indigo-400 border border-indigo-500/25 hover:bg-indigo-500/20 transition-all cursor-pointer"
+              >
+                Install Helper Extension
+              </button>
+            )}
+          </div>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleExtract} className="space-y-4">
@@ -197,6 +307,71 @@ export default function ReelDownloader({ onLimitReached, onDailyLimitReached }: 
             </div>
           </div>
         </Card>
+      )}
+
+      {/* Extension Install Modal */}
+      {showInstallModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in duration-200">
+          <div className="relative w-full max-w-md bg-card border border-border rounded-2xl md:rounded-3xl p-6 md:p-8 shadow-2xl animate-in zoom-in-95 duration-200">
+            <h3 className="text-xl md:text-2xl font-bold text-foreground mb-2">
+              Instagram Block Detected
+            </h3>
+            <p className="text-sm text-muted-foreground mb-6 leading-relaxed">
+              Instagram's servers are blocking anonymous downloads from cloud datacenters. Fix this instantly by installing our free, open-source <strong>ClipVault Companion</strong> extension.
+            </p>
+
+            <div className="space-y-4 mb-6">
+              <div className="flex items-start gap-3">
+                <div className="mt-0.5 p-1 bg-emerald-500/10 rounded-lg text-emerald-400">
+                  <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                  </svg>
+                </div>
+                <div>
+                  <h4 className="text-sm font-semibold text-foreground">Uses Your Residential Connection</h4>
+                  <p className="text-xs text-muted-foreground">Performs the extraction locally using your own connection—completely free from blocks.</p>
+                </div>
+              </div>
+              <div className="flex items-start gap-3">
+                <div className="mt-0.5 p-1 bg-emerald-500/10 rounded-lg text-emerald-400">
+                  <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                  </svg>
+                </div>
+                <div>
+                  <h4 className="text-sm font-semibold text-foreground">Privacy Guaranteed</h4>
+                  <p className="text-xs text-muted-foreground">Does not collect, store, or transmit your Instagram password, cookies, or session data.</p>
+                </div>
+              </div>
+            </div>
+
+            <div className="flex flex-col gap-3">
+              <a 
+                href="/extension/clipvault-companion.zip" 
+                download
+                className="w-full h-12 md:h-14 bg-indigo-600 text-white font-bold rounded-xl md:rounded-2xl shadow-lg shadow-indigo-500/20 hover:bg-indigo-700 active:scale-[0.98] transition-all flex items-center justify-center gap-2 text-sm"
+              >
+                Download Extension (.zip)
+              </a>
+              <button
+                onClick={() => setShowInstallModal(false)}
+                className="w-full h-10 rounded-xl border border-border text-muted-foreground hover:text-foreground transition-all text-xs font-semibold"
+              >
+                Maybe Later
+              </button>
+            </div>
+            
+            <div className="mt-4 text-center">
+              <a 
+                href="/faq#extension-install" 
+                target="_blank"
+                className="text-xs text-indigo-400 hover:underline"
+              >
+                Need help installing the unpacked extension? Read Guide
+              </a>
+            </div>
+          </div>
+        </div>
       )}
     </div>
   );

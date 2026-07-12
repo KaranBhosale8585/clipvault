@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <style>
+    body {
+      width: 320px;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      margin: 0;
+      padding: 16px;
+      background-color: #0b0f19;
+      color: #f3f4f6;
+    }
+    .header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      border-bottom: 1px solid #1f2937;
+      padding-bottom: 12px;
+      margin-bottom: 16px;
+    }
+    .logo-container {
+      background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
+      color: white;
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      font-size: 18px;
+      box-shadow: 0 4px 6px -1px rgba(99, 102, 241, 0.2);
+    }
+    .title {
+      font-size: 16px;
+      font-weight: 700;
+      letter-spacing: -0.025em;
+    }
+    .status-card {
+      background-color: #111827;
+      border: 1px solid #1f2937;
+      border-radius: 12px;
+      padding: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-bottom: 16px;
+    }
+    .status-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 13px;
+    }
+    .badge {
+      padding: 2px 8px;
+      border-radius: 9999px;
+      font-size: 11px;
+      font-weight: 600;
+      background-color: #10b981;
+      color: white;
+    }
+    .badge.disconnected {
+      background-color: #ef4444;
+    }
+    .info-list {
+      font-size: 12px;
+      color: #9ca3af;
+      margin: 0;
+      padding-left: 20px;
+    }
+    .info-list li {
+      margin-bottom: 6px;
+    }
+    .footer {
+      text-align: center;
+      font-size: 11px;
+      color: #6b7280;
+      margin-top: 16px;
+      border-top: 1px solid #1f2937;
+      padding-top: 12px;
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <div class="logo-container">CV</div>
+    <div class="title">ClipVault Companion</div>
+  </div>
+  
+  <div class="status-card">
+    <div class="status-row">
+      <span>Extension Status:</span>
+      <span class="badge" id="status-badge">Active</span>
+    </div>
+    <div class="status-row">
+      <span>IP Protection Mode:</span>
+      <span class="badge" style="background-color: #6366f1;">Client Bridge</span>
+    </div>
+  </div>
+
+  <h4 style="margin: 0 0 8px 0; font-size: 13px;">How it Works:</h4>
+  <ul class="info-list">
+    <li>Bypasses backend datacenter IP blocks using your local browser fetch.</li>
+    <li>Runs 100% locally on your residential internet connection.</li>
+    <li>No credentials, login, or session cookies are ever sent to ClipVault servers.</li>
+    <li>We never access or store your Instagram passwords.</li>
+  </ul>
+
+  <div class="footer">
+    ClipVault Companion V1.0.0 &copy; 2026. Privacy Secured.
+  </div>
+
+  <script src="popup.js"></script>
+</body>
+</html>

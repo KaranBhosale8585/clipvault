@@ -101,7 +101,7 @@ export async function POST(req: NextRequest) {
       }
     }
 
-    const { url } = await req.json();
+    const { url, extensionData } = await req.json();
 
     if (!url) {
       return NextResponse.json(
@@ -117,40 +117,51 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // SCALABILITY: Check for cached metadata (within last 12 hours) to prevent excessive script execution
-    const twelveHoursAgo = new Date(Date.now() - 12 * 60 * 60 * 1000);
-    const [cachedDownload] = await db
-      .select()
-      .from(downloadsTable)
-      .where(
-        and(
-          eq(downloadsTable.reelUrl, url),
-          gte(downloadsTable.createdAt, twelveHoursAgo)
-        )
-      )
-      .orderBy(desc(downloadsTable.createdAt))
-      .limit(1);
-
     let metadata;
 
-    if (cachedDownload && cachedDownload.videoUrl && cachedDownload.thumbnailUrl) {
-      await logger.info(`Cache hit for ${url}`, "reel/metadata");
+    if (extensionData) {
+      await logger.info(`Extension extraction register for ${url}`, "reel/metadata");
       metadata = {
-        id: cachedDownload.id,
-        reelUrl: cachedDownload.reelUrl,
-        videoUrl: cachedDownload.videoUrl,
-        thumbnailUrl: cachedDownload.thumbnailUrl,
-        title: cachedDownload.title || "Instagram Reel",
+        id: extensionData.id || url.split('/').filter(Boolean).pop() || "reel",
+        reelUrl: url,
+        videoUrl: extensionData.videoUrl,
+        thumbnailUrl: extensionData.thumbnailUrl,
+        title: extensionData.title || "Instagram Reel",
       };
     } else {
-      // Proceed with real extraction if not cached or cache is old
-      metadata = await fetchReelMetadata(url);
+      // SCALABILITY: Check for cached metadata (within last 12 hours) to prevent excessive script execution
+      const twelveHoursAgo = new Date(Date.now() - 12 * 60 * 60 * 1000);
+      const [cachedDownload] = await db
+        .select()
+        .from(downloadsTable)
+        .where(
+          and(
+            eq(downloadsTable.reelUrl, url),
+            gte(downloadsTable.createdAt, twelveHoursAgo)
+          )
+        )
+        .orderBy(desc(downloadsTable.createdAt))
+        .limit(1);
 
-      if (!metadata) {
-        return NextResponse.json(
-          { error: "Extraction Failed", message: "Could not find video data. The Reel might be private or Instagram is blocking the request." },
-          { status: 500 }
-        );
+      if (cachedDownload && cachedDownload.videoUrl && cachedDownload.thumbnailUrl) {
+        await logger.info(`Cache hit for ${url}`, "reel/metadata");
+        metadata = {
+          id: cachedDownload.id,
+          reelUrl: cachedDownload.reelUrl,
+          videoUrl: cachedDownload.videoUrl,
+          thumbnailUrl: cachedDownload.thumbnailUrl,
+          title: cachedDownload.title || "Instagram Reel",
+        };
+      } else {
+        // Proceed with real extraction if not cached or cache is old
+        metadata = await fetchReelMetadata(url);
+
+        if (!metadata) {
+          return NextResponse.json(
+            { error: "Extraction Failed", message: "Instagram is blocking the server request. Please install our browser extension to download this Reel." },
+            { status: 500 }
+          );
+        }
       }
     }
 

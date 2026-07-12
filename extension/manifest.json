@@ -1,0 +1,36 @@
+{
+  "manifest_version": 3,
+  "name": "ClipVault Companion",
+  "version": "1.0.0",
+  "description": "Bypass server-side IP blocks for ClipVault by extracting and downloading Reels locally via your browser.",
+  "permissions": [
+    "activeTab",
+    "downloads"
+  ],
+  "host_permissions": [
+    "https://www.instagram.com/*"
+  ],
+  "externally_connectable": {
+    "matches": [
+      "https://clipvault.online/*",
+      "https://www.clipvault.online/*",
+      "http://localhost:3000/*"
+    ]
+  },
+  "background": {
+    "service_worker": "background.js"
+  },
+  "action": {
+    "default_popup": "popup.html",
+    "default_icon": {
+      "16": "icon.png",
+      "48": "icon.png",
+      "128": "icon.png"
+    }
+  },
+  "icons": {
+    "16": "icon.png",
+    "48": "icon.png",
+    "128": "icon.png"
+  }
+}
