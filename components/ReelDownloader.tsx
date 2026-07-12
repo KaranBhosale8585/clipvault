@@ -8,6 +8,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useSearchParams } from "next/navigation";
+import { createPortal } from "react-dom";
 
 // Declare global chrome object for TypeScript compilation
 declare const chrome: any;
@@ -33,6 +34,11 @@ export default function ReelDownloader({ onLimitReached, onDailyLimitReached }: 
   const [showPreview, setShowPreview] = useState(false);
   const [extensionInstalled, setExtensionInstalled] = useState(false);
   const [showInstallModal, setShowInstallModal] = useState(false);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   // Read Extension ID with dynamic developer override support
   const getExtensionId = (): string => {
@@ -310,7 +316,7 @@ export default function ReelDownloader({ onLimitReached, onDailyLimitReached }: 
       )}
 
       {/* Extension Install Modal */}
-      {showInstallModal && (
+      {showInstallModal && mounted && typeof document !== "undefined" && createPortal(
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in duration-200">
           <div className="relative w-full max-w-md bg-card border border-border rounded-2xl md:rounded-3xl p-6 md:p-8 shadow-2xl animate-in zoom-in-95 duration-200">
             <h3 className="text-xl md:text-2xl font-bold text-foreground mb-2">
@@ -371,7 +377,8 @@ export default function ReelDownloader({ onLimitReached, onDailyLimitReached }: 
               </a>
             </div>
           </div>
-        </div>
+        </div>,
+        document.body
       )}
     </div>
   );
